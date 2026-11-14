@@ -1,16 +1,17 @@
-# ZDESK — dashboard Solana privata (HighKali)
+# ZDESK — pannello admin ZDOS (sola lettura)
 
 Dashboard **locale**, **single-user**, **sola lettura**, ispirata alle funzioni
 di un terminale tipo GMGN (trending, rug check, watchlist, sfera predittiva,
 tracker wallet, copy-trader PAPER, titoli tokenizzati in solo watch).
 
 Non è un clone di GMGN, non chiama l'API GMGN (Cloudflare 403) e **non esegue
-trade**. Nessuna chiave, nessun login, nessun invio on-chain.
+trade**. Nessun invio on-chain. L'accesso X è facoltativo, in sola lettura, e
+non conserva token sul server.
 
 ## Avvio (solo sul box)
 
 ```bash
-cd /workspace/zdesk-dashboard
+cd zdesk   # cartella del progetto
 npm start
 ```
 
@@ -20,21 +21,59 @@ Variabili opzionali:
 
 - `HOST` (default `127.0.0.1`)
 - `PORT` (default `8787`)
-- `DESK_DIR` (default `/workspace/highkali-desk`)
-- `ZDESK_AGENT_WALLET` (indirizzo pubblico del wallet agente; obbligatoria, non è scritto nel repo)
+- `DESK_DIR` (cartella dei file desk sincronizzati in sola lettura)
+- `ZDESK_AGENT_WALLET` (indirizzo pubblico del wallet agente; in questa copia non è scritto nel codice)
+- `ZDESK_PRIVATE_ADDRS` (facoltativa: altri indirizzi da mascherare nelle risposte, separati da virgola)
 
-Per fermarla: `kill $(cat /workspace/zdesk-dashboard/zdesk.pid)` se avviata
-in background con lo script di run, oppure `pkill -f 'node server.js'`.
+Per fermarla: `kill $(cat zdesk.pid)` se avviata in background con lo script
+di run. Sul VPS gira come servizio systemd `zdesk`.
 
 ### Demone Ninja (auto-start con supervisor)
 
 ```bash
-/workspace/zdesk-dashboard/scripts/ninja-ctl.sh start
-/workspace/zdesk-dashboard/scripts/ninja-ctl.sh status
+scripts/ninja-ctl.sh start
+scripts/ninja-ctl.sh status
 ```
 
 PID in `ninja.pid`, log in `ninja-daemon.log`. Spec e doveri dell'Executor:
-`/workspace/highkali-desk/ninja.md`. Test offline: `npm run ninja:test`.
+`ninja.md` nella cartella desk. Test offline: `npm run ninja:test`.
+
+## Pannello admin (stile x-zdos.it)
+
+Da questa versione zdesk si apre su **Panoramica**, con layout admin nello stile
+di [x-zdos.it](https://x-zdos.it/): menu laterale (su telefono si apre con ☰),
+palette Solana (viola #9945FF, verde #14F195), font Space Grotesk e IBM Plex Mono,
+card in vetro, sfondo con orb e griglia. Tutte le sezioni di prima restano:
+In tendenza, Nuove pair, Watchlist, Titoli tokenizzati, Copy trader, Ninja,
+Desk, Wallet, Radar (X Trust, K.I.R.A., News, Watchlist, Staking, Connetti con
+login X).
+
+La Panoramica mostra:
+
+- **Siti ZDOS**: x-zdos.it, ZSwap, Pinguino RPG, VelvetHub (18+, solo link e
+  stato, nessuna anteprima) e dev.to/asapkali. Lo stato arriva da
+  `GET /api/ecosystem`: il server fa una GET con timeout di 8 s, senza seguire i
+  redirect, e riporta codice HTTP, latenza, dimensione, sha256 (12 caratteri)
+  della pagina e giorni alla scadenza del certificato TLS. Cache 60 s. Nessun
+  iframe e nessun contenuto dei siti passa al browser.
+- **Token**: $DSN ufficiale (Polygon `0xfc90516a1f736FaC557e09D8853dB80dA192c296`,
+  Solana `35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4`) e $OV (VELVET), solo
+  indirizzi e link di consultazione.
+- **Ultimi articoli dev.to** dall'API pubblica
+  `https://dev.to/api/articles?username=asapkali` (cache 10 minuti; se dev.to
+  non risponde restano gli ultimi dati letti, segnalati come vecchi).
+- Indicatori: siti online, fonti dati, accesso X configurato, stato Ninja.
+
+**Privacy.** Tutte le risposte `/api/*` passano da `lib/privacy.js`: gli
+indirizzi del wallet agente compaiono solo mascherati (4…4), IP pubblici, nome
+host del VPS, email e percorsi assoluti del server vengono nascosti. Gli
+indirizzi privati non sono scritti in chiaro nel filtro (confronto per impronta
+sha256). Nelle risposte che riguardano il wallet agente i link alle transazioni
+vengono tolti e le firme abbreviate (dalla firma si risalirebbe al wallet).
+Altri indirizzi da mascherare: `ZDESK_PRIVATE_ADDRS`.
+
+Test offline: `node scripts/ecosystem-selftest.js`, `node scripts/privacy-selftest.js`.
+Controllo su file o risposte salvate: `node scripts/privacy-scan.js <file>...`.
 
 ## Funzioni
 
@@ -55,7 +94,7 @@ PID in `ninja.pid`, log in `ninja-daemon.log`. Spec e doveri dell'Executor:
    `gmgn-signals.md`.
 5. **Sfera predittiva** — colonna 0–1, formula in [FORMULA.md](FORMULA.md).
 6. **Wallet agente live** — pannello in evidenza sulla home (e tab Wallet)
-   del wallet Phantom dell'agente (indirizzo solo in `ZDESK_AGENT_WALLET`, non nel repo):
+   del wallet Phantom dell'agente (in pagina e nelle API compare solo mascherato, 4…4):
    saldo totale USD/SOL, holding, movimenti (swap/in/out, ora Europe/Rome,
    link Solscan), counter animato, flash verde/rosso sui movimenti, sparkline
    da snapshot in `wallet-spark.json`. Solo RPC/prezzi pubblici, poll ~20s,
@@ -78,6 +117,17 @@ PID in `ninja.pid`, log in `ninja-daemon.log`. Spec e doveri dell'Executor:
 10. **Titoli tokenizzati** — SPYx, QQQx, NVDAx, TSLAx, GOOGLx (mint da
    DexScreener + Jupiter tag `xstocks`). **Acquisto bloccato**
    (georestriction Phantom): solo watch, nessuna elusione.
+
+11. **Radar · Connetti app** — GitHub in sola lettura, Phantom (indirizzo
+    pubblico, nessuna firma) e, se configurato sul VPS, **Accedi con X**
+    (OAuth 2.0 Authorization Code + PKCE, scope `tweet.read users.read`).
+    Si verifica solo il profilo (`/2/users/me`); l'access token viene
+    revocato subito e non è conservato. Nessun post, nessun elenco follower.
+    Callback: `https://zdesk.x-zdos.it/api/connect/x/callback` (zdesk è
+    servito alla radice dell'host, senza prefisso `/zdesk`). Le chiavi
+    (`X_CLIENT_ID`, `X_CLIENT_SECRET`, `ZDESK_SESSION_SECRET`) stanno in
+    `/etc/zdesk/x-oauth.env` (root:zdesk 640), caricato da un drop-in
+    systemd. Se mancano, zdesk funziona come prima e resta l'handle locale.
 
 Auto-refresh circa 45–55 secondi, con cache e rispetto dei rate limit.
 
@@ -111,10 +161,11 @@ Generati in `screens/`:
 node scripts/screenshots.js
 ```
 
-## Deploy privato su VPS (non fatto qui)
+## Deploy privato su VPS
 
-Questa app è stata lasciata **solo in locale**. Per una copia privata sul VPS
-dell'utente, in un secondo momento servirebbe:
+zdesk è online su https://zdesk.x-zdos.it dietro nginx con basic auth; i
+aggiornamenti si installano a mano con i pacchetti `deploy-zdesk-*` (backup,
+selftest, rollback automatico). Principi del deploy:
 
 1. Copiare la cartella sul VPS (senza `.env` con chiavi: qui non ce ne sono).
 2. `npm ci --omit=dev` e un process manager (`systemd` o `node` sotto
@@ -135,16 +186,9 @@ dell'utente, in un secondo momento servirebbe:
 5. Continuare a non mettere chiavi, a non collegare Phantom in trade,
    a non aggirare la georestriction xStocks.
 6. Se il desk (`risk.md` ecc.) deve comparire, montare o sincronizzare in
-   sola lettura `/workspace/highkali-desk` (o l'equivalente sul VPS).
+   sola lettura la cartella desk (`DESK_DIR`). `scripts/sync-desk.sh` legge
+   l'host solo da `ZDESK_SSH_HOST`.
 7. Rate limit più stretti se il VPS ha un IP condiviso verso le API pubbliche.
 
-Il Radar v2.1 (con la correzione del mint $DSN) è stato applicato sul VPS il 14/11/2026 alle 15:09 (ora di Roma), ESITO OK. Dettagli in `../../docs/STATUS.md`. Pacchetto e script: `../deploy/`.
-
-## Tab Radar (sola lettura)
-Sotto-sezioni: X Trust, Token K.I.R.A., News anticipo, Watchlist ($DSN ufficiale, VELVET e xZDOS legacy), **Staking** (non custodial,
-vedi `../../docs/staking.md`) e **Connetti app** (X: solo handle locale e link al profilo; GitHub: stato pubblico in lettura; Phantom: solo indirizzo pubblico; vedi `../../docs/connetti-app.md`).
-Endpoint GET: `/api/radar`, `/api/staking/:address`, `/api/connect`. Selftest: `node scripts/radar-staking-selftest.js` e `node scripts/dsnmint-selftest.js`.
-
-$DSN ufficiale: Polygon `0xfc90516a1f736FaC557e09D8853dB80dA192c296` (18 decimali) e Solana `35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4` (Token-2022, 6 decimali).
-`EnxZzNG8ZarHt1Tez4ipu5yUnXj8rAbyAnXttxnMpump` è xZDOS pump.fun (legacy, non $DSN ufficiale).
-VELVET ($OV), community su Solana, mint `2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump`. Nessun rendimento, nessuna promessa finanziaria.
+---
+© 2026 ZDOS1.3 — P.IVA 11040550961 · tutti i diritti riservati.

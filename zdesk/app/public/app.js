@@ -7,7 +7,9 @@
     : (location.pathname.startsWith('/zdesk') ? '/zdesk' : '');
 
   const state = {
-    tab: 'trending',
+    tab: 'admin',
+    health: null,
+    eco: null,
     pairs: { trending: [], new: [] },
     meta: {},
     prev: { trending: new Map(), new: new Map() },
@@ -98,12 +100,12 @@
   function gaugeSvg(score) {
     const s = score == null ? 0 : Math.max(0, Math.min(1, score));
     const r = 28, c = 2 * Math.PI * r;
-    const color = score == null ? '#253047' : s >= 0.85 ? '#4ade80' : s >= 0.55 ? '#f3d7a5' : '#f87171';
+    const color = score == null ? '#3a2660' : s >= 0.85 ? '#14f195' : s >= 0.55 ? '#ffd56a' : '#f87171';
     const label = score == null ? 'n/d' : s.toFixed(2);
     return `<span class="gauge" title="Sfera ${label}">
       <svg viewBox="0 0 76 76" aria-hidden="true">
         <g transform="rotate(-90 38 38)">
-          <circle cx="38" cy="38" r="${r}" fill="none" stroke="#1a242c" stroke-width="6"/>
+          <circle cx="38" cy="38" r="${r}" fill="none" stroke="#2a1a44" stroke-width="6"/>
           <circle cx="38" cy="38" r="${r}" fill="none" stroke="${color}" stroke-width="6"
             stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - s)}"
             style="filter:drop-shadow(0 0 6px ${color}99)"/>
@@ -135,6 +137,7 @@
   async function refreshHealth() {
     try {
       const h = await api('/api/health');
+      state.health = h;
       const src = h.sources || {};
       $('#src-health').innerHTML = ['dexscreener', 'geckoterminal', 'rugcheck', 'rpc', 'pumpfun', 'jupiter']
         .filter((k) => src[k])
@@ -318,12 +321,12 @@
     destroyChart();
     host.innerHTML = '';
     const chart = LightweightCharts.createChart(host, {
-      layout: { background: { color: '#060910' }, textColor: '#a7b3cc', fontFamily: 'IBM Plex Mono, monospace' },
-      grid: { vertLines: { color: '#25304766' }, horzLines: { color: '#25304766' } },
+      layout: { background: { color: '#07020f' }, textColor: '#b4a8cc', fontFamily: 'IBM Plex Mono, monospace' },
+      grid: { vertLines: { color: '#3a266066' }, horzLines: { color: '#3a266066' } },
       width: host.clientWidth,
       height: host.clientHeight || 280,
-      timeScale: { timeVisible: true, secondsVisible: tf === 'minute', borderColor: '#253047' },
-      rightPriceScale: { borderColor: '#253047' },
+      timeScale: { timeVisible: true, secondsVisible: tf === 'minute', borderColor: '#3a2660' },
+      rightPriceScale: { borderColor: '#3a2660' },
       crosshair: { mode: 0 },
     });
     const series = chart.addCandlestickSeries({
@@ -761,10 +764,11 @@
     const rows = (b.wallets || []).map((w) => {
       const st = String(w.status || '').toUpperCase();
       const cls = st === 'APPROVED' ? 'approved-row' : (st === 'WATCH' ? 'watch-row' : '');
-      const href = w.address ? 'https://solscan.io/account/' + encodeURIComponent(w.address) : '';
-      const addr = w.address
-        ? `<a href="${esc(href)}" target="_blank" rel="noopener"><code title="${esc(w.address)}">${esc(shortMint(w.address))}</code></a>`
-        : '—';
+      const masked = !w.address || String(w.address).includes('…');
+      const href = masked ? '' : 'https://solscan.io/account/' + encodeURIComponent(w.address);
+      const addr = !w.address ? '—'
+        : (href ? `<a href="${esc(href)}" target="_blank" rel="noopener"><code title="${esc(w.address)}">${esc(shortMint(w.address))}</code></a>`
+          : `<code>${esc(w.address)}</code>`);
       const hold = w.hold || '—';
       const pnlClass = (w.pnlSol != null ? w.pnlSol : w.pnlUsd) < 0 ? 'neg' : ((w.pnlSol != null ? w.pnlSol : w.pnlUsd) > 0 ? 'pos' : '');
       return `<tr class="${cls}">
@@ -985,7 +989,7 @@
         `<li><span class="${e.side === 'BUY' ? 'pos' : 'neg'}">${e.side}</span> ${esc(e.symbol || shortMint(e.mint))} · size ${e.size != null ? Number(e.size).toPrecision(4) : '—'} · ${e.priceUsd != null ? fmtPx(e.priceUsd) : 'n/d'}</li>`
       ).join('');
       return `<article class="card" style="cursor:default">
-        <h3><a href="${w.solscan}" target="_blank" rel="noopener">${esc(shortMint(w.wallet))}</a>
+        <h3>${safeLink(w.solscan, shortMint(w.wallet))}
           <small>${w.appearances || 0} gainer · non APPROVED</small></h3>
         <div class="kv">
           ${kv('Win rate (chiusi)', wr)}
@@ -1075,11 +1079,22 @@
       const held = !!(b.held || b.notForSale || (b.mint && b.mint === '2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump'));
       const tag = held ? '<span class="held-tag" title="token del progetto · tenuto, non in vendita">tenuto</span>' : '';
       return `<div class="hold-row"${b.mint && b.mint !== 'SOL' ? ` data-mint="${esc(b.mint)}"` : ''}>
-        <span class="sym">${esc(b.symbol || shortMint(b.mint))}${tag}</span>
+        <span class="sym">${esc(b.symbol || (b.mint === '2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump' ? 'VELVET ($OV)' : shortMint(b.mint)))}${tag}</span>
         <span class="qty">${b.native || b.symbol === 'SOL' ? fmtSolQty(b.amount) : Number(b.amount).toLocaleString('it-IT', { maximumFractionDigits: 4 })}</span>
         <span class="val">${fmtUsd(b.valueUsd)}</span>
       </div>`;
-    }).join('') || '<p class="muted">Nessun holding visibile.</p>';
+    }).join('') || '<p class="empty">Nessun token visibile nel wallet.</p>';
+  }
+  // Firma abbreviata; i link compaiono solo se il server non li ha rimossi e non sono mascherati.
+  function shortSig(sig) {
+    const v = String(sig || '');
+    if (!v) return '—';
+    return v.includes('…') ? v : v.slice(0, 6) + '…' + v.slice(-4);
+  }
+  function safeLink(url, text) {
+    const u = String(url || '');
+    if (!u || u.includes('…') || !/^https:\/\//.test(u)) return esc(text);
+    return `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(text)}</a>`;
   }
   function txItems(transactions, newSigs) {
     return (transactions || []).map((t) => {
@@ -1090,7 +1105,7 @@
       return `<li class="${fresh ? 'tx-in' : ''}" title="${esc(t.timeRome || '')}">
         <span class="when">${esc(when)}</span>
         <span class="what"><span class="tx-type ${typ}">${esc(typ)}</span>${esc(label)}</span>
-        ${t.solscan ? `<a href="${esc(t.solscan)}" target="_blank" rel="noopener">Solscan</a>` : '<span></span>'}
+        <span class="sig micro" title="Firma abbreviata">${esc(shortSig(t.signature))}</span>
       </li>`;
     }).join('') || '<li class="muted">Nessun movimento recente.</li>';
   }
@@ -1105,7 +1120,8 @@
       ? data.totalUsd - prev.totalUsd : null;
     const deltaHtml = delta == null || Math.abs(delta) < 0.005 ? ''
       : `<span class="live-delta ${delta > 0 ? 'pos' : 'neg'}">${delta > 0 ? '+' : '−'}${fmtUsdFull(Math.abs(delta))}</span>`;
-    const href = 'https://solscan.io/account/' + encodeURIComponent(data.address);
+    const masked = !data.address || String(data.address).includes('…');
+    const href = masked ? '' : 'https://solscan.io/account/' + encodeURIComponent(data.address);
     el.innerHTML = `
       <div class="live-head">
         <div class="live-totals">
@@ -1115,7 +1131,7 @@
           ${deltaHtml}
         </div>
         <div class="live-meta">
-          <a class="addr" href="${href}" target="_blank" rel="noopener" title="${esc(data.address)}">${esc(data.address)}</a>
+          ${href ? `<a class="addr" href="${href}" target="_blank" rel="noopener" title="${esc(data.address)}">${esc(data.address)}</a>` : `<span class="addr" title="Indirizzo mascherato per privacy">${esc(data.address || 'wallet agente')}</span>`}
           <div class="hint">${esc(data.updatedRome || '—')}</div>
           <div class="spark-box" aria-hidden="true">${sparkSvg(data.spark, 280, 56, 'sf-' + el.id)}</div>
         </div>
@@ -1217,7 +1233,7 @@
       ).join('');
       const txs = (data.transactions || []).map((t) =>
         `<li>${t.err ? '<span class="neg">ERR</span>' : '<span class="pos">ok</span>'}
-          <a href="${t.solscan}" target="_blank" rel="noopener">${esc(t.signature.slice(0, 8))}…</a>
+          ${safeLink(t.solscan, shortSig(t.signature))}
           · ${t.blockTime ? new Date(t.blockTime * 1000).toLocaleString('it-IT', { timeZone: 'Europe/Rome' }) + ' Europe/Rome' : '—'}</li>`
       ).join('');
       box.innerHTML = `
@@ -1350,15 +1366,41 @@
   function short(a) { return a ? esc(a.slice(0, 4) + '…' + a.slice(-4)) : ''; }
   function ext(url, label) { return '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(label) + '</a>'; }
 
+  let connectNotice = '';
+
   async function renderConnect(el) {
     const x = lsGet(LS_X);
     const w = lsGet(LS_WALLET);
     const prov = phantomProvider();
-    let h = '<p class="hint">Tre collegamenti, tutti in sola lettura. zdesk non pubblica su X, non scrive su GitHub e non chiede a Phantom firme o transazioni.</p><div class="cards radar-cards">';
-    h += '<article class="card terminal-panel"><header class="radar-card-head"><strong>X</strong></header>'
-      + '<p class="micro">Profilo pubblico da seguire. Nessun post dall\'app.</p>'
+    let xStatus = { configured: false, connected: false, user: null };
+    let github = null;
+    try {
+      const d0 = await api('/api/connect');
+      if (d0 && d0.x) xStatus = d0.x;
+      if (d0) github = d0.github || null;
+    } catch { /* resta il fallback handle */ }
+    let h = '';
+    if (connectNotice) h += '<p class="banner ' + (connectNotice.indexOf('non riuscito') >= 0 ? 'warn' : 'info') + '">' + esc(connectNotice) + '</p>';
+    h += '<p class="hint">Tre collegamenti, tutti in sola lettura. zdesk non pubblica su X, non scrive su GitHub e non chiede a Phantom firme o transazioni.</p><div class="cards radar-cards">';
+    h += '<article class="card terminal-panel"><header class="radar-card-head"><strong>X</strong></header>';
+    if (xStatus.connected && xStatus.user && xStatus.user.username) {
+      const u = xStatus.user;
+      h += '<p>';
+      if (u.profile_image) h += '<img class="cx-avatar" alt="" width="28" height="28" src="' + esc(u.profile_image) + '"> ';
+      h += '<span class="cx-verified">@' + esc(u.username) + ' verificato</span>'
+        + (u.name ? ' · ' + esc(u.name) : '') + '</p>'
+        + '<p>' + ext('https://x.com/' + encodeURIComponent(u.username), 'Apri il profilo') + '</p>'
+        + '<p><button type="button" id="cx-xoff">Disconnetti</button></p>';
+    } else if (xStatus.configured) {
+      h += '<p class="micro">Accedi con X per verificare il proprietario dell\'account. Solo lettura: nessun post, nessun elenco follower.</p>'
+        + '<p><a class="button" id="cx-xon" href="' + esc(BASE + '/api/connect/x/start') + '">Accedi con X</a></p>';
+    } else {
+      h += '<p class="micro">Profilo pubblico da seguire. Nessun post dall\'app.</p>';
+    }
+    h += '<p class="micro">Handle locale (resta solo in questo browser, non è una verifica):</p>'
       + '<p><input id="cx-handle" type="text" maxlength="16" placeholder="@handle" value="' + esc(x ? '@' + x : '') + '"> <button type="button" id="cx-save">Salva</button></p>'
-      + (x ? '<p>' + ext('https://x.com/' + encodeURIComponent(x), '@' + x) + '</p>' : '') + '</article>';
+      + (x && !(xStatus.connected && xStatus.user) ? '<p>' + ext('https://x.com/' + encodeURIComponent(x), '@' + x) + '</p>' : '')
+      + '</article>';
     h += '<article class="card terminal-panel" id="cx-github"><header class="radar-card-head"><strong>GitHub</strong></header><p class="micro">Stato pubblico dell\'organizzazione, in lettura.</p><p class="hint">Caricamento…</p></article>';
     h += '<article class="card terminal-panel"><header class="radar-card-head"><strong>Phantom Wallet</strong></header>'
       + '<p class="micro">Solo l\'indirizzo pubblico. Nessuna firma, nessuno swap, nessun fondo.</p>';
@@ -1378,6 +1420,14 @@
     if (save) save.addEventListener('click', () => {
       const v = String($('#cx-handle', el).value || '').trim().replace(/^@/, '');
       lsSet(LS_X, /^[A-Za-z0-9_]{1,15}$/.test(v) ? v : '');
+      renderConnect(el);
+    });
+    const xoff = $('#cx-xoff', el);
+    if (xoff) xoff.addEventListener('click', async () => {
+      try {
+        await fetch(BASE + '/api/connect/x/logout', { method: 'POST', credentials: 'same-origin', cache: 'no-store' });
+      } catch { /* ignora */ }
+      connectNotice = '';
       renderConnect(el);
     });
     const on = $('#cx-on', el);
@@ -1401,15 +1451,21 @@
       if (SOL_B58.test(v)) { lsSet(LS_WALLET, v); renderConnect(el); }
     });
 
-    try {
-      const d = await api('/api/connect');
-      const g = d.github || {};
+    const fillGh = (g) => {
       const box = $('#cx-github', el);
-      if (box) box.innerHTML = '<header class="radar-card-head"><strong>GitHub</strong></header><p class="micro">Stato pubblico dell\'organizzazione, in lettura.</p>'
+      if (!box || !g) return;
+      box.innerHTML = '<header class="radar-card-head"><strong>GitHub</strong></header><p class="micro">Stato pubblico dell\'organizzazione, in lettura.</p>'
         + '<p>' + ext(g.orgUrl, g.org) + (g.publicRepos != null ? ' · ' + esc(g.publicRepos) + ' repo pubblici' : '') + '</p>'
         + '<p>' + ext(g.repoUrl, g.org + '/' + g.repo) + ' · privato, si apre solo con accesso</p>'
         + (g.error ? '<p class="hint">Stato GitHub non disponibile ora (limite API pubblica); i link funzionano.</p>' : '');
-    } catch (e) { /* resta il segnaposto */ }
+    };
+    if (github) fillGh(github);
+    else {
+      try {
+        const d = await api('/api/connect');
+        fillGh(d.github || {});
+      } catch (e) { /* resta il segnaposto */ }
+    }
   }
 
   /* ---------- Radar · Staking (non custodial, sola lettura) ---------- */
@@ -1496,9 +1552,147 @@
     }
   }
 
+  // ---------- Pannello admin / Ecosistema (sola lettura) ----------
+  const TAB_TITLES = {
+    admin: 'Panoramica', trending: 'In tendenza', new: 'Nuove pair', watchlist: 'Watchlist', xstocks: 'Titoli tokenizzati',
+    copytrader: 'Copy trader', ninja: 'Ninja', desk: 'Desk', wallet: 'Wallet', radar: 'Radar · Connetti',
+  };
+  const TONE = { kira: 'c-kira', swap: 'c-swap', rpg: 'c-rpg', velvet: 'c-velvet', git: 'c-git', quest: 'c-quest' };
+  function fmtBytes(n) {
+    if (n == null) return null;
+    if (n < 1024) return n + ' B';
+    if (n < 1024 * 1024) return (n / 1024).toFixed(1).replace('.', ',') + ' kB';
+    return (n / 1024 / 1024).toFixed(2).replace('.', ',') + ' MB';
+  }
+  function romeDate(iso, withTime) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '—';
+    const o = { timeZone: 'Europe/Rome', day: '2-digit', month: 'short', year: 'numeric' };
+    if (withTime) { o.hour = '2-digit'; o.minute = '2-digit'; }
+    return new Intl.DateTimeFormat('it-IT', o).format(d);
+  }
+  function ecoCard(s) {
+    const tone = TONE[s.tone] || 'c-git';
+    const code = s.status == null ? 'non raggiungibile' : 'HTTP ' + s.status;
+    const stats = ['<span class="st ' + (s.ok ? 'ok' : 'bad') + '">' + esc(s.ok ? '● online' : '● offline') + ' · ' + esc(code) + '</span>'];
+    if (s.ms != null) stats.push('<span class="st' + (s.ms > 2500 ? ' warn' : '') + '">' + esc(s.ms + ' ms') + '</span>');
+    const size = fmtBytes(s.bytes);
+    if (size) stats.push('<span class="st">' + esc(size) + '</span>');
+    if (s.tlsDaysLeft != null) {
+      const cls = s.tlsDaysLeft < 7 ? 'bad' : s.tlsDaysLeft < 21 ? 'warn' : 'ok';
+      stats.push('<span class="st ' + cls + '" title="Scadenza certificato TLS ' + esc(romeDate(s.tlsValidTo)) + '">TLS ' + esc(s.tlsDaysLeft + ' gg') + '</span>');
+    }
+    if (s.sha) stats.push('<span class="st" title="sha256 della pagina (primi 12 caratteri): cambia quando cambia il sito">sha ' + esc(s.sha) + '</span>');
+    const label = s.adult ? 'Apri VelvetHub (18+) ↗' : 'Apri ' + s.name + ' ↗';
+    return '<article class="glass eco ' + tone + '">' +
+      (s.adult ? '<span class="age-badge" title="Riservato ai maggiori di 18 anni">18+</span>' : '') +
+      '<p class="tag">' + esc(s.tag || '') + '</p>' +
+      '<h3>' + esc(s.name) + '</h3>' +
+      '<p class="note">' + esc(s.note || '') + '</p>' +
+      '<span class="eco-url">' + esc(s.url) + '</span>' +
+      '<div class="eco-stats">' + stats.join('') + '</div>' +
+      (s.error ? '<p class="hint">' + esc(s.error) + '</p>' : '') +
+      (s.location ? '<p class="hint">Reindirizza a ' + esc(s.location) + '</p>' : '') +
+      '<a class="go" href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer">' + esc(label) + '</a>' +
+      '</article>';
+  }
+  function kpi(tag, value, sub, cls) {
+    return '<div class="glass kpi ' + (cls || '') + '"><p class="tag">' + esc(tag) + '</p><p class="kpi-v">' + esc(value) + '</p><p class="kpi-s">' + esc(sub) + '</p></div>';
+  }
+  function renderKpis(eco) {
+    const el = $('#admin-kpis');
+    if (!el) return;
+    const h = state.health || {};
+    const src = h.sources || {};
+    const keys = Object.keys(src);
+    const srcOk = keys.filter((k) => src[k] && src[k].ok === true).length;
+    const x = h.xOAuth || {};
+    const nb = $('#ninja-badge');
+    const ninjaTxt = nb ? nb.textContent.replace(/^NINJA\s*·\s*/i, '').trim() : '—';
+    let out = '';
+    if (eco) out += kpi('Siti online', eco.up + ' / ' + eco.total, 'controllo ' + romeDate(eco.checkedAt, true), eco.up === eco.total ? 'ok' : eco.up === 0 ? 'bad' : 'warn');
+    else out += kpi('Siti online', '—', 'in verifica', '');
+    out += kpi('Fonti dati', keys.length ? srcOk + ' / ' + keys.length : '—', 'DexScreener, RugCheck, RPC…', keys.length && srcOk === keys.length ? 'ok' : keys.length ? 'warn' : '');
+    out += kpi('Accesso X', x.configured ? 'attivo' : 'non configurato', 'OAuth 2.0, sola lettura', x.configured ? 'ok' : 'warn');
+    out += kpi('Ninja', ninjaTxt || '—', 'watcher in sola lettura', '');
+    el.innerHTML = out;
+    el.dataset.ready = '1';
+  }
+  function renderDevto(d) {
+    const el = $('#eco-devto');
+    if (!el) return;
+    const items = (d && d.items) || [];
+    let h = '';
+    if (!items.length) {
+      h = '<p class="hint">' + (d && d.error ? 'dev.to non disponibile: ' + esc(d.error) : 'Nessun articolo pubblicato.') + '</p>';
+    } else {
+      h = '<ul class="devto-list">' + items.map((a) => '<li><a href="' + esc(a.url) + '" target="_blank" rel="noopener noreferrer">' + esc(a.title) + '</a>' +
+        '<span class="devto-meta">' + esc(romeDate(a.publishedAt)) +
+        (a.readingMinutes != null ? ' · ' + esc(a.readingMinutes + ' min') : '') +
+        (a.reactions != null ? ' · ' + esc(a.reactions + ' reazioni') : '') +
+        (a.tags && a.tags.length ? ' · #' + a.tags.map(esc).join(' #') : '') + '</span></li>').join('') + '</ul>';
+      if (d.stale) h += '<p class="hint">Dati della lettura precedente: dev.to ora risponde con errore (' + esc(d.error || '') + ').</p>';
+    }
+    h += '<p class="links"><a href="' + esc((d && d.profile) || 'https://dev.to/asapkali') + '" target="_blank" rel="noopener noreferrer">Profilo dev.to/asapkali ↗</a></p>';
+    el.innerHTML = h;
+    el.dataset.ready = '1';
+  }
+  async function loadAdmin() {
+    renderKpis(state.eco || null);
+    const st = $('#eco-status');
+    try {
+      const d = await api('/api/ecosystem');
+      state.eco = d;
+      $('#eco-sites').innerHTML = (d.sites || []).map(ecoCard).join('');
+      $('#eco-sites').dataset.ready = '1';
+      renderDevto(d.devto);
+      renderKpis(d);
+      if (st) st.textContent = 'Verifica server ' + romeDate(d.checkedAt, true) + ' Europe/Rome · cache ' + (d.ttlSeconds || 60) + ' s' + (d.cached ? ' (dalla cache)' : '');
+    } catch (e) {
+      if (st) st.textContent = 'Ecosistema non disponibile: ' + e.message;
+      $('#eco-sites').dataset.ready = '1';
+      renderDevto({ items: [], error: e.message });
+    }
+  }
+  function setNav(open) {
+    document.body.classList.toggle('nav-open', !!open);
+    const b = $('#nav-toggle');
+    if (b) { b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.setAttribute('aria-label', open ? 'Chiudi menu' : 'Apri menu'); }
+  }
+  $('#nav-toggle').addEventListener('click', () => setNav(!document.body.classList.contains('nav-open')));
+  $('#scrim').addEventListener('click', () => setNav(false));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setNav(false); });
+  document.addEventListener('click', (e) => {
+    const g = e.target.closest('[data-goto]');
+    if (g) {
+      showTab(g.dataset.goto);
+      if (g.dataset.gotoSub) showRadarSub(g.dataset.gotoSub);
+      window.scrollTo(0, 0);
+      return;
+    }
+    const c = e.target.closest('button[data-copy]');
+    if (c) {
+      const v = c.dataset.copy;
+      const done = () => { const t = c.textContent; c.textContent = 'Copiato'; setTimeout(() => { c.textContent = t; }, 1400); };
+      const fallback = () => {
+        const ta = document.createElement('textarea');
+        ta.value = v; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { if (document.execCommand('copy')) done(); } catch { /* */ }
+        ta.remove();
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(done, fallback);
+      else fallback();
+    }
+  });
+
   function showTab(tab) {
     state.tab = tab;
-    $$('.tabs button').forEach((b) => b.classList.toggle('on', b.dataset.tab === tab));
+    if ($('#page-title')) $('#page-title').textContent = TAB_TITLES[tab] || 'ZDESK';
+    document.title = (TAB_TITLES[tab] || 'Pannello') + ' · ZDESK · ZDOS';
+    setNav(false);
+    $$('.tabs button').forEach((b) => { b.classList.toggle('on', b.dataset.tab === tab); if (b.dataset.tab === tab) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     $$('.view').forEach((v) => v.classList.toggle('on', v.dataset.view === tab));
     const tableTabs = tab === 'trending' || tab === 'new';
     $('#table-toolbar').style.display = tableTabs ? 'flex' : 'none';
@@ -1511,6 +1705,7 @@
     if (tab === 'copytrader') loadCopy().catch(console.error);
     if (tab === 'ninja') loadNinja().catch(console.error);
     if (tab === 'radar') loadRadar().catch(console.error);
+    if (tab === 'admin') loadAdmin().catch(console.error);
     loadAntifake().catch(() => {});
     if (tab === 'trending') renderTable('tbl-trending', state.pairs.trending, 'trending');
     if (tab === 'new') renderTable('tbl-new', state.pairs.new, 'new');
@@ -1577,6 +1772,7 @@
     if (state.tab === 'copytrader') await loadCopy().catch(console.error);
     if (state.tab === 'ninja') await loadNinja().catch(console.error);
     if (state.tab === 'radar') await loadRadar().catch(console.error);
+    if (state.tab === 'admin') await loadAdmin().catch(console.error);
     loadAntifake().catch(() => {});
     if (!$('#drawer').hidden && state.chartPair) renderChart(state.chartPair).catch(() => {});
     loadLiveWallet().catch(() => {});
@@ -1585,15 +1781,33 @@
 
   const params = new URLSearchParams(location.search);
   const hash = location.hash.replace('#', '');
-  const startTab = params.get('tab') || hash || 'trending';
+  const startTab = params.get('tab') || hash || 'admin';
   const mintQ = params.get('mint');
-  showTab(['trending', 'new', 'watchlist', 'xstocks', 'copytrader', 'ninja', 'desk', 'wallet', 'radar'].includes(startTab) ? startTab : 'trending');
+  const startRsub = params.get('rsub');
+  const xRes = params.get('x');
+  if (xRes === 'ok') connectNotice = 'Account X collegato.';
+  if (xRes === 'err') connectNotice = 'Accesso X non riuscito. Riprova.';
+  showTab(['admin', 'trending', 'new', 'watchlist', 'xstocks', 'copytrader', 'ninja', 'desk', 'wallet', 'radar'].includes(startTab) ? startTab : 'admin');
+  if (startTab === 'radar' && (startRsub === 'connect' || xRes)) showRadarSub('connect');
+  if (xRes || startRsub === 'connect') {
+    const clean = new URL(location.href);
+    clean.searchParams.delete('x');
+    clean.searchParams.delete('msg');
+    history.replaceState(null, '', clean);
+  }
   loadNinja().catch(() => {});
   loadLiveWallet().catch(() => {});
   loadAntifake().catch(() => {});
-  setInterval(() => loadNinja().catch(() => {}), 4000);
-  setInterval(() => loadLiveWallet().catch(() => {}), 20_000);
-  setInterval(() => loadAntifake().catch(() => {}), 20_000);
+  // Niente richieste quando la scheda del browser non è visibile.
+  const visible = () => !document.hidden;
+  setInterval(() => { if (visible()) loadNinja().catch(() => {}); }, 4000);
+  setInterval(() => { if (visible()) loadLiveWallet().catch(() => {}); }, 20_000);
+  setInterval(() => { if (visible()) loadAntifake().catch(() => {}); }, 20_000);
+  let hiddenAt = 0;
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { hiddenAt = Date.now(); return; }
+    if (hiddenAt && Date.now() - hiddenAt > 30_000) refreshAll().catch(() => {});
+  });
   refreshAll().then(() => {
     if (mintQ) openToken(mintQ);
     if (startTab === 'wallet') {
@@ -1601,5 +1815,5 @@
       if (w && w !== state.deskWallet) { $('#wallet-addr').value = w; loadWallet(w); }
     }
   });
-  setInterval(refreshAll, 45_000);
+  setInterval(() => { if (visible()) refreshAll(); }, 45_000);
 })();

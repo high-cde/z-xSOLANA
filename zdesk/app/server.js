@@ -14,6 +14,9 @@ const copytop = require('./lib/copytop');
 const radar = require('./lib/radar');
 const staking = require('./lib/staking');
 const connect = require('./lib/connect');
+const xoauth = require('./lib/xoauth');
+const ecosystem = require('./lib/ecosystem');
+const privacy = require('./lib/privacy');
 
 const HOST = process.env.HOST || '127.0.0.1';
 const PORT = Number(process.env.PORT || 8787);
@@ -28,6 +31,12 @@ app.use((req, res, next) => {
   res.setHeader('Referrer-Policy', 'no-referrer');
   next();
 });
+
+// Privacy: le risposte /api/* non mostrano wallet agente (solo 4…4), IP, host, email, percorsi.
+privacy.addPrivate(wallet.DESK_WALLET);
+privacy.addPrivate(require('./lib/antifake').AGENT_WALLET);
+String(process.env.ZDESK_PRIVATE_ADDRS || '').split(',').map((x) => x.trim()).filter(Boolean).forEach(privacy.addPrivate);
+app.use('/api', privacy.middleware);
 
 function publicBase(req) {
   const prefix = String(req.get('X-Forwarded-Prefix') || '').replace(/\/+$/, '');
@@ -63,13 +72,13 @@ function wrap(fn) {
 app.get('/api/health', wrap(async (_req, res) => {
   res.json({
     ok: true,
-    bind: `${HOST}:${PORT}`,
     tz: 'Europe/Rome',
     now: new Date().toISOString(),
     sources: sources.getHealth(),
     trading: false,
     paperOnly: true,
     ninja: ninja.readPublicState().daemon || null,
+    xOAuth: { configured: xoauth.configured(), readOnly: true },
   });
 }));
 
@@ -142,9 +151,45 @@ app.get('/api/staking/:address', wrap(async (req, res) => {
   res.json(await staking.getStaking(String(req.params.address || '')));
 }));
 
-// Radar · Connetti app: solo stato pubblico GitHub (X e Phantom restano nel browser).
-app.get('/api/connect', wrap(async (_req, res) => {
-  res.json({ github: await connect.getGithubStatus(), readOnly: true });
+// Radar · Connetti app: GitHub pubblico + accesso X OAuth 2.0 (sola lettura).
+app.get('/api/connect', wrap(async (req, res) => {
+  res.json({
+    github: await connect.getGithubStatus(),
+    readOnly: true,
+    x: xoauth.publicStatus(req),
+  });
+}));
+
+app.get('/api/connect/x/start', (req, res) => {
+  try { xoauth.startHandler(req, res); }
+  catch (err) { res.status(500).json({ error: err.message || String(err) }); }
+});
+
+app.get('/api/connect/x/callback', (req, res) => {
+  const returnUrl = (result) => {
+    const base = publicBase(req) || '';
+    const q = result === 'ok' ? 'tab=radar&rsub=connect&x=ok' : 'tab=radar&rsub=connect&x=err';
+    return base + '/?' + q;
+  };
+  Promise.resolve(xoauth.callbackHandler(req, res, returnUrl)).catch((err) => {
+    console.error('xoauth callback', err.message || err);
+    res.redirect(302, returnUrl('err'));
+  });
+});
+
+app.get('/api/connect/x/me', (req, res) => {
+  try { xoauth.meHandler(req, res); }
+  catch (err) { res.status(500).json({ error: err.message || String(err) }); }
+});
+
+app.post('/api/connect/x/logout', (req, res) => {
+  try { xoauth.logoutHandler(req, res); }
+  catch (err) { res.status(500).json({ error: err.message || String(err) }); }
+});
+
+// Ecosistema ZDOS1.3: stato dei siti e ultimi articoli dev.to (sola lettura, cache 60 s).
+app.get('/api/ecosystem', wrap(async (_req, res) => {
+  res.json(await ecosystem.getEcosystem());
 }));
 
 app.get('/api/ohlcv/:pair', wrap(async (req, res) => {
@@ -171,7 +216,7 @@ function warm() {
 }
 
 const server = app.listen(PORT, HOST, () => {
-  console.log(`ZDESK dashboard http://${HOST}:${PORT}${BASE_PATH || ''}  (sola lettura, nessun trade)`);
+  console.log(`ZDESK in ascolto (sola lettura, nessun trade)${BASE_PATH ? ' ' + BASE_PATH : ''}`);
   warm();
   startCopySignalPoller();
   setInterval(() => {

@@ -3,26 +3,65 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <meta name="theme-color" content="#05060a"/>
-  <title>ZDESK — Sfera predittiva · HighKali</title>
+  <meta name="theme-color" content="#0a0118"/>
+  <meta name="color-scheme" content="dark"/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <meta name="description" content="ZDESK, pannello admin privato ZDOS1.3 in sola lettura."/>
+  <title>ZDESK · Pannello admin ZDOS</title>
   <link rel="icon" type="image/svg+xml" href="assets/zdos-pixel.svg"/>
+  <link rel="mask-icon" href="assets/zdos-pixel.svg" color="#9945FF"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="app.css"/>
 </head>
 <body>
+  <div class="fx" aria-hidden="true"><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="orb orb-c"></div><div class="grid-fx"></div></div>
   <a class="skip" href="#main">Vai al contenuto</a>
-  <header class="topbar">
-    <a class="brand" href="?tab=trending" aria-label="ZDESK">
-      <img class="px" src="assets/zdos-pixel.svg" alt="" width="34" height="34"/>
-      <span class="mark" aria-hidden="true">Z</span>
-      <span class="brand-name">ZDESK</span>
-      <span class="brand-sub"> / HIGHKALI</span>
+  <div class="shell">
+  <aside class="side" id="side" aria-label="Menu ZDESK">
+    <a class="brand" href="?tab=admin" aria-label="ZDESK, pannello">
+      <span class="logo-glow"><img class="px" src="assets/zdos-pixel.svg" alt="" width="36" height="36"/></span>
+      <span class="brand-text"><span class="brand-name">ZDOS · ZDESK</span><span class="brand-sub">Admin · sola lettura</span></span>
     </a>
-    <div class="top-meta">
-      <p class="eyebrow"><span class="signal" aria-hidden="true"></span> LIVE · SOLA LETTURA · NESSUN TRADE</p>
+    <nav class="tabs" id="tabs" aria-label="Sezioni">
+      <p class="nav-h">Pannello</p>
+      <button type="button" data-tab="admin"><span class="ico" aria-hidden="true">◆</span>Panoramica</button>
+      <p class="nav-h">Mercato</p>
+      <button type="button" data-tab="trending"><span class="ico" aria-hidden="true">↗</span>In tendenza</button>
+      <button type="button" data-tab="new"><span class="ico" aria-hidden="true">+</span>Nuove pair</button>
+      <button type="button" data-tab="watchlist"><span class="ico" aria-hidden="true">★</span>Watchlist</button>
+      <button type="button" data-tab="xstocks"><span class="ico" aria-hidden="true">≡</span>Titoli tokenizzati</button>
+      <p class="nav-h">Desk</p>
+      <button type="button" data-tab="copytrader"><span class="ico" aria-hidden="true">⇄</span>Copy trader</button>
+      <button type="button" data-tab="ninja"><span class="ico" aria-hidden="true">◎</span>Ninja</button>
+      <button type="button" data-tab="desk"><span class="ico" aria-hidden="true">▤</span>Desk</button>
+      <button type="button" data-tab="wallet"><span class="ico" aria-hidden="true">◇</span>Wallet</button>
+      <p class="nav-h">ZDOS</p>
+      <button type="button" data-tab="radar"><span class="ico" aria-hidden="true">◉</span>Radar · Connetti</button>
+    </nav>
+    <div class="side-foot">
+      <p>Ecosistema</p>
+      <div class="side-links">
+        <a href="https://x-zdos.it/" target="_blank" rel="noopener noreferrer">x-zdos.it ↗</a>
+        <a href="https://swap.x-zdos.it/" target="_blank" rel="noopener noreferrer">ZSwap ↗</a>
+        <a href="https://swap.x-zdos.it/rpg.html" target="_blank" rel="noopener noreferrer">RPG ↗</a>
+        <a href="https://dev.to/asapkali" target="_blank" rel="noopener noreferrer">dev.to ↗</a>
+        <a href="https://x.com/ZDOS_Core" target="_blank" rel="noopener noreferrer">@ZDOS_Core ↗</a>
+      </div>
+    </div>
+  </aside>
+  <button type="button" class="scrim" id="scrim" aria-label="Chiudi menu" tabindex="-1"></button>
+
+  <div class="main-col">
+  <header class="topbar">
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-controls="side" aria-expanded="false" aria-label="Apri menu">☰</button>
+    <div class="page-head">
+      <h1 class="page-title" id="page-title">Panoramica</h1>
       <div id="clock" class="clock">—</div>
+    </div>
+    <div class="top-meta">
+      <p class="eyebrow"><span class="signal" aria-hidden="true"></span> Live · sola lettura · nessun trade</p>
       <div class="top-badges">
         <div id="ninja-badge" class="ninja-badge na" title="Ninja">NINJA · —</div>
         <button type="button" id="sniff-badge" class="sniff-badge na" title="Sniffer anti-fake" aria-label="Apri sniffer anti-fake">SNIFF · —</button>
@@ -32,20 +71,8 @@
     </div>
   </header>
 
-  <nav class="tabs" id="tabs" aria-label="Sezioni">
-    <button type="button" data-tab="trending" class="on">In tendenza</button>
-    <button type="button" data-tab="new">Nuove pair</button>
-    <button type="button" data-tab="watchlist">Watchlist</button>
-    <button type="button" data-tab="xstocks">Titoli tokenizzati</button>
-    <button type="button" data-tab="copytrader">Copy trader</button>
-    <button type="button" data-tab="ninja">Ninja</button>
-    <button type="button" data-tab="desk">Desk</button>
-    <button type="button" data-tab="wallet">Wallet</button>
-    <button type="button" data-tab="radar">Radar</button>
-  </nav>
-
   <section class="toolbar" id="table-toolbar">
-    <input id="q" type="search" placeholder="Cerca token, mint o pair…" autocomplete="off"/>
+    <input id="q" type="search" placeholder="Cerca token, mint o pair…" autocomplete="off" aria-label="Cerca token, mint o pair"/>
     <label>Liq min
       <select id="minliq">
         <option value="0">tutte</option>
@@ -67,7 +94,88 @@
   </section>
 
   <main id="main">
-    <section class="view on" data-view="trending">
+    <section class="view" data-view="admin">
+      <div class="admin">
+        <div class="admin-hero">
+          <p class="eyebrow"><span class="signal" aria-hidden="true"></span> ZDOS1.3 · pannello admin</p>
+          <h1>Il desk ZDOS,<br/>in un solo pannello.</h1>
+          <p class="lead">Stato dei siti dell'ecosistema, token ufficiali, articoli e scorciatoie verso desk, copy trader, Ninja, Radar e Connetti. Tutto in sola lettura: nessuna chiave e nessun trade da qui.</p>
+          <div class="admin-actions">
+            <button type="button" class="btn primary" data-goto="radar" data-goto-sub="connect">Connetti X e Phantom</button>
+            <button type="button" class="btn" data-goto="copytrader">Copy trader</button>
+            <a class="btn" href="https://x-zdos.it/" target="_blank" rel="noopener noreferrer">x-zdos.it ↗</a>
+          </div>
+        </div>
+        <div id="admin-kpis" class="kpis" data-ready="0"></div>
+        <div class="section-head">
+          <p class="tag">Ecosistema</p>
+          <h2>Siti ZDOS</h2>
+          <p>Controllati dal server ogni 60 secondi: codice HTTP, tempo di risposta, dimensione della pagina e scadenza del certificato. VelvetHub è riservato ai maggiori di 18 anni: qui solo link e stato.</p>
+        </div>
+        <div id="eco-sites" class="eco-grid" data-ready="0"></div>
+        <p id="eco-status" class="hint" role="status" aria-live="polite"></p>
+        <div class="section-head">
+          <p class="tag">On-chain</p>
+          <h2>Token</h2>
+          <p>Solo indirizzi e link di consultazione. Non è un invito all'acquisto e non c'è un rendimento atteso.</p>
+        </div>
+        <div class="tok-grid">
+          <article class="glass tokc t-dsn">
+            <span class="chain polygon">Polygon</span> <span class="chain solana">Solana</span>
+            <h3>$DSN</h3>
+            <p class="token-name">NETkali · token ufficiale ZDOS</p>
+            <p class="addr-row"><span class="chain polygon">Polygon</span><code>0xfc90516a1f736FaC557e09D8853dB80dA192c296</code><button type="button" class="btn ghost" data-copy="0xfc90516a1f736FaC557e09D8853dB80dA192c296">Copia</button></p>
+            <p class="addr-row"><span class="chain solana">Solana</span><code>35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4</code><button type="button" class="btn ghost" data-copy="35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4">Copia</button></p>
+            <p class="hint">Solana: Token-2022, 6 decimali. EnxZ…pump (xZDOS) è legacy, non è il $DSN ufficiale.</p>
+            <p class="links">
+              <a href="https://polygonscan.com/token/0xfc90516a1f736FaC557e09D8853dB80dA192c296" target="_blank" rel="noopener noreferrer">Polygonscan ↗</a>
+              <a href="https://solscan.io/token/35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4" target="_blank" rel="noopener noreferrer">Solscan ↗</a>
+              <a href="?tab=watchlist">Watchlist desk</a>
+            </p>
+          </article>
+          <article class="glass tokc t-ov">
+            <span class="chain solana">Solana</span>
+            <h3>$OV</h3>
+            <p class="token-name">VELVET · token community, nessun rendimento</p>
+            <p class="addr-row"><span class="chain solana">Solana</span><code>2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump</code><button type="button" class="btn ghost" data-copy="2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump">Copia</button></p>
+            <p class="hint">Tenuto nel wallet agente, non in vendita.</p>
+            <p class="links">
+              <a href="https://solscan.io/token/2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump" target="_blank" rel="noopener noreferrer">Solscan ↗</a>
+              <a href="https://dexscreener.com/solana/2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump" target="_blank" rel="noopener noreferrer">DexScreener ↗</a>
+            </p>
+          </article>
+        </div>
+        <div class="section-head">
+          <p class="tag">Sezioni</p>
+          <h2>Vai a</h2>
+        </div>
+        <div class="quick">
+          <button type="button" class="glass" data-goto="trending">In tendenza<span>pair Solana e Sfera</span></button>
+          <button type="button" class="glass" data-goto="watchlist">Watchlist<span>$DSN, VELVET, xZDOS legacy</span></button>
+          <button type="button" class="glass" data-goto="copytrader">Copy trader<span>book, feed, rifiuti</span></button>
+          <button type="button" class="glass" data-goto="ninja">Ninja<span>watcher uscite</span></button>
+          <button type="button" class="glass" data-goto="desk">Desk<span>file desk sincronizzati</span></button>
+          <button type="button" class="glass" data-goto="wallet">Wallet<span>saldi agente</span></button>
+          <button type="button" class="glass" data-goto="radar">Radar<span>X Trust, K.I.R.A., news</span></button>
+          <button type="button" class="glass" data-goto="radar" data-goto-sub="staking">Staking<span>sola lettura</span></button>
+        </div>
+        <div class="section-head">
+          <p class="tag">Blog</p>
+          <h2>Ultimi articoli su dev.to</h2>
+          <p>Dall'API pubblica di dev.to per l'utente asapkali.</p>
+        </div>
+        <div id="eco-devto" class="glass" data-ready="0"><p class="hint">caricamento…</p></div>
+        <div class="section-head">
+          <p class="tag">Avvertenze</p>
+        </div>
+        <ul class="glass disc-list">
+          <li>Pannello privato in sola lettura: nessuna chiave privata, nessuna firma, nessun trade da questa pagina.</li>
+          <li>Nessuna promessa di profitto, rendimento o valore dei token. I dati di mercato sono di terzi e informativi.</li>
+          <li>Lo stato dei siti è un controllo tecnico (risposta HTTP e certificato), non una verifica dei contenuti.</li>
+        </ul>
+      </div>
+    </section>
+    <section class="view" data-view="trending">
       <div id="desk-live" class="desk-live" data-ready="0"></div>
       <div id="sniff-home" class="sniff-home" data-ready="0"></div>
       <div class="table-wrap terminal-panel"><table id="tbl-trending" class="pairs"></table></div>
@@ -109,7 +217,7 @@
       <p class="banner info"><strong>Wallet agente in sola lettura.</strong> Saldo, holding e movimenti da RPC pubblico. Nessuna chiave, nessun trade da questa dashboard. I <strong>$OV</strong> restano tenuti (token del progetto, liquidità sottile, non in vendita). Floor <strong>$50</strong> su SOL+USDC; il budget copy non lo tocca.</p>
       <div id="wallet-live" class="desk-live" data-ready="0"></div>
       <form id="wallet-form" class="wallet-form">
-        <input id="wallet-addr" type="text" spellcheck="false" placeholder="Indirizzo wallet Solana" autocomplete="off"/>
+        <input id="wallet-addr" type="text" spellcheck="false" placeholder="Indirizzo wallet Solana da ispezionare" autocomplete="off" aria-label="Indirizzo wallet Solana"/>
         <button type="submit" class="primary">Mostra altro wallet</button>
       </form>
       <p class="hint">Puoi ispezionare anche un altro indirizzo. Restano solo saldi SPL (Token e Token-2022) e transazioni pubbliche.</p>
@@ -125,7 +233,7 @@
         <button type="button" data-rsub="staking">Staking</button>
         <button type="button" data-rsub="connect">Connetti app</button>
       </nav>
-      <div id="radar-status" class="hint"></div>
+      <div id="radar-status" class="hint" role="status"></div>
       <div id="radar-x" class="radar-pane on" data-rpane="x"></div>
       <div id="radar-kira" class="radar-pane" data-rpane="kira"></div>
       <div id="radar-news" class="radar-pane" data-rpane="news"></div>
@@ -135,7 +243,7 @@
     </section>
   </main>
 
-  <aside id="drawer" class="drawer" hidden>
+  <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="d-title" hidden>
     <div class="drawer-inner">
       <header>
         <div>
@@ -163,8 +271,11 @@
   <div id="toasts" class="toasts" aria-live="polite"></div>
 
   <footer class="foot">
-    <p>Fonti pubbliche: DexScreener, GeckoTerminal, RugCheck, Solana RPC. Pump.fun API bloccata (Cloudflare) — progresso curva on-chain. GMGN non usato. Stile da x-zdos.it / swap.x-zdos.it. Formula in <a href="FORMULA.md" target="_blank">FORMULA.md</a>.</p>
+    <p>© 2026 ZDOS1.3 — P.IVA 11040550961 · tutti i diritti riservati · <a href="https://x-zdos.it/" target="_blank" rel="noopener noreferrer">x-zdos.it</a> · <a href="https://x.com/ZDOS_Core" target="_blank" rel="noopener noreferrer">@ZDOS_Core</a> · <a href="https://github.com/high-cde" target="_blank" rel="noopener noreferrer">GitHub</a> · <a href="https://dev.to/asapkali" target="_blank" rel="noopener noreferrer">dev.to</a></p>
+    <p>Fonti pubbliche: DexScreener, GeckoTerminal, RugCheck, Solana RPC, dev.to. GMGN non usato. Formula in <a href="FORMULA.md" target="_blank">FORMULA.md</a>.</p>
   </footer>
+  </div>
+  </div>
   <script src="https://unpkg.com/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
   <script src="app.js"></script>
 </body>

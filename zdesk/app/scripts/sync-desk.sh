@@ -4,7 +4,7 @@
 set -euo pipefail
 
 KEY="${ZDESK_SSH_KEY:-$HOME/.ssh/zdesk_vps}"
-HOST="${ZDESK_SSH_HOST:?imposta ZDESK_SSH_HOST=utente@host del VPS}"
+HOST="${ZDESK_SSH_HOST:?imposta ZDESK_SSH_HOST (utente@host del VPS)}"
 REMOTE_DIR="${ZDESK_REMOTE_DIR:-/opt/zdesk/desk}"
 SRC_DIR="${ZDESK_SRC_DIR:-/workspace/highkali-desk}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
