@@ -6,7 +6,8 @@ const sources = require('./sources');
 const { cache } = require('./cache');
 const { DESK_DIR } = require('./desk');
 
-const DESK_WALLET = '';
+// Indirizzo del wallet agente: solo da variabile d'ambiente (non scritto nel repo).
+const DESK_WALLET = process.env.ZDESK_AGENT_WALLET || '';
 const OV_MINT = '2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump';
 const FLOOR_USD = 50;
 const BUDGET_MAX_USD = 30;

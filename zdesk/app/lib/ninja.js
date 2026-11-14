@@ -269,7 +269,7 @@ function defaultState() {
   return {
     version: 1,
     tz: 'Europe/Rome',
-    wallet: '',
+    wallet: process.env.ZDESK_AGENT_WALLET || '',
     rules: {
       redFromEntryPct: THRESH.RED_FROM_ENTRY,
       redFromPeakPct: THRESH.RED_FROM_PEAK,
@@ -763,7 +763,7 @@ async function tick(opts = {}) {
     ...(prevAll.version ? prevAll : defaultState()),
     version: 1,
     tz: 'Europe/Rome',
-    wallet: '',
+    wallet: process.env.ZDESK_AGENT_WALLET || '',
     rules: defaultState().rules,
     daemon: {
       pid: process.pid,

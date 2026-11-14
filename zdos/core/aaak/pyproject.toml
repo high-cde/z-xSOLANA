@@ -3,7 +3,7 @@ name = "aaak"
 version = "1.0.0"
 description = "AAAK — Adaptive Autonomous Abstract Knowledge engine"
 authors = [
-    { name = "High", email = "dev@example.com" }
+    { name = "ZDOS1.3" }
 ]
 readme = "README.md"
 requires-python = ">=3.10"

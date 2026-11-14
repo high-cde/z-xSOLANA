@@ -15,7 +15,8 @@ const READONLY = /^(1|true|yes)$/i.test(process.env.ZDESK_READONLY || '');
 const SIGNALS_FILE = path.join(DESK_DIR, 'copy-signals.md');
 const WALLETS_FILE = path.join(DESK_DIR, 'copy-wallets.md');
 const LIVE_FILE = path.join(DESK_DIR, 'copy-live.md');
-const AGENT_WALLET = '';
+// Indirizzo del wallet agente: solo da variabile d'ambiente (non scritto nel repo).
+const AGENT_WALLET = process.env.ZDESK_AGENT_WALLET || '';
 const PUBKEY_RE = /[1-9A-HJ-NP-Za-km-z]{32,44}/;
 const MAX_GAINERS = 8;
 const MAX_WALLETS = 12;

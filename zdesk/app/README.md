@@ -21,6 +21,7 @@ Variabili opzionali:
 - `HOST` (default `127.0.0.1`)
 - `PORT` (default `8787`)
 - `DESK_DIR` (default `/workspace/highkali-desk`)
+- `ZDESK_AGENT_WALLET` (indirizzo pubblico del wallet agente; obbligatoria, non è scritto nel repo)
 
 Per fermarla: `kill $(cat /workspace/zdesk-dashboard/zdesk.pid)` se avviata
 in background con lo script di run, oppure `pkill -f 'node server.js'`.
@@ -54,7 +55,7 @@ PID in `ninja.pid`, log in `ninja-daemon.log`. Spec e doveri dell'Executor:
    `gmgn-signals.md`.
 5. **Sfera predittiva** — colonna 0–1, formula in [FORMULA.md](FORMULA.md).
 6. **Wallet agente live** — pannello in evidenza sulla home (e tab Wallet)
-   del wallet Phantom l'agente:
+   del wallet Phantom dell'agente (indirizzo solo in `ZDESK_AGENT_WALLET`, non nel repo):
    saldo totale USD/SOL, holding, movimenti (swap/in/out, ora Europe/Rome,
    link Solscan), counter animato, flash verde/rosso sui movimenti, sparkline
    da snapshot in `wallet-spark.json`. Solo RPC/prezzi pubblici, poll ~20s,

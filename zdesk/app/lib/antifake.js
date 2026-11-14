@@ -18,7 +18,8 @@ const DESK_DIR = process.env.DESK_DIR || '/workspace/highkali-desk';
 const OUT_FILE = path.join(DESK_DIR, 'anti-fake.json');
 const LOG_FILE = path.join(DESK_DIR, 'anti-fake.log');
 
-const AGENT_WALLET = '';
+// Indirizzo del wallet agente: solo da variabile d'ambiente (non scritto nel repo).
+const AGENT_WALLET = process.env.ZDESK_AGENT_WALLET || '';
 const MIN_LIQ = 100_000;
 const MAX_TOP10 = 35;
 const MAX_SOURCE_PCT = 2;

@@ -15,7 +15,7 @@
     minLiq: 30000,
     minScore: 0,
     q: '',
-    deskWallet: '',
+    deskWallet: 'desk', // alias lato server: l'indirizzo dell'agente non sta nel frontend
     nextRefresh: Date.now() + 45000,
     chart: null, volSeries: null, candleSeries: null,
     chartMint: null, chartPair: null, chartTf: { tf: 'minute', agg: 5 },
@@ -1556,15 +1556,14 @@
   $('#wallet-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const addr = $('#wallet-addr').value.trim();
-    if (!addr) return;
-    if (addr === state.deskWallet) {
+    if (!addr || addr === state.deskWallet) {
       $('#wallet-box').innerHTML = '';
       loadLiveWallet().catch(console.error);
       return;
     }
     loadWallet(addr);
   });
-  $('#wallet-addr').placeholder = state.deskWallet;
+  $('#wallet-addr').placeholder = 'Indirizzo wallet Solana da ispezionare';
 
   async function refreshAll() {
     await Promise.all([
@@ -1598,9 +1597,8 @@
   refreshAll().then(() => {
     if (mintQ) openToken(mintQ);
     if (startTab === 'wallet') {
-      const w = params.get('wallet') || state.deskWallet;
-      $('#wallet-addr').value = w;
-      if (w !== state.deskWallet) loadWallet(w);
+      const w = params.get('wallet') || '';
+      if (w && w !== state.deskWallet) { $('#wallet-addr').value = w; loadWallet(w); }
     }
   });
   setInterval(refreshAll, 45_000);
