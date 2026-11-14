@@ -170,7 +170,7 @@ function getWatchInput() {
 
 // Token dell'ecosistema z-xSOLANA, sempre in watchlist (decisione in docs/token.md).
 const BUILTIN_WATCH = [
-  { symbol: '$DSN', mint: '35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4', note: 'ufficiale · Solana Token-2022 (anche Polygon 0xfc90…c296)', from: 'z-xSOLANA' },
+  { symbol: '$DSN', mint: '35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4', note: 'ufficiale · Solana Token-2022, 6 decimali, nessuna pair ancora (anche Polygon 0xfc90516a1f736FaC557e09D8853dB80dA192c296, 18 decimali)', from: 'z-xSOLANA' },
   { symbol: 'VELVET ($OV)', mint: '2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump', note: 'token community · nessun rendimento, nessuna promessa', from: 'z-xSOLANA' },
 ];
 

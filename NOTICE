@@ -1,0 +1,22 @@
+Z-xSOLANA
+Copyright (c) 2026 ZDOS1.3 (P.IVA 11040550961). Tutti i diritti riservati.
+
+Il codice e la documentazione di prima parte di questo monorepo sono regolati
+dalla ZDOS Sovereign Enterprise License (ZSEL-1.0), file LICENSE alla radice
+e copie nei sotto-progetti di prima parte (zdos/, aesir/, zlang/,
+labs/hybrid-prototype/).
+
+Senza consenso scritto del titolare non è consentito copiare, pubblicare,
+modificare o creare opere derivate.
+
+Componenti di terzi presenti nell'albero conservano la propria licenza:
+
+- zdos/os/kernel/: GNU General Public License v3 (file COPYING)
+- zdos/core/memory/: licenza MIT (file LICENSE locale)
+- zdos/dev/zen/: licenza MIT (file LICENSE locale)
+
+In caso di conflitto su un file di terzi, prevale la licenza di quel
+componente. Il resto del monorepo resta ZSEL-1.0.
+
+Titolare: ZDOS1.3 (P.IVA 11040550961). Nessuna affiliazione con terzi non
+citati in questo avviso.

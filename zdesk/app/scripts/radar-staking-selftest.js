@@ -56,6 +56,17 @@ t('watchlist: $DSN Solana e VELVET sempre presenti', () => {
   assert.ok(m.includes('2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump'));
 });
 
+t('sources.js: $DSN ufficiale e xZDOS legacy', () => {
+  const sources = require('../lib/sources');
+  const official = sources.WATCHLIST.find((w) => w.mint === '35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4');
+  const legacy = sources.WATCHLIST.find((w) => w.mint === 'EnxZzNG8ZarHt1Tez4ipu5yUnXj8rAbyAnXttxnMpump');
+  assert.ok(official && official.symbol === '$DSN');
+  assert.ok(legacy && legacy.symbol !== '$DSN');
+  assert.ok(/legacy, non \$DSN ufficiale/i.test(legacy.note));
+  assert.ok((legacy.note || '').includes('xZDOS pump.fun'));
+  assert.strictEqual(sources.DSN_POLYGON, '0xfc90516a1f736FaC557e09D8853dB80dA192c296');
+});
+
 t('frontend: nessuna firma, nessun link pump.fun', () => {
   const src = ['public/app.js', 'public/index.html', 'lib/staking.js', 'lib/connect.js', 'lib/radar.js']
     .map((f) => fs.readFileSync(path.join(__dirname, '..', f), 'utf8')).join('\n');

@@ -43,8 +43,13 @@ PID in `ninja.pid`, log in `ninja-daemon.log`. Spec e doveri dell'Executor:
    rischio RugCheck), holder, link, scomposizione dello score, curva pump.fun
    se il token è ancora sulla bonding curve (letto on-chain).
 3. **Watchlist** — `$OV` (`2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump`) con
-   progresso curva se disponibile, e `$DSN` meme
-   (`EnxZzNG8ZarHt1Tez4ipu5yUnXj8rAbyAnXttxnMpump`).
+   progresso curva se disponibile; `$DSN` ufficiale Solana
+   (`35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4`, Token-2022, 6 decimali,
+   nessuna pair ancora; su Polygon
+   `0xfc90516a1f736FaC557e09D8853dB80dA192c296`, 18 decimali); e `xZDOS`
+   pump.fun legacy, non `$DSN` ufficiale
+   (`EnxZzNG8ZarHt1Tez4ipu5yUnXj8rAbyAnXttxnMpump`). Il mint EnxZ non è
+   stato rimosso: è solo rietichettato.
 4. **Desk** — lettura sola di `risk.md`, `go.md`, `survivors.md`,
    `gmgn-signals.md`.
 5. **Sfera predittiva** — colonna 0–1, formula in [FORMULA.md](FORMULA.md).
@@ -95,7 +100,7 @@ Generati in `screens/`:
 
 - `01-trending.png` — tabella principale (stile ZDOS)
 - `02-token-detail.png` — dettaglio token con grafico OHLCV e gauge
-- `03-watchlist.png` — $OV / $DSN
+- `03-watchlist.png` — $OV / $DSN ufficiale / xZDOS legacy
 - `04-desk.png` — pannello risk/go/survivors/signals
 - `05-copytrader.png` — copy LIVE + copy.top sola lettura
 - `06-xstocks.png` — titoli tokenizzati (solo watch)
@@ -132,12 +137,13 @@ dell'utente, in un secondo momento servirebbe:
    sola lettura `/workspace/highkali-desk` (o l'equivalente sul VPS).
 7. Rate limit più stretti se il VPS ha un IP condiviso verso le API pubbliche.
 
-Nessun deploy è stato eseguito da questo lavoro.
+Il Radar v2.1 (con la correzione del mint $DSN) è stato applicato sul VPS il 14/11/2026 alle 15:09 (ora di Roma), ESITO OK. Dettagli in `../../docs/STATUS.md`. Pacchetto e script: `../deploy/`.
 
 ## Tab Radar (sola lettura)
-Sotto-sezioni: X Trust, Token K.I.R.A., News anticipo, Watchlist ($DSN Solana e VELVET sempre presenti), **Staking** (non custodial,
-vedi `../../docs/staking.md`) e **Connetti app** (X e GitHub in sola lettura, Phantom solo connessione; vedi `../../docs/connetti-app.md`).
-Endpoint GET: `/api/radar`, `/api/staking/:address`, `/api/connect`. Selftest: `node scripts/radar-staking-selftest.js`.
+Sotto-sezioni: X Trust, Token K.I.R.A., News anticipo, Watchlist ($DSN ufficiale, VELVET e xZDOS legacy), **Staking** (non custodial,
+vedi `../../docs/staking.md`) e **Connetti app** (X: solo handle locale e link al profilo; GitHub: stato pubblico in lettura; Phantom: solo indirizzo pubblico; vedi `../../docs/connetti-app.md`).
+Endpoint GET: `/api/radar`, `/api/staking/:address`, `/api/connect`. Selftest: `node scripts/radar-staking-selftest.js` e `node scripts/dsnmint-selftest.js`.
 
-$DSN ufficiale: Polygon `0xfc90516a1f736FaC557e09D8853dB80dA192c296` (18 decimali) e Solana `35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4` (6 decimali).
+$DSN ufficiale: Polygon `0xfc90516a1f736FaC557e09D8853dB80dA192c296` (18 decimali) e Solana `35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4` (Token-2022, 6 decimali).
+`EnxZzNG8ZarHt1Tez4ipu5yUnXj8rAbyAnXttxnMpump` è xZDOS pump.fun (legacy, non $DSN ufficiale).
 VELVET ($OV), community su Solana, mint `2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump`. Nessun rendimento, nessuna promessa finanziaria.

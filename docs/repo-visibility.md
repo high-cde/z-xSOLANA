@@ -1,21 +1,17 @@
-# Visibilità dei repository esistenti
+# Visibilità dei repository
 
-Nessun repository esistente è stato reso privato né riscritto. Le pulizie sono su branch locali non pubblicati; questa tabella serve a decidere.
+Il 14/11/2026 (ora di Roma) tutti i repository dell'account GitHub `high-cde` sono stati resi **privati**, su conferma del titolare. La visibilità non va cambiata in questa revisione.
 
-## Cosa si romperebbe rendendoli privati
+## Effetti già in corso
 
-| Repo | Oggi | Cosa si rompe se privato | Proposta |
-| --- | --- | --- | --- |
-| zSWAP | pubblico | Il deploy sul VPS scarica i file da `raw.githubusercontent.com/high-cde/zSWAP/...` senza token: si fermerebbe. | Resta pubblico. In futuro: deploy con token in sola lettura o release firmate, poi privato. |
-| VelvetHub | pubblico, GitHub Pages | Il sito `high-cde.github.io/VelvetHub/` sparisce (Pages su repo privati richiede un piano a pagamento). | Resta pubblico, oppure sito spostato su hosting proprio. |
-| Zdos-K.I.R.A | pubblico, GitHub Pages | Il sito `high-cde.github.io/Zdos-K.I.R.A/` sparisce (stesso motivo). | Resta pubblico, oppure hosting proprio. |
-| high-cde.github.io | pubblico, GitHub Pages | Il sito principale `high-cde.github.io` sparisce. | Resta pubblico. |
-| ZDOS | pubblico, GitHub Pages | Sparisce `high-cde.github.io/ZDOS/`; i link dal sito x-zdos.it e dai documenti cadono. | Privato possibile dopo aver spostato la pagina; il codice è già in z-xSOLANA. |
-| Zlang | pubblico, GitHub Pages | Sparisce `high-cde.github.io/Zlang/`; i documenti e `microcosm/catalog.json` di ZDOS lo clonano in pubblico. | Privato possibile dopo aver aggiornato catalogo e documenti. |
-| aesir | pubblico | Nessun uso pubblico trovato (niente Pages, niente raw). | Può diventare privato: il codice aggiornato è in z-xSOLANA. |
-| zdos-hybrid | pubblico | Lo script `zdos-evolution-deploy.sh` lo clona in pubblico; altrimenti nulla. Storia pesante (~184 MB, vecchio virtualenv). | Privato o archiviato; il codice utile è in `labs/hybrid-prototype`. |
+- I siti GitHub Pages (`high-cde.github.io` e i project Pages) non sono più raggiungibili pubblicamente.
+- Il download `raw.githubusercontent.com` da zSWAP non funziona più senza autenticazione. Il deploy di zdesk usa l'API GitHub con un token fine-grained in sola lettura (vedi `zdesk/deploy/README.md` e `docs/STATUS.md`).
+- I siti ospitati sul VPS (tra cui https://x-zdos.it, https://swap.x-zdos.it, https://quest.x-zdos.it) non dipendono dalla visibilità dei repo e restano dove sono.
+- L'operazione è reversibile lato GitHub, ma riaprire un repo pubblico ripubblicherebbe la cronaca e, se riattivate, anche le Pages.
 
-## Branch di pulizia locali (non pubblicati)
+## Branch di pulizia locali (non pubblicati sui repo originali)
+
+Il codice aggiornato di ZDOS, Æsir, ZLang, zdesk e del prototipo ibrido è in questo monorepo. Sui repository originali restano, in locale e non su `main`, i branch di pulizia già preparati:
 
 | Repo | Branch | Commit | Contenuto |
 | --- | --- | --- | --- |

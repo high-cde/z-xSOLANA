@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
-# applica-radar.sh v2 — ZDESK tab "Radar" (sola lettura) + Staking (non custodial) + Connetti app.
+# applica-radar.sh v2.1 — ZDESK tab "Radar" (sola lettura) + Staking + Connetti app + mint $DSN.
 # Uso (da root, nel tmux "up"):  bash /tmp/applica-radar.sh [/tmp/zdesk-radar.tar.gz]
-# Funziona sia dal master originale sia dal Radar v1 di stanotte.
-# Non tocca: nginx, htpasswd, ACCESS.txt, copytrader.js, ninja.js, wallet.js, sources.js, chiavi.
+# Funziona dal master originale, dal master dopo applica-dsnmint.sh, dal Radar v1,
+# e da un Radar v2 precedente (senza la patch mint in sources.js).
+# Non tocca: nginx, htpasswd, ACCESS.txt, copytrader.js, ninja.js, wallet.js, chiavi.
+# Aggiorna anche lib/sources.js (watchlist: $DSN ufficiale + xZDOS legacy) e README.md.
 # Backup completo in /var/backups/zdesk/ e script di rollback scritto prima di copiare.
 set -euo pipefail
 
 TARBALL="${1:-/tmp/zdesk-radar.tar.gz}"
-TAR_SHA="a150694221ba0de6eb5ae0a31c9d19a5413be4b171e1b5fbe1f388c38305fcf2"
+TAR_SHA="39c4785f0f0e9bb08728f47e32ba9bd2fcab4fd381b62dd296cfc7bf534902d9"
 APP="${ZDESK_APP:-/opt/zdesk}"
 DESK="${ZDESK_DESK:-/opt/zdesk/desk}"
 BK="${ZDESK_BK:-/var/backups/zdesk}"
@@ -31,10 +33,18 @@ declare -A V1=(
 )
 declare -A NEW=(
   [server.js]=35147295ed828932022485cd7db26b2588b42349af2f66b8103b4d85a6ce7c69
-  [public/index.html]=2b488f867487b498a81a933732cd23a50441d9467c72f846b06a2e4dc6fb6f57
+  [public/index.html]=631bd6487dd87debe0a8fde4d7bf4bb2bae749360c522637097c51e5fbcee644
   [public/app.js]=c5cdf32fa422cc4baf2242f8297cc10c1a4fe525a0572fffba51112e1f7bcc60
   [public/app.css]=af5cca00400142f289689eafdc49731b4b1613703499a7137dba5246b2ef165d
 )
+
+# index.html accettati in ingresso, oltre a ORIG e V1:
+#  - DSN: master dopo applica-dsnmint.sh
+#  - V2OLD: Radar v2 pubblicato in d057910 (prima della patch mint)
+DSN_INDEX="3ef61a5d235cd1be22072a7b7c3ac17404936c9282698f6ddfded7267a35c7b3"
+V2OLD_INDEX="2b488f867487b498a81a933732cd23a50441d9467c72f846b06a2e4dc6fb6f57"
+ORIG_SOURCES="ec640bbd10aec2fba61c80ed76b0397eec6f77e8f8d851cce9a5b4cbfc39d753"
+NEW_SOURCES="149ed32cb01fc20c14556c5fa25032f2aa6fd53e8357e4302b76a7e069aac33c"
 
 die() { echo "ESITO KO: $*" >&2; exit 1; }
 own() { stat -c %U:%G "$1"; }
@@ -50,8 +60,8 @@ echo "[1/7] pacchetto verificato"
 
 already=1
 for f in "${CODE_FILES[@]}"; do [ "$(sha "$APP/$f")" = "${NEW[$f]}" ] || already=0; done
-if [ "$already" = 1 ] && [ -f "$APP/lib/staking.js" ]; then
-  echo "Radar v2 già applicato: niente da fare."
+if [ "$already" = 1 ] && [ -f "$APP/lib/staking.js" ] && [ -f "$APP/lib/sources.js" ] && [ "$(sha "$APP/lib/sources.js")" = "$NEW_SOURCES" ]; then
+  echo "Radar v2.1 già applicato: niente da fare."
   curl -fsS -m 10 "$URL/api/radar" >/dev/null && echo "ESITO OK (già presente)"
   exit 0
 fi
@@ -59,36 +69,50 @@ fi
 diff_list=(); from=""
 for f in "${CODE_FILES[@]}"; do
   s="$(sha "$APP/$f")"
-  if [ "$s" = "${ORIG[$f]}" ]; then from="${from}o"; elif [ "$s" = "${V1[$f]}" ]; then from="${from}1"; else diff_list+=("$f"); fi
+  if [ "$s" = "${ORIG[$f]}" ]; then from="${from}o"
+  elif [ "$s" = "${V1[$f]}" ]; then from="${from}1"
+  elif [ "$s" = "${NEW[$f]}" ]; then from="${from}n"
+  elif [ "$f" = "public/index.html" ] && [ "$s" = "$DSN_INDEX" ]; then from="${from}d"
+  elif [ "$f" = "public/index.html" ] && [ "$s" = "$V2OLD_INDEX" ]; then from="${from}2"
+  else diff_list+=("$f"); fi
 done
 if [ "${#diff_list[@]}" -gt 0 ] && [ "${FORCE:-0}" != 1 ]; then
-  die "questi file sul VPS non sono né il master né il Radar v1: ${diff_list[*]} — mandami l'output di: sha256sum /opt/zdesk/{server.js,public/index.html,public/app.js,public/app.css}"
+  die "questi file sul VPS non sono un punto di partenza noto (master, master+dsnmint, Radar v1, Radar v2): ${diff_list[*]} — mandami l'output di: sha256sum /opt/zdesk/{server.js,public/index.html,public/app.js,public/app.css,lib/sources.js}"
 fi
-echo "[2/7] file attuali riconosciuti ($( [[ "$from" == *1* ]] && echo 'Radar v1' || echo 'master originale' ))"
+src_now="$(sha "$APP/lib/sources.js")"
+if [ "$src_now" != "$ORIG_SOURCES" ] && [ "$src_now" != "$NEW_SOURCES" ] && [ "${FORCE:-0}" != 1 ]; then
+  die "lib/sources.js sul VPS non è il master noto né la patch mint (sha $src_now) — mandami: sha256sum /opt/zdesk/lib/sources.js (oppure FORCE=1)"
+fi
+echo "[2/7] file attuali riconosciuti"
 
 curl -fsS -m 10 "$URL/api/health" >/dev/null 2>&1 && echo "      health prima: OK" || echo "      ATTENZIONE: health KO già prima dell'aggiornamento"
 
 mkdir -p "$BK"
-BACKUP="$BK/zdesk-pre-radar2-$TS.tar.gz"
+BACKUP="$BK/zdesk-pre-radar21-$TS.tar.gz"
 tar --exclude="${APP#/}/node_modules" -czf "$BACKUP" -C / "${APP#/}"
 echo "[3/7] backup: $BACKUP"
 
 STAGE="$(mktemp -d)"
 trap 'rm -rf "$STAGE"' EXIT
 tar -xzf "$TARBALL" -C "$STAGE"
-for f in server.js public/app.js "${LIB_FILES[@]}"; do node --check "$STAGE/$f" || die "sintassi KO in $f"; done
+for f in server.js public/app.js "${LIB_FILES[@]}" lib/sources.js; do node --check "$STAGE/$f" || die "sintassi KO in $f"; done
+[ "$(sha "$STAGE/lib/sources.js")" = "$NEW_SOURCES" ] || die "sources.js nel pacchetto ha sha inatteso"
 T="$(mktemp -d)"; cp -a "$APP/lib" "$T/lib"; cp "$STAGE"/lib/*.js "$T/lib/"; mkdir -p "$T/public" "$T/scripts"
-cp "$STAGE"/public/* "$T/public/"; cp "$STAGE/scripts/radar-staking-selftest.js" "$T/scripts/"
-( cd "$T" && NODE_PATH="$APP/node_modules" node scripts/radar-staking-selftest.js >/dev/null ) || { rm -rf "$T"; die "selftest offline KO"; }
+cp "$STAGE"/public/* "$T/public/"
+cp "$STAGE/scripts/radar-staking-selftest.js" "$T/scripts/"
+cp "$STAGE/scripts/dsnmint-selftest.js" "$T/scripts/" 2>/dev/null || true
+( cd "$T" && NODE_PATH="$APP/node_modules" node scripts/radar-staking-selftest.js >/dev/null ) || { rm -rf "$T"; die "selftest radar offline KO"; }
+( cd "$T" && NODE_PATH="$APP/node_modules" node scripts/dsnmint-selftest.js >/dev/null ) || { rm -rf "$T"; die "selftest mint offline KO"; }
 rm -rf "$T"
 echo "[4/7] sintassi e selftest offline OK"
 
-RB="$BK/rollback-radar2-$TS.sh"
+RB="$BK/rollback-radar21-$TS.sh"
 {
   echo '#!/usr/bin/env bash'
-  echo "# Rollback Radar v2 $TS: rimette i file di prima e riavvia zdesk."
+  echo "# Rollback Radar v2.1 $TS: rimette i file di prima e riavvia zdesk."
   echo 'set -euo pipefail'
-  echo "tar -xzf '$BACKUP' -C / ${APP#/}/server.js ${APP#/}/public/index.html ${APP#/}/public/app.js ${APP#/}/public/app.css"
+  echo "tar -xzf '$BACKUP' -C / ${APP#/}/server.js ${APP#/}/public/index.html ${APP#/}/public/app.js ${APP#/}/public/app.css ${APP#/}/lib/sources.js"
+  echo "if [ -f '$BACKUP' ]; then tar -xzf '$BACKUP' -C / ${APP#/}/README.md 2>/dev/null || true; fi"
   for f in "${LIB_FILES[@]}"; do
     if [ -f "$APP/$f" ]; then echo "tar -xzf '$BACKUP' -C / ${APP#/}/$f"; else echo "rm -f '$APP/$f'"; fi
   done
@@ -101,10 +125,18 @@ echo "[5/7] rollback pronto: bash $RB"
 
 for f in "${CODE_FILES[@]}"; do o="$(own "$APP/$f")"; install -m 644 "$STAGE/$f" "$APP/$f"; chown "$o" "$APP/$f"; done
 o="$(own "$APP/lib/sources.js")"
+install -m 644 "$STAGE/lib/sources.js" "$APP/lib/sources.js"; chown "$o" "$APP/lib/sources.js"
 for f in "${LIB_FILES[@]}"; do install -m 644 "$STAGE/$f" "$APP/$f"; chown "$o" "$APP/$f"; done
+if [ -f "$STAGE/README.md" ]; then
+  or="$o"; [ -f "$APP/README.md" ] && or="$(own "$APP/README.md")"
+  install -m 644 "$STAGE/README.md" "$APP/README.md"; chown "$or" "$APP/README.md"
+fi
 oa="$(own "$APP")"; mkdir -p "$APP/radar" "$APP/scripts"
 for f in radar-x.schema.json radar-x.example.json; do install -m 644 "$STAGE/radar/$f" "$APP/radar/$f"; chown "$oa" "$APP/radar/$f"; done
 install -m 644 "$STAGE/scripts/radar-staking-selftest.js" "$APP/scripts/radar-staking-selftest.js"; chown "$oa" "$APP/scripts/radar-staking-selftest.js"
+if [ -f "$STAGE/scripts/dsnmint-selftest.js" ]; then
+  install -m 644 "$STAGE/scripts/dsnmint-selftest.js" "$APP/scripts/dsnmint-selftest.js"; chown "$oa" "$APP/scripts/dsnmint-selftest.js"
+fi
 od="$(own "$DESK")"
 for f in radar-x.json radar-watch.json radar-news.json; do
   if [ ! -e "$DESK/$f" ]; then install -m 644 "$STAGE/radar/$f" "$DESK/$f"; chown "$od" "$DESK/$f"; echo "      creato $DESK/$f (vuoto, esempio)"; fi
@@ -121,8 +153,15 @@ curl -fsS -m 15 "$URL/api/connect" | grep -q '"readOnly":true' || fail "/api/con
 [ "$(curl -s -o /dev/null -w '%{http_code}' -m 10 "$URL/api/staking/abc")" = 400 ] || fail "/api/staking non valida gli indirizzi"
 curl -fsS -m 10 -o /dev/null "$URL/api/copytrader" || fail "/api/copytrader non risponde"
 curl -fsS -m 10 -o /dev/null "$URL/api/ninja" || fail "/api/ninja non risponde"
+WL="$(mktemp)"
+curl -fsS -m 45 -o "$WL" "$URL/api/watchlist" || { rm -f "$WL"; fail "/api/watchlist non risponde"; }
+grep -q "35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4" "$WL" || { rm -f "$WL"; fail "/api/watchlist senza mint \$DSN ufficiale"; }
+grep -q "EnxZzNG8ZarHt1Tez4ipu5yUnXj8rAbyAnXttxnMpump" "$WL" || { rm -f "$WL"; fail "/api/watchlist senza mint xZDOS legacy"; }
+rm -f "$WL"
+TOK_CODE="$(curl -s -o /dev/null -w '%{http_code}' -m 45 "$URL/api/token/35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4")"
+[ "$TOK_CODE" = 200 ] || fail "/api/token/\$DSN ufficiale HTTP $TOK_CODE"
 systemctl is-active --quiet "$SERVICE" || fail "servizio non attivo"
-echo "[7/7] health, radar, connect, staking, copytrader e ninja OK"
+echo "[7/7] health, radar, connect, staking, watchlist, token \$DSN, copytrader e ninja OK"
 echo "Facoltativo: per vedere gli stake nativi serve un RPC privato -> Environment=ZDESK_SOLANA_RPC=https://... nella unit zdesk."
 echo "Backup:   $BACKUP"
 echo "Rollback: bash $RB"

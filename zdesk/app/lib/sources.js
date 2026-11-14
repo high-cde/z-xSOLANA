@@ -16,9 +16,24 @@ const TOKEN_2022 = 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
 const WSOL = 'So11111111111111111111111111111111111111112';
 const USDC = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
+const DSN_SOLANA_MINT = '35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4';
+const DSN_POLYGON = '0xfc90516a1f736FaC557e09D8853dB80dA192c296';
+const DSN_LEGACY_PUMP_MINT = 'EnxZzNG8ZarHt1Tez4ipu5yUnXj8rAbyAnXttxnMpump';
+
 const WATCHLIST = [
   { symbol: '$OV', mint: '2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump', note: 'progetto desk — curva pump.fun' },
-  { symbol: '$DSN', mint: 'EnxZzNG8ZarHt1Tez4ipu5yUnXj8rAbyAnXttxnMpump', note: 'meme xZDOS' },
+  {
+    symbol: '$DSN',
+    mint: DSN_SOLANA_MINT,
+    note: 'ufficiale · Solana Token-2022, 6 decimali, nessuna pair ancora. Su Polygon: 0xfc90516a1f736FaC557e09D8853dB80dA192c296 (18 decimali)',
+    program: 'token-2022',
+    decimals: 6,
+  },
+  {
+    symbol: 'xZDOS',
+    mint: DSN_LEGACY_PUMP_MINT,
+    note: 'xZDOS pump.fun (legacy, non $DSN ufficiale)',
+  },
 ];
 
 // Mints ufficiali xStocks (Jupiter tag "xstocks" + DexScreener), rivalidati al runtime.
@@ -519,18 +534,52 @@ async function getTokenDetail(mint) {
   const key = 'detail:' + mint;
   const fresh = cache.fresh(key);
   if (fresh) return fresh;
-  const pairs = await fetchDsTokenPairs(mint);
+  const known = WATCHLIST.find((w) => w.mint === mint) || null;
+  let pairs = [];
+  try {
+    pairs = await fetchDsTokenPairs(mint);
+  } catch {
+    pairs = [];
+  }
+  if (!Array.isArray(pairs)) pairs = [];
   const best = bestSolanaPair(pairs, mint);
-  let row = normalizeDsPair(best) || { mint, pairs: [] };
+  let row = normalizeDsPair(best);
+  if (!row) {
+    row = {
+      mint,
+      symbol: known ? known.symbol : undefined,
+      name: known ? known.symbol : undefined,
+      pairs: [],
+      noPair: true,
+      priceUsd: null,
+      liqUsd: null,
+      vol: { m5: null, h1: null, h6: null, h24: null },
+      txns: {},
+      priceChange: {},
+    };
+  } else {
+    if (known) {
+      row.marketSymbol = row.symbol || null;
+      row.symbol = known.symbol;
+      row.name = row.name || known.symbol;
+    }
+    row.noPair = !row.pairAddress;
+  }
+  if (known) row.watchNote = known.note;
   if (!row.mint) row.mint = mint;
-  const rug = await fetchRug(mint, row.pairAddress);
+  let rug = null;
+  try {
+    rug = await fetchRug(mint, row.pairAddress);
+  } catch {
+    rug = null;
+  }
   attachScore(row, rug);
   let curve = null;
   if (row.dexId === 'pumpfun' && row.pairAddress) {
-    curve = await fetchBondingCurve(row.pairAddress);
+    try { curve = await fetchBondingCurve(row.pairAddress); } catch { curve = null; }
   }
   row.bondingCurve = curve;
-  row.allPairs = (pairs || []).filter((p) => p.chainId === 'solana').map((p) => ({
+  row.allPairs = (pairs || []).filter((p) => p && p.chainId === 'solana').map((p) => ({
     dexId: p.dexId,
     pairAddress: p.pairAddress,
     liqUsd: p.liquidity && p.liquidity.usd,
@@ -812,6 +861,9 @@ function getHealth() {
 
 module.exports = {
   WATCHLIST,
+  DSN_SOLANA_MINT,
+  DSN_POLYGON,
+  DSN_LEGACY_PUMP_MINT,
   XSTOCKS_SEED,
   PUMP_CURVE_PROGRAM,
   WSOL,

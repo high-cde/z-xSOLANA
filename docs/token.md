@@ -9,6 +9,12 @@
 | Polygon PoS (chain id 137) | ERC-20 | `0xfc90516a1f736FaC557e09D8853dB80dA192c296` | 18 | 1.000.000.000 |
 | Solana mainnet | Token-2022 | `35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4` | 6 | 1.000.000.000.000 |
 
+## xZDOS pump.fun (legacy, non $DSN ufficiale)
+
+| Catena | Standard | Mint | Nota |
+| --- | --- | --- | --- |
+| Solana mainnet | (pump.fun) | `EnxZzNG8ZarHt1Tez4ipu5yUnXj8rAbyAnXttxnMpump` | Resta in watchlist con questa etichetta. Non è il $DSN ufficiale e non va cancellato: è il vecchio token xZDOS lanciato su pump.fun. |
+
 ## VELVET ($OV): token community
 
 | Catena | Standard | Mint | Decimali | Supply |
@@ -28,7 +34,5 @@ VELVET è un token community: **nessun rendimento, nessuna promessa finanziaria*
 ## Dove compaiono nel monorepo
 
 - `aesir/`: gate multi-catena (`DSN_CHAIN=both|polygon|solana`, default `both`), VELVET opzionale e spento. Test: `aesir/tests/test_aesir.py` (26).
-- `zdesk/app/`: Radar → Watchlist con $DSN (Solana) e VELVET sempre presenti; in Staking solo come «staking a punti, nessun rendimento».
+- `zdesk/app/`: Radar → Watchlist e watchlist del desk (`lib/sources.js`) con $DSN ufficiale Solana, VELVET e xZDOS pump.fun legacy. In Staking, $DSN e VELVET solo come «staking a punti, nessun rendimento». Se un mint non ha ancora un mercato su DexScreener, il dettaglio non va in errore (`noPair`).
 - `zdos/`, `zlang/`, `labs/hybrid-prototype/`: README con entrambi gli indirizzi $DSN.
-
-Nota: `zdesk/app/lib/sources.js` contiene ancora una voce storica «$DSN» con un mint diverso (`EnxZ…pump`, «meme xZDOS»). Non è il $DSN ufficiale; il file è condiviso con il desk in produzione e non è stato modificato.
