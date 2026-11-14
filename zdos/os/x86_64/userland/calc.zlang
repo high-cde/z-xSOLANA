@@ -1,0 +1,9 @@
+# Prova locale di aritmetica Zlang/ZLB2.
+# Non apre connessioni e non attesta capacità esterne.
+
+emit [LOCAL] Avvio prova aritmetica...
+let base_load = 150
+let peak_factor = 4
+let total_compute = base_load + peak_factor
+let scaled_output = total_compute * 2
+emit [LOCAL] Espressioni aritmetiche compilate nel bytecode ZLB2.

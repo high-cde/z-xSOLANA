@@ -1,0 +1,3 @@
+::sysinit:/bin/mount -a
+::respawn:/bin/su -p -s /bin/sh zdos
+::ctrlaltdel:/bin/reboot

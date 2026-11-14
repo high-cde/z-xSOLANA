@@ -1,0 +1,13 @@
+pub mod bio;
+pub mod bytecode_mutator;
+pub mod comm;
+pub mod evolution;
+pub mod feedback;
+pub mod hyper_cortex;
+pub mod llm;
+pub mod mutation;
+pub mod mutation_engine;
+pub mod neuro;
+pub mod optimization;
+pub mod policy;
+pub mod predictive_layer;

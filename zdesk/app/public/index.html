@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#05060a"/>
+  <title>ZDESK — Sfera predittiva · HighKali</title>
+  <link rel="icon" type="image/svg+xml" href="assets/zdos-pixel.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="app.css"/>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <header class="topbar">
+    <a class="brand" href="?tab=trending" aria-label="ZDESK">
+      <img class="px" src="assets/zdos-pixel.svg" alt="" width="34" height="34"/>
+      <span class="mark" aria-hidden="true">Z</span>
+      <span class="brand-name">ZDESK</span>
+      <span class="brand-sub"> / HIGHKALI</span>
+    </a>
+    <div class="top-meta">
+      <p class="eyebrow"><span class="signal" aria-hidden="true"></span> LIVE · SOLA LETTURA · NESSUN TRADE</p>
+      <div id="clock" class="clock">—</div>
+      <div class="top-badges">
+        <div id="ninja-badge" class="ninja-badge na" title="Ninja">NINJA · —</div>
+        <button type="button" id="sniff-badge" class="sniff-badge na" title="Sniffer anti-fake" aria-label="Apri sniffer anti-fake">SNIFF · —</button>
+        <button type="button" id="wallet-chip" class="wallet-chip na" title="Wallet agente" aria-label="Apri wallet agente">SALDO · —</button>
+      </div>
+      <div id="src-health" class="chips"></div>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs" aria-label="Sezioni">
+    <button type="button" data-tab="trending" class="on">In tendenza</button>
+    <button type="button" data-tab="new">Nuove pair</button>
+    <button type="button" data-tab="watchlist">Watchlist</button>
+    <button type="button" data-tab="xstocks">Titoli tokenizzati</button>
+    <button type="button" data-tab="copytrader">Copy trader</button>
+    <button type="button" data-tab="ninja">Ninja</button>
+    <button type="button" data-tab="desk">Desk</button>
+    <button type="button" data-tab="wallet">Wallet</button>
+    <button type="button" data-tab="radar">Radar</button>
+  </nav>
+
+  <section class="toolbar" id="table-toolbar">
+    <input id="q" type="search" placeholder="Cerca token, mint o pair…" autocomplete="off"/>
+    <label>Liq min
+      <select id="minliq">
+        <option value="0">tutte</option>
+        <option value="5000">$5k</option>
+        <option value="30000" selected>$30k</option>
+        <option value="80000">$80k</option>
+      </select>
+    </label>
+    <label>Sfera min
+      <select id="minscore">
+        <option value="0" selected>tutte</option>
+        <option value="0.55">≥ 0.55</option>
+        <option value="0.75">≥ 0.75</option>
+        <option value="0.85">≥ 0.85</option>
+      </select>
+    </label>
+    <span class="hint" id="updated">—</span>
+    <span class="hint live-hint"><span class="signal"></span> auto <span id="countdown">45s</span></span>
+  </section>
+
+  <main id="main">
+    <section class="view on" data-view="trending">
+      <div id="desk-live" class="desk-live" data-ready="0"></div>
+      <div id="sniff-home" class="sniff-home" data-ready="0"></div>
+      <div class="table-wrap terminal-panel"><table id="tbl-trending" class="pairs"></table></div>
+    </section>
+    <section class="view" data-view="new">
+      <div class="table-wrap terminal-panel"><table id="tbl-new" class="pairs"></table></div>
+    </section>
+    <section class="view" data-view="watchlist">
+      <p class="banner info">Watchlist desk: <strong>VELVET ($OV)</strong>, token community senza rendimento, e <strong>$DSN</strong>. Nessun ingresso automatico — valgono le regole SAFE-COMPOUND.</p>
+      <div id="watch-cards" class="cards"></div>
+    </section>
+    <section class="view" data-view="xstocks">
+      <p class="banner warn"><strong>Acquisto bloccato</strong> (georestriction Phantom). Solo osservazione, nessuna elusione e nessun trade da questa dashboard.</p>
+      <div id="xstock-cards" class="cards"></div>
+    </section>
+    <section class="view" data-view="copytrader">
+      <p class="banner info"><strong>Copy LIVE.</strong> HighKali compra e vende da solo sul wallet agente (copia secondario, mai i fondi principali). Floor <strong>$50</strong> su SOL+USDC ($OV tenuto, non in vendita). Budget dinamico fino a <strong>$30</strong>, size circa 1/3, max 3 posizioni. Stop <strong>−2%</strong>, a <strong>+4%</strong> vende metà, runner <strong>+8% / +12%</strong>, chiude in pari se torna a entry. Slippage acquisto 1%, uscita 1% (retry 2%), impatto ≤ 0,5%. Sniffer anti-fake obbligatorio prima di ogni buy (blocco su FAKE e EXIT_LIQ). Solo wallet <strong>APPROVED</strong>. Niente perpetual. Questa dashboard è in sola lettura: nessuna chiave e nessun trade da qui.</p>
+      <div id="copy-live" class="copy-live" data-ready="0"></div>
+      <div id="copy-feed" class="copy-feed" data-ready="0"></div>
+      <div id="copy-book" class="copy-book" data-ready="0"></div>
+      <div id="copy-refusals" class="copy-refusals" data-ready="0"></div>
+      <div id="copy-routines" class="copy-routines" data-ready="0"></div>
+      <div id="copy-sniff" class="sniff-panel" data-ready="0"></div>
+      <div id="copy-top" class="copytop" data-ready="0"></div>
+      <div id="copy-status" class="hint"></div>
+      <div id="copy-gainers" class="mini-row"></div>
+      <div id="copy-wallets" class="cards"></div>
+    </section>
+    <section class="view" data-view="ninja">
+      <p class="banner info"><strong>Ninja</strong> è un watcher di sola lettura: nessun tasto di vendita qui, nessuna chiave. WARN al primo rosso (trail 3%). EXIT al secondo segnale distinto entro 10 minuti, o subito su hard stop <strong>−3%</strong> / liq −30% / rug. L'Executor vende il 100% via Phantom con slippage max 5%. Copy LIVE: stop −3%, take profit +8% uscita 100% (regole in <code>copy-live.md</code> / <code>ninja.md</code>).</p>
+      <div id="ninja-status" class="hint"></div>
+      <div id="ninja-cards" class="cards"></div>
+    </section>
+    <section class="view" data-view="desk">
+      <p class="banner info">Pannello desk in sola lettura da file desk sincronizzati (sola lettura) (risk, go, survivors, gmgn-signals, ninja).</p>
+      <div id="desk-panels" class="desk-grid"></div>
+    </section>
+    <section class="view" data-view="wallet">
+      <p class="banner info"><strong>Wallet agente in sola lettura.</strong> Saldo, holding e movimenti da RPC pubblico. Nessuna chiave, nessun trade da questa dashboard. I <strong>$OV</strong> restano tenuti (token del progetto, liquidità sottile, non in vendita). Floor <strong>$50</strong> su SOL+USDC; il budget copy non lo tocca.</p>
+      <div id="wallet-live" class="desk-live" data-ready="0"></div>
+      <form id="wallet-form" class="wallet-form">
+        <input id="wallet-addr" type="text" spellcheck="false" placeholder="Indirizzo wallet Solana" autocomplete="off"/>
+        <button type="submit" class="primary">Mostra altro wallet</button>
+      </form>
+      <p class="hint">Puoi ispezionare anche un altro indirizzo. Restano solo saldi SPL (Token e Token-2022) e transazioni pubbliche.</p>
+      <div id="wallet-box"></div>
+    </section>
+    <section class="view" data-view="radar">
+      <p class="banner info"><strong>ZDOS Radar · sola lettura.</strong> Account X da seguire o da evitare, controlli K.I.R.A. sui token, notizie in anticipo. Nessun pannello di trading, nessuna chiave, nessun post. Nessun segnale garantisce un profitto: l'anticipo è di minuti, non una certezza.</p>
+      <nav class="radar-sub" id="radar-sub" aria-label="Viste Radar">
+        <button type="button" data-rsub="x" class="on">X Trust</button>
+        <button type="button" data-rsub="kira">Token K.I.R.A.</button>
+        <button type="button" data-rsub="news">News anticipo</button>
+        <button type="button" data-rsub="watch">Watchlist</button>
+        <button type="button" data-rsub="staking">Staking</button>
+        <button type="button" data-rsub="connect">Connetti app</button>
+      </nav>
+      <div id="radar-status" class="hint"></div>
+      <div id="radar-x" class="radar-pane on" data-rpane="x"></div>
+      <div id="radar-kira" class="radar-pane" data-rpane="kira"></div>
+      <div id="radar-news" class="radar-pane" data-rpane="news"></div>
+      <div id="radar-watch" class="radar-pane" data-rpane="watch"></div>
+      <div id="radar-staking" class="radar-pane" data-rpane="staking"></div>
+      <div id="radar-connect" class="radar-pane" data-rpane="connect"></div>
+    </section>
+  </main>
+
+  <aside id="drawer" class="drawer" hidden>
+    <div class="drawer-inner">
+      <header>
+        <div>
+          <p class="eyebrow"><span class="signal"></span> DETTAGLIO TOKEN</p>
+          <h2 id="d-title">Token</h2>
+        </div>
+        <button type="button" id="d-close" class="icon-btn" aria-label="Chiudi">×</button>
+      </header>
+      <div class="chart-box">
+        <div class="chart-toolbar">
+          <span class="micro">OHLCV GeckoTerminal</span>
+          <div class="tf-btns" id="tf-btns">
+            <button type="button" data-tf="minute" data-agg="5" class="on">5m</button>
+            <button type="button" data-tf="minute" data-agg="15">15m</button>
+            <button type="button" data-tf="hour" data-agg="1">1h</button>
+          </div>
+        </div>
+        <div id="d-chart" class="chart"></div>
+        <p id="d-chart-note" class="hint"></p>
+      </div>
+      <div id="d-body"></div>
+    </div>
+  </aside>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <footer class="foot">
+    <p>Fonti pubbliche: DexScreener, GeckoTerminal, RugCheck, Solana RPC. Pump.fun API bloccata (Cloudflare) — progresso curva on-chain. GMGN non usato. Stile da x-zdos.it / swap.x-zdos.it. Formula in <a href="FORMULA.md" target="_blank">FORMULA.md</a>.</p>
+  </footer>
+  <script src="https://unpkg.com/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

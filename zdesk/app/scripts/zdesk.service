@@ -1,0 +1,29 @@
+[Unit]
+Description=ZDESK private dashboard (read-only)
+After=network.target
+
+[Service]
+Type=simple
+User=zdesk
+Group=zdesk
+WorkingDirectory=/opt/zdesk
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=8787
+Environment=DESK_DIR=/opt/zdesk/desk
+Environment=BASE_PATH=/zdesk
+Environment=ZDESK_READONLY=1
+ExecStart=/usr/bin/node /opt/zdesk/server.js
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/zdesk/desk
+StandardOutput=journal
+StandardError=journal
+# No keys, no trading, localhost only.
+
+[Install]
+WantedBy=multi-user.target

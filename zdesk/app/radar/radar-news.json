@@ -1,0 +1,6 @@
+{
+  "schema": "zdos-radar-news/1",
+  "example": true,
+  "note": "ESEMPIO vuoto. L'agente Radar scrive qui le notizie in anticipo (minuti, non certezze).",
+  "items": []
+}

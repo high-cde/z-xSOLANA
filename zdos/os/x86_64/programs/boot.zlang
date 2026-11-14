@@ -1,0 +1,9 @@
+# ==========================================
+# ZDOS // Experimental ZLB2 bootstrap profile
+# ==========================================
+
+emit [INFO] ZDOS experimental security profile loaded.
+emit [INFO] Tor endpoint configured for local probe: 127.0.0.1:9050.
+emit [INFO] Runtime does not claim an active Tor tunnel or anonymity.
+emit [INFO] Anti-fingerprint capabilities are roadmap-only and not active.
+emit [READY] ZDOS bare-metal ZLB2 runtime verified.

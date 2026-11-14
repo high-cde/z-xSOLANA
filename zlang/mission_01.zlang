@@ -1,0 +1,4 @@
+# Prova locale del compilatore Zlang.
+# Le operazioni esterne non sono simulate né dichiarate attive.
+emit Inizializzazione sequenza di test locale...
+emit Compilazione e output locale completati.

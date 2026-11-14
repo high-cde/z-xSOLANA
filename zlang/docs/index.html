@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZDOS Sovereign Videotel & Mining Hub</title>
+    <style>
+        :root {
+            --bg-color: #020205;
+            --term-bg: rgba(6, 6, 12, 0.95);
+            --primary: #00ffcc;
+            --secondary: #ff007f;
+            --accent: #bd00ff;
+            --text: #e0e0f0;
+            --border: #00ffcc44;
+        }
+        
+        /* Effetto CRT Videotel d'epoca */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+            z-index: 1000;
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        header { text-align: center; margin-bottom: 10px; z-index: 5; }
+        h1 { color: var(--primary); font-size: 1.15rem; margin: 0 0 3px 0; text-shadow: 0 0 10px var(--primary); letter-spacing: 2px; }
+        p.subtitle { color: var(--secondary); font-size: 0.65rem; margin: 0; letter-spacing: 1px; text-shadow: 0 0 5px var(--secondary); }
+
+        /* Barra Connettori Superiori (GitHub, Discord, ZDOS) */
+        .connectors-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            z-index: 5;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .conn-btn {
+            background: rgba(0, 255, 204, 0.05);
+            border: 1px solid var(--border);
+            color: var(--primary);
+            padding: 5px 10px;
+            font-size: 0.7rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        .conn-btn:hover {
+            background: var(--primary);
+            color: var(--bg-color);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            max-width: 1100px;
+            flex: 1;
+            z-index: 5;
+        }
+        @media (max-width: 800px) { .dashboard-grid { grid-template-columns: 1fr; } }
+
+        .card {
+            background: var(--term-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.15), inset 0 0 10px rgba(0, 255, 204, 0.05);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card-title {
+            color: var(--primary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+            margin-bottom: 8px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .terminal-box {
+            background: #010104;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 10px;
+            height: 190px;
+            overflow-y: auto;
+            font-size: 0.74rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            color: var(--text);
+            text-shadow: 0 0 4px var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        input {
+            flex: 1;
+            background: #010104;
+            border: 1px solid var(--border);
+            color: var(--primary);
+            padding: 7px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.76rem;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        button, .action-link-btn {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 7px 10px;
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.72rem;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            box-shadow: 0 0 6px rgba(0, 255, 204, 0.2);
+            text-decoration: none;
+            text-align: center;
+        }
+
+        button:hover, .action-link-btn:hover {
+            background: var(--primary);
+            color: var(--bg-color);
+            box-shadow: 0 0 12px var(--primary);
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.72rem;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 5px 8px;
+            border-radius: 4px;
+            border-left: 3px solid var(--secondary);
+        }
+        .metric-val { color: var(--primary); font-weight: bold; }
+
+        .videotel-keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .key-btn {
+            background: rgba(0,255,204,0.05);
+            border: 1px solid var(--border);
+            color: var(--primary);
+            padding: 5px;
+            font-size: 0.7rem;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .key-btn:hover { background: var(--primary); color: #000; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ZDOS SOVEREIGN VIDEOTEL & MINING HUB</h1>
+        <p class="subtitle">Comunicazione ZComm | Gateway $DSN: 0xfc9051...192c296</p>
+    </header>
+
+    <!-- Connettori Ufficiali GitHub, Discord, ZDOS -->
+    <div class="connectors-bar">
+        <a class="conn-btn" href="https://github.com/high-cde/Zlang" target="_blank">🔗 GitHub Core</a>
+        <a class="conn-btn" href="https://github.com/high-cde/Zlang/tree/main/miner" target="_blank">⛏️ GitHub Miniera</a>
+        <a class="conn-btn" href="https://discord.gg/zdos" target="_blank">💬 Discord Node</a>
+        <a class="conn-btn" href="https://x-zdos.it" target="_blank">🛡️ ZDOS Ecosystem</a>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- Pannello 1: Terminale Videotel ZComm -->
+        <div class="card">
+            <div class="card-title">
+                <span>VIDEOTEL COMM TERMINAL (ZComm)</span>
+                <span style="color: #27c93f;">● CONNESSO</span>
+            </div>
+            <div id="termOutput" class="terminal-box">ZDOS Videotel v2026.2 avviato.
+Canale SIP cifrato attivo con il nodo $DSN.
+Digita comandi o usa i tasti rapidi sottostanti.
+</div>
+            <div class="input-group">
+                <input type="text" id="termInput" placeholder="Comando o codice Videotel..." autocomplete="off">
+                <button onclick="executeCommand()">Invia</button>
+            </div>
+            <div class="videotel-keypad">
+                <div class="key-btn" onclick="sendCode('1')">1: SERVIZI</div>
+                <div class="key-btn" onclick="sendCode('2')">2: $DSN CHAT</div>
+                <div class="key-btn" onclick="sendCode('3')">3: ZVL YIELD</div>
+                <div class="key-btn" onclick="sendCode('4')">4: MESH STATS</div>
+            </div>
+        </div>
+
+        <!-- Pannello 2: Dashboard Separata ZDOS Hybrid Miner -->
+        <div class="card">
+            <div class="card-title">
+                <span>ZDOS Hybrid Miner Hub</span>
+                <span style="color: var(--secondary);">Proof-of-Work</span>
+            </div>
+            <div style="flex: 1;">
+                <div class="metric-row">
+                    <span>Stato Miniera (PoW):</span>
+                    <span class="metric-val" style="color: #27c93f;">Blocco #1 Minato ✅</span>
+                </div>
+                <div class="metric-row">
+                    <span>Ultimo Hash Valido:</span>
+                    <span class="metric-val" style="font-size: 0.65rem;">00003d3b...5460</span>
+                </div>
+                <div class="metric-row">
+                    <span>Nonce di Soluzione:</span>
+                    <span class="metric-val">78,068</span>
+                </div>
+                <div class="metric-row">
+                    <span>Difficoltà Rete Mesh:</span>
+                    <span class="metric-val">0000 (ZComm Port 8333)</span>
+                </div>
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 8px;">
+                <a class="action-link-btn" style="flex: 1; border-color: var(--secondary); color: var(--secondary);" href="https://github.com/high-cde/Zlang/tree/main/miner" target="_blank">Repo Miniera</a>
+                <button style="flex: 1;" onclick="triggerMining()">Avvia Miner</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const termOutput = document.getElementById('termOutput');
+        const termInput = document.getElementById('termInput');
+
+        function logTerm(text, isErr = false) {
+            termOutput.innerHTML += `<span style="color: ${isErr ? '#ff5f56' : 'inherit'}">${text}</span>\n`;
+            termOutput.scrollTop = termOutput.scrollHeight;
+        }
+
+        function executeCommand() {
+            const cmd = termInput.value.trim().toLowerCase();
+            if (!cmd) return;
+            logTerm(`videotel@dsn:~$ ${cmd}`);
+            termInput.value = '';
+
+            if (cmd === 'help' || cmd === '1') {
+                logTerm("--- COMANDI VIDEOTEL ZDOS ---");
+                logTerm("  [2] $DSN Chat cifrata P2P");
+                logTerm("  [3] Utility ZVL (Banda di emergenza)");
+                logTerm("  [4] Stato nodi Mesh ZComm & Miner");
+            } else if (cmd === '2' || cmd === 'chat') {
+                logTerm("[*] Apertura canale sicuro $DSN (0xfc9051...192c296)...");
+                logTerm("[+] Connessione Videotel stabilita via ZComm Mesh. 📞");
+            } else if (cmd === '3' || cmd === 'zvl') {
+                logTerm("[*] Utility ZVL attiva: routing pacchetti .zbag in corso.");
+            } else if (cmd === '4' || cmd === 'status') {
+                logTerm("Gateway $DSN online. Miner Blocco #1 sincronizzato con successo.");
+            } else {
+                logTerm(`Comando non riconosciuto: ${cmd}`, true);
+            }
+        }
+
+        function sendCode(code) {
+            termInput.value = code;
+            executeCommand();
+        }
+
+        function triggerMining() {
+            logTerm("\n[ZDOS Miner] Avvio simulazione Proof-of-Work locale...");
+            setTimeout(() => {
+                logTerm("[+] Calcolo nonce in corso... Difficoltà target: 0000");
+                logTerm("[+] Blocco validato! Hash: 00008f1a... Broadcast Mesh OK. 🎉\n");
+            }, 600);
+        }
+
+        termInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') executeCommand();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ZDOS Radar - radar-x.json",
+  "description": "File scritto dall'agente Radar (X Checker) in DESK_DIR. zdesk lo legge soltanto. Solo dati pubblici di X; nessuna lista di follower.",
+  "type": "object",
+  "required": ["schema", "generatedAt", "example", "accounts"],
+  "properties": {
+    "schema": { "const": "zdos-radar-x/1" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "example": { "type": "boolean", "description": "true = dati dimostrativi, non reali" },
+    "weights": {
+      "type": "object",
+      "description": "Pesi usati per lo score (proposta iniziale, somma 100)",
+      "additionalProperties": { "type": "number" }
+    },
+    "accounts": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "required": ["handle", "label", "score"],
+        "properties": {
+          "handle": { "type": "string", "pattern": "^@?[A-Za-z0-9_]{1,15}$" },
+          "label": { "enum": ["da_seguire", "da_osservare", "evitare"] },
+          "score": { "type": "number", "minimum": 0, "maximum": 100 },
+          "checkedAt": { "type": "string", "format": "date-time" },
+          "signals": {
+            "type": "object",
+            "properties": {
+              "accountAgeDays": { "type": ["number", "null"] },
+              "verified": { "type": ["boolean", "null"] },
+              "followers": { "type": ["number", "null"] },
+              "following": { "type": ["number", "null"] },
+              "engagementRate": { "type": ["number", "null"], "description": "interazioni medie per post / follower (0-1)" },
+              "shillHitRate": { "type": ["number", "null"], "description": "quota di token citati ancora vivi e non rug (0-1)" },
+              "walletProof": { "enum": ["confermato", "non_confermato", "nessun_wallet", "n/d"] },
+              "deletedPosts": { "type": ["number", "null"], "description": "post spariti tra due istantanee dell'agente" }
+            }
+          },
+          "shilled": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "properties": {
+                "mint": { "type": "string" },
+                "symbol": { "type": "string" },
+                "postedAt": { "type": "string" },
+                "outcome": { "enum": ["vivo", "morto", "rug", "n/d"] },
+                "changePct": { "type": ["number", "null"] }
+              }
+            }
+          },
+          "reasons": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 200 } }
+        }
+      }
+    }
+  }
+}

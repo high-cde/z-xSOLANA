@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Dashboard locale read-only per orientarsi nello stato verificabile di ZDOS.">
+  <title>ZDOS — Console locale</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <script src="js/dashboard.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#contenuto">Salta al contenuto</a>
+  <header class="topbar">
+    <a class="brand" href="#inizio" aria-label="ZDOS, pagina iniziale">
+      <span class="brand-mark" aria-hidden="true">Z</span>
+      <span>ZDOS <small>CONSOLE LOCALE</small></span>
+    </a>
+    <nav class="primary-nav" aria-label="Navigazione principale">
+      <details class="nav-group" open><summary>Workspace</summary><div class="nav-menu">
+        <a href="#stato"><span aria-hidden="true">◫</span>Panoramica</a><a href="#canali"><span aria-hidden="true">◉</span>Canali</a><a href="#stanze-vocali"><span aria-hidden="true">◖</span>Stanze vocali</a>
+      </div></details>
+      <details class="nav-group" open><summary>Sistema</summary><div class="nav-menu">
+        <a href="#nodi"><span aria-hidden="true">⌘</span>Nodi e operatori</a><a href="#diagnostica"><span aria-hidden="true">◎</span>Servizi</a><a href="#attivita"><span aria-hidden="true">◷</span>Attività</a>
+      </div></details>
+      <details class="nav-group" open><summary>Gestione</summary><div class="nav-menu">
+        <a href="#utenti"><span aria-hidden="true">♙</span>Utenti e ruoli</a><a href="#configurazione"><span aria-hidden="true">⚙</span>Configurazione</a><a href="#audit"><span aria-hidden="true">≡</span>Audit log</a>
+      </div></details>
+    </nav>
+    <div class="topbar-actions"><button class="button button-small" id="refresh-button" type="button">Aggiorna stato</button>
+      <details class="user-menu"><summary aria-label="Apri menu utente"><span class="avatar" aria-hidden="true">Z</span><span class="user-label">Console locale</span><span aria-hidden="true">⌄</span></summary>
+        <div class="nav-menu user-dropdown" aria-label="Menu account"><a href="#profilo">Profilo</a><a href="#sicurezza">Account e sicurezza</a><a href="#preferenze">Preferenze</a><a href="#sessioni">Sessioni</a><a href="#esci">Esci</a></div>
+      </details>
+    </div>
+  </header>
+
+  <main id="inizio"><span id="contenuto" class="main-anchor" tabindex="-1"></span>
+    <section class="hero">
+      <p class="eyebrow">Sistema sperimentale · stato locale</p>
+      <h1>Una console per capire<br>cosa è <span>davvero disponibile.</span></h1>
+      <p class="hero-copy">Esplora i percorsi verificabili di ZDOS, segui una guida per iniziare e consulta lo stato di questo servizio web. Nessuna azione viene eseguita sul sistema.</p>
+      <div class="hero-meta">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span id="service-summary" role="status" aria-live="polite">Lettura dello stato locale…</span>
+        <span class="meta-divider" aria-hidden="true">·</span>
+        <span id="updated-at">In attesa</span>
+      </div>
+    </section>
+
+    <section class="section" id="stato" aria-labelledby="status-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">01 / Quadro del progetto</p>
+          <h2 id="status-heading">Capacità e maturità</h2>
+        </div>
+        <p class="section-note">Livelli dichiarati nella documentazione del repository; non sono misurazioni live del dispositivo.</p>
+      </div>
+      <div class="capability-grid" id="capabilities" aria-live="polite">
+        <p class="loading">Caricamento delle capacità…</p>
+      </div>
+    </section>
+
+    <section class="section" id="diagnostica" aria-labelledby="diagnostics-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">02 / Diagnostica</p>
+          <h2 id="diagnostics-heading">Cosa osserva questa pagina</h2>
+        </div>
+        <p class="section-note">La diagnostica copre solo il processo web locale, non il kernel o l’host.</p>
+      </div>
+      <div class="diagnostic-grid">
+        <article class="panel diagnostic-panel">
+          <div class="panel-title">
+            <span class="icon" aria-hidden="true">◎</span>
+            <h3>Servizio web locale</h3>
+          </div>
+          <dl class="diagnostic-list">
+            <div><dt>API di stato</dt><dd id="api-status">In verifica…</dd></div>
+            <div><dt>Modalità</dt><dd id="api-mode">—</dd></div>
+            <div><dt>Tempo attivo</dt><dd id="uptime">—</dd></div>
+            <div><dt>Runtime</dt><dd id="runtime">—</dd></div>
+          </dl>
+        </article>
+        <article class="panel diagnostic-panel unknown-panel">
+          <div class="panel-title">
+            <span class="icon icon-muted" aria-hidden="true">?</span>
+            <h3>Non osservato da qui</h3>
+          </div>
+          <ul class="plain-list">
+            <li>Esito del boot Linux o bare metal sul tuo hardware.</li>
+            <li>Stato del disco persistente e disponibilità della rete.</li>
+            <li>Integrità o sicurezza di servizi e nodi esterni.</li>
+          </ul>
+          <p class="small-note">Per verificarli, usa i test e le procedure locali documentati.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section unavailable-section" aria-labelledby="workspace-heading">
+      <div class="section-heading"><div><p class="eyebrow">01 / Workspace</p><h2 id="workspace-heading">Canali e stanze vocali</h2></div><p class="section-note">Queste funzioni non sono collegate a questa console.</p></div>
+      <div class="feature-grid">
+        <article class="panel unavailable-card" id="canali"><span class="feature-icon" aria-hidden="true">◉</span><div><h3>Canali</h3><p>Non disponibile: la console non espone contenuti o attività di canale.</p></div><span class="availability">Non disponibile</span></article>
+        <article class="panel unavailable-card" id="stanze-vocali"><span class="feature-icon" aria-hidden="true">◖</span><div><h3>Stanze vocali</h3><p>Non disponibile: non è integrato un servizio di comunicazione vocale.</p></div><span class="availability">Non disponibile</span></article>
+      </div>
+    </section>
+    <section class="section unavailable-section" aria-labelledby="nodes-heading">
+      <div class="section-heading"><div><p class="eyebrow">02 / Sistema</p><h2 id="nodes-heading">Nodi e operatori</h2></div><p class="section-note">Nessun nodo remoto è interrogato da questa pagina.</p></div>
+      <article class="panel unavailable-card" id="nodi"><span class="feature-icon" aria-hidden="true">⌘</span><div><h3>Inventario nodi</h3><p>Non disponibile: il backend restituisce solo lo stato del processo web locale, non un inventario di nodi o operatori.</p></div><span class="availability">Nessun dato</span></article>
+    </section>
+    <section class="section unavailable-section" id="attivita" aria-labelledby="activity-heading">
+      <div class="section-heading"><div><p class="eyebrow">03 / Sistema</p><h2 id="activity-heading">Attività</h2></div><p class="section-note">Non è presente un registro di eventi per questa console.</p></div>
+      <article class="panel unavailable-card"><span class="feature-icon" aria-hidden="true">◷</span><div><h3>Registro attività</h3><p>Non disponibile: il timestamp nella diagnostica indica quando è stata generata la risposta di stato; non è un log di audit o una cronologia di eventi.</p></div><span class="availability">Non disponibile</span></article>
+    </section>
+    <section class="section" id="iniziare" aria-labelledby="getting-started-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">03 / Primo avvio</p>
+          <h2 id="getting-started-heading">Scegli il tuo percorso</h2>
+        </div>
+        <p class="section-note">ZDOS è una base di sviluppo sperimentale, non una distro general-purpose.</p>
+      </div>
+      <div class="path-grid">
+        <article class="panel path-card">
+          <span class="step">PERCORSO 01</span>
+          <h3>Provare ZDOS Linux</h3>
+          <p>Costruisci l’immagine e avviala in QEMU. Il boot live è disponibile; l’installer non è ancora incluso.</p>
+          <a class="text-link" href="https://github.com/high-cde/ZDOS/blob/main/docs/OPERATIONS.md">Prerequisiti e guida operativa <span aria-hidden="true">↗</span></a>
+        </article>
+        <article class="panel path-card">
+          <span class="step">PERCORSO 02</span>
+          <h3>Sviluppare e verificare</h3>
+          <p>Prepara Zlang e gli strumenti di build, quindi esegui i gate riproducibili per distro e runtime.</p>
+          <a class="text-link" href="https://github.com/high-cde/ZDOS/blob/main/tools/zdos-selftest.sh">Esplora i test automatici <span aria-hidden="true">↗</span></a>
+        </article>
+        <article class="panel path-card">
+          <span class="step">PERCORSO 03</span>
+          <h3>Usare MemPalace</h3>
+          <p>Modulo opzionale da terminale per memoria e ricerca. Questa console non legge né modifica i tuoi dati.</p>
+          <a class="text-link" href="https://github.com/high-cde/ZDOS/tree/main/core/memory">Guida e comandi MemPalace <span aria-hidden="true">↗</span></a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="sviluppo" aria-labelledby="developer-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">04 / Area sviluppatore</p>
+          <h2 id="developer-heading">Build, test e prove</h2>
+        </div>
+        <a class="text-link" href="https://github.com/high-cde/ZDOS/tree/main/evidence">Evidence Chain <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="developer-panel">
+        <div>
+          <h3>Gate locale completo</h3>
+          <p>Esegui i controlli di build e boot dalla root del repository, dopo aver installato i prerequisiti indicati nella guida operativa.</p>
+        </div>
+        <code class="command">./tools/zdos-selftest.sh --all</code>
+        <a class="button" href="https://github.com/high-cde/ZDOS/blob/main/docs/OPERATIONS.md#ci">Come interpretare i risultati</a>
+      </div>
+    </section>
+
+    <section class="section" id="limiti" aria-labelledby="limits-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">05 / Confini espliciti</p>
+          <h2 id="limits-heading">Sicurezza e funzioni future</h2>
+        </div>
+      </div>
+      <div class="limits-grid">
+        <article class="panel">
+          <h3>Attivo qui</h3>
+          <p>Consultazione in sola lettura dello stato di questo processo web e collegamenti a prove e documentazione.</p>
+        </article>
+        <article class="panel roadmap-panel">
+          <h3>Non disponibile in questa console</h3>
+          <p>Account, ruoli, comandi remoti, deploy, gestione diretta della memoria e rete multi-nodo. Non inserire credenziali o dati personali: non esiste un flusso account o di invio.</p>
+        </article>
+      </div>
+      <p class="trust-note">Un controllo di raggiungibilità non dimostra anonimato, cifratura o sicurezza. La maturità delle capacità segue <a href="https://github.com/high-cde/ZDOS/blob/main/docs/MATURITY.md">il modello documentato</a>.</p>
+    </section>
+    <section class="section unavailable-section" aria-labelledby="management-heading">
+      <div class="section-heading"><div><p class="eyebrow">06 / Gestione</p><h2 id="management-heading">Account e configurazione</h2></div><p class="section-note">La console non implementa autenticazione o gestione delle impostazioni.</p></div>
+      <div class="feature-grid management-grid">
+        <article class="panel unavailable-card" id="utenti"><span class="feature-icon" aria-hidden="true">♙</span><div><h3>Utenti e ruoli</h3><p>Non disponibile: non esistono account, ruoli o autorizzazioni in questa applicazione.</p></div><span class="availability">Non disponibile</span></article>
+        <article class="panel unavailable-card" id="configurazione"><span class="feature-icon" aria-hidden="true">⚙</span><div><h3>Configurazione</h3><p>Non disponibile: questa pagina non modifica la configurazione del server.</p></div><span class="availability">Non disponibile</span></article>
+        <article class="panel unavailable-card" id="audit"><span class="feature-icon" aria-hidden="true">≡</span><div><h3>Audit log</h3><p>Non disponibile: il server non registra un audit log utente.</p></div><span class="availability">Non disponibile</span></article>
+      </div>
+    </section>
+    <section class="section unavailable-section" aria-labelledby="account-heading">
+      <div class="section-heading"><div><p class="eyebrow">07 / Account locale</p><h2 id="account-heading">Profilo e preferenze</h2></div><p class="section-note">Il menu account descrive funzioni assenti; non rappresenta una sessione autenticata.</p></div>
+      <div class="feature-grid account-grid">
+        <article class="panel unavailable-card" id="profilo"><div><h3>Profilo</h3><p>Non disponibile: nessuna identità utente è configurata.</p></div><span class="availability">Non disponibile</span></article>
+        <article class="panel unavailable-card" id="sicurezza"><div><h3>Account e sicurezza</h3><p>Non disponibile: non ci sono credenziali o impostazioni account gestite qui.</p></div><span class="availability">Non disponibile</span></article>
+        <article class="panel unavailable-card" id="preferenze"><div><h3>Preferenze</h3><p>Non disponibile: la console non salva preferenze utente.</p></div><span class="availability">Non disponibile</span></article>
+        <article class="panel unavailable-card" id="sessioni"><div><h3>Sessioni</h3><p>Non disponibile: non viene creata una sessione utente.</p></div><span class="availability">Non disponibile</span></article>
+        <article class="panel unavailable-card" id="esci"><div><h3>Esci</h3><p>Nessuna sessione autenticata da chiudere.</p></div><span class="availability">Non applicabile</span></article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <a class="brand footer-brand" href="#inizio"><span class="brand-mark" aria-hidden="true">Z</span><span>ZDOS</span></a>
+    <span>Stato locale osservabile · nessuna mutazione · nessun nodo remoto collegato</span>
+    <a href="https://github.com/high-cde/ZDOS">Repository <span aria-hidden="true">↗</span></a>
+  </footer>
+</body>
+</html>

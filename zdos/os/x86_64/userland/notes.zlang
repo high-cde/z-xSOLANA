@@ -1,0 +1,8 @@
+# Prova locale di output e memoria Zlang/ZLB2.
+# Non apre connessioni e non attesta audit o servizi esterni.
+
+emit [LOCAL] Avvio prova notes...
+let note_id = 1
+let security_level = 3
+let buffer_status = 1
+emit [LOCAL] Record testuale compilato nel bytecode ZLB2.

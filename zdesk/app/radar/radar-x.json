@@ -1,0 +1,8 @@
+{
+  "schema": "zdos-radar-x/1",
+  "generatedAt": "2026-11-14T04:30:00+01:00",
+  "example": true,
+  "note": "ESEMPIO vuoto: nessun account. L'agente Radar sovrascrive questo file con dati reali.",
+  "weights": { "shillHistory": 30, "walletProof": 20, "engagement": 15, "accountAge": 10, "followRatio": 10, "deletedPosts": 10, "verified": 5 },
+  "accounts": []
+}

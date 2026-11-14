@@ -1,0 +1,231 @@
+#!/bin/sh
+
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev 2>/dev/null || true
+mount -t tmpfs tmpfs /run
+modprobe_bin=$(command -v modprobe 2>/dev/null || true)
+if [ -n "$modprobe_bin" ]; then
+  for module in ahci nvme sd_mod xhci_pci ehci_pci ohci_pci uhci_hcd usb_storage uas usbhid hid_generic e1000 e1000e igb r8169 virtio_net; do
+    "$modprobe_bin" "$module" 2>/run/hardware-modules.log || true
+  done
+fi
+if command -v mdev >/dev/null 2>&1; then
+  mdev -s 2>/run/mdev.log || true
+fi
+
+hostname zdos
+mkdir -p /home/zdos /mnt/data /mnt/root
+
+# Configure detected Ethernet interfaces when BusyBox provides udhcpc.
+if [ "${1:-}" != zdos-root-mounted ] && [ -x /bin/udhcpc ] && [ -d /sys/class/net ]; then
+  for interface in /sys/class/net/*; do
+    [ -e "$interface" ] || continue
+    interface=${interface##*/}
+    [ "$interface" = lo ] && continue
+    /bin/udhcpc -i "$interface" -n -q -t 3 >>/run/udhcpc.log 2>&1 || true
+  done
+fi
+
+# Persistent storage v1: only mount the first data volume after verifying the
+# UUID supplied by the boot contract. The live image remains usable without it.
+cmdline=$(cat /proc/cmdline 2>/dev/null || true)
+get_cmdline_value() {
+  for argument in $cmdline; do
+    case "$argument" in
+      "$1"=*) printf '%s\n' "${argument#*=}"; return 0 ;;
+    esac
+  done
+}
+data_uuid=$(get_cmdline_value zdos.data_uuid || true)
+root_uuid=$(get_cmdline_value zdos.root_uuid || true)
+persistence_test=$(get_cmdline_value zdos.persistence_test || true)
+persistence_state=live-only
+if [ -n "$modprobe_bin" ]; then
+  for module in virtio virtio_ring virtio_pci virtio_blk ata_generic ata_piix libata sd_mod mbcache jbd2 ext4; do
+    "$modprobe_bin" "$module" 2>/run/persistence-modprobe.log || true
+  done
+  if command -v mdev >/dev/null 2>&1; then
+    mdev -s 2>>/run/mdev.log || true
+  fi
+fi
+# Minimal images may not contain modules.dep. Load storage modules directly,
+# in dependency order, so virtio-blk and ext4 are available before probing.
+if command -v insmod >/dev/null 2>&1; then
+  module_root=/lib/modules/$(uname -r)/kernel
+  for module_path in \
+    "$module_root/drivers/virtio/virtio.ko" \
+    "$module_root/drivers/virtio/virtio_pci_modern_dev.ko" \
+    "$module_root/drivers/virtio/virtio_pci_legacy_dev.ko" \
+    "$module_root/drivers/virtio/virtio_pci.ko" \
+    "$module_root/drivers/virtio/virtio_ring.ko" \
+    "$module_root/drivers/block/virtio_blk.ko" \
+    "$module_root/lib/crc16.ko" \
+    "$module_root/crypto/crc32c_generic.ko" \
+    "$module_root/lib/libcrc32c.ko" \
+    "$module_root/fs/mbcache.ko" \
+    "$module_root/fs/jbd2/jbd2.ko" \
+    "$module_root/fs/ext4/ext4.ko"; do
+    [ -f "$module_path" ] && insmod "$module_path" 2>>/run/persistence-modprobe.log || true
+  done
+  command -v mdev >/dev/null 2>&1 && mdev -s 2>>/run/mdev.log || true
+fi
+if [ -n "$root_uuid" ] && [ "${1:-}" != zdos-root-mounted ]; then
+  case $root_uuid in
+    *[!A-Fa-f0-9-]*)
+      printf 'ZDOS_ROOT_HALTED reason=invalid-root-uuid\n' >&2
+      if command -v poweroff >/dev/null 2>&1; then exec poweroff -f; fi
+      if command -v halt >/dev/null 2>&1; then exec halt -f; fi
+      while :; do sleep 3600; done
+      ;;
+  esac
+  root_device=
+  root_attempt=0
+  printf 'ZDOS_ROOT_SEARCH uuid=%s\n' "$root_uuid"
+  while [ -n "$root_uuid" ] && [ "$root_attempt" -lt 50 ] && [ -z "$root_device" ]; do
+    for candidate in /dev/vda1 /dev/vda /dev/xvda1 /dev/sda1 /dev/sda /dev/hda1 /dev/hda /dev/nvme*n*p* /dev/mmcblk*p*; do
+      [ -b "$candidate" ] || continue
+      root_blkid=$(/sbin/blkid "$candidate" 2>/run/root-blkid.log || true)
+      actual_root_uuid=$(printf '%s\n' "$root_blkid" | sed -n 's/.*UUID="\([^"]*\)".*/\1/p')
+      [ -n "$actual_root_uuid" ] && printf 'ZDOS_ROOT_CANDIDATE device=%s uuid=%s\n' "$candidate" "$actual_root_uuid"
+      if [ "$actual_root_uuid" = "$root_uuid" ]; then root_device=$candidate; break; fi
+    done
+    [ -n "$root_device" ] || { sleep 0.1; root_attempt=$((root_attempt + 1)); }
+  done
+  if [ -n "$root_device" ] && mount -t ext4 "$root_device" /mnt/root 2>/run/root-mount.log; then
+    if [ -f /mnt/root/etc/zdos/installed ] && command -v switch_root >/dev/null 2>&1; then
+      printf 'ZDOS_ROOT_PIVOT uuid=%s\n' "$root_uuid"
+      exec switch_root /mnt/root /init zdos-root-mounted
+    fi
+    umount /mnt/root 2>/dev/null || true
+  fi
+  printf 'ZDOS_ROOT_HALTED reason=root-volume-unavailable\n' >&2
+  [ -s /run/root-blkid.log ] && cat /run/root-blkid.log >&2
+  [ -s /run/root-mount.log ] && cat /run/root-mount.log >&2
+  if command -v poweroff >/dev/null 2>&1; then exec poweroff -f; fi
+  if command -v halt >/dev/null 2>&1; then exec halt -f; fi
+  while :; do sleep 3600; done
+fi
+blkid_bin=$(command -v blkid 2>/dev/null || true)
+persistence_device=
+if [ -z "$data_uuid" ]; then
+  printf 'ZDOS_PERSISTENCE_NO_UUID\n'
+elif [ -z "$blkid_bin" ]; then
+  printf 'ZDOS_PERSISTENCE_NO_BLKID\n'
+else
+  attempt=0
+  while [ "$attempt" -lt 50 ] && [ -z "$persistence_device" ]; do
+    for candidate in /dev/vda1 /dev/vda /dev/sda1 /dev/sda /dev/hda1 /dev/hda; do
+      if [ -b "$candidate" ]; then
+        blkid_output=$("$blkid_bin" "$candidate" 2>/run/persistence-blkid.log || true)
+        actual_uuid=$(printf '%s\n' "$blkid_output" | sed -n 's/.*UUID="\([^"]*\)".*/\1/p')
+        if [ "$actual_uuid" = "$data_uuid" ]; then
+          persistence_device="$candidate"
+          break
+        fi
+      fi
+    done
+    if [ -z "$persistence_device" ]; then
+      sleep 0.1
+      attempt=$((attempt + 1))
+    fi
+  done
+  if [ -z "$persistence_device" ]; then
+    printf 'ZDOS_PERSISTENCE_UUID_MISMATCH\n'
+  elif mount "$persistence_device" /mnt/data 2>/run/persistence.log; then
+    persistence_state=enabled
+    if [ "$persistence_test" = write ]; then
+      printf 'ZDOS persistent-storage-v1 marker\n' > /mnt/data/.zdos-persistence-marker
+      sync
+      printf 'ZDOS_PERSISTENCE_WRITE_OK\n'
+    elif [ "$persistence_test" = read ]; then
+      if [ "$(cat /mnt/data/.zdos-persistence-marker 2>/dev/null)" = 'ZDOS persistent-storage-v1 marker' ]; then
+        printf 'ZDOS_PERSISTENCE_READ_OK\n'
+      else
+        printf 'ZDOS_PERSISTENCE_READ_FAILED\n'
+      fi
+    fi
+  else
+    printf 'ZDOS_PERSISTENCE_MOUNT_FAILED\n'
+  fi
+fi
+
+# Resident organism hook runs after storage selection. If persistence is enabled,
+# state and evidence live on the data volume; otherwise they remain live-only.
+organism_request=
+for argument in $cmdline; do
+  case "$argument" in
+    zdos.organism=*) organism_request="${argument#*=}"; break ;;
+  esac
+done
+organism_state=disabled
+if [ "$organism_request" = on ]; then
+  organism_conf=/etc/zdos/organism.conf
+  [ -r "$organism_conf" ] && . "$organism_conf"
+  [ -n "${ZDOS_ZLANG_ROOT:-}" ] && export ZDOS_ZLANG_ROOT
+  if [ "$persistence_state" = enabled ]; then
+    organism_state_dir=/mnt/data/.zdos/organism
+  else
+    organism_state_dir="${ZDOS_ORGANISM_STATE_DIR:-/var/lib/zdos/organism}"
+  fi
+  organism_state=HALT
+  if [ -x /usr/bin/python3 ] && [ -f "${ZDOS_ORGANISM_RUNTIME:-}" ] && [ -f "${ZDOS_ORGANISM_PROGRAM:-}" ]; then
+    mkdir -p "$organism_state_dir"
+    if /usr/bin/python3 "$ZDOS_ORGANISM_RUNTIME" --once \
+      --state-dir "$organism_state_dir" \
+      --program "$ZDOS_ORGANISM_PROGRAM" >/run/zdos-organism.log 2>&1; then
+      organism_state=started
+    else
+      organism_state=HALT
+      printf 'ZDOS_ORGANISM_HALTED reason=tick-failed\n'
+      [ -s /run/zdos-organism.log ] && cat /run/zdos-organism.log
+    fi
+  else
+    printf 'ZDOS_ORGANISM_HALTED reason=runtime-not-packaged\n'
+  fi
+fi
+
+printf '\nZDOS Linux 0.2\n'
+printf 'Kernel: '; uname -r
+printf 'Network: '; ip -brief address 2>/dev/null || printf 'not configured\n'
+printf 'Persistence: '; printf '%s\n' "$persistence_state"
+printf 'Organism: '; printf '%s\n' "$organism_state"
+printf 'ZDOS_READY\n'
+
+# Automated persistence tests terminate only this ZDOS guest after flushing
+# and unmounting the data filesystem. This never powers off the VPS host.
+if [ -n "$persistence_test" ] && [ -n "$persistence_device" ]; then
+  sync
+  umount /mnt/data 2>/run/persistence-umount.log || true
+  sync
+  if command -v poweroff >/dev/null 2>&1; then
+    exec poweroff -f
+  elif command -v halt >/dev/null 2>&1; then
+    exec halt -f
+  fi
+fi
+
+# The live image starts as an unprivileged operator. Root recovery is an explicit
+# local boot decision and is never enabled by a passwordless default account.
+export ZDOS_CONSOLE=1
+export HOME=/home/zdos
+export PATH=/mnt/data/usr/bin:/mnt/data/usr/sbin:/bin:/sbin:/usr/bin:/usr/sbin
+cd /
+if [ "$(get_cmdline_value zdos.insecure_root_shell || true)" = 1 ]; then
+  export PS1='x@zdos ${PWD} # '
+  printf 'ZDOS_CONSOLE_USER=root mode=recovery\n'
+  exec /bin/sh
+fi
+export PS1='x@zdos ${PWD} $ '
+printf 'ZDOS_CONSOLE_USER=zdos mode=unprivileged\n'
+if command -v su >/dev/null 2>&1; then
+  exec su -p -s /bin/sh zdos
+fi
+printf 'ZDOS_CONSOLE_HALTED reason=privilege-drop-unavailable; refusing root shell\n' >&2
+if command -v poweroff >/dev/null 2>&1; then
+  exec poweroff -f
+fi
+if command -v halt >/dev/null 2>&1; then
+  exec halt -f
+fi
+while :; do sleep 3600; done

@@ -1,0 +1,19 @@
+{
+  "schema": "zdos-radar-x/1",
+  "generatedAt": "2026-11-14T04:30:00+01:00",
+  "example": true,
+  "note": "ESEMPIO DIMOSTRATIVO: handle e numeri inventati per mostrare il formato. Non sono persone reali e non vanno pubblicati.",
+  "weights": { "shillHistory": 30, "walletProof": 20, "engagement": 15, "accountAge": 10, "followRatio": 10, "deletedPosts": 10, "verified": 5 },
+  "accounts": [
+    { "handle": "esempio_alfa", "label": "da_seguire", "score": 78, "checkedAt": "2026-11-14T04:30:00+01:00",
+      "signals": { "accountAgeDays": 1460, "verified": false, "followers": 12000, "following": 800, "engagementRate": 0.021, "shillHitRate": 0.7, "walletProof": "confermato", "deletedPosts": 0 },
+      "shilled": [ { "symbol": "ESEMPIO1", "outcome": "vivo", "changePct": 35 } ],
+      "reasons": ["ESEMPIO", "account vecchio", "wallet dichiarato ha comprato prima del post"] },
+    { "handle": "esempio_beta", "label": "da_osservare", "score": 52, "checkedAt": "2026-11-14T04:30:00+01:00",
+      "signals": { "accountAgeDays": 210, "verified": true, "followers": 45000, "following": 4000, "engagementRate": 0.004, "shillHitRate": 0.4, "walletProof": "nessun_wallet", "deletedPosts": 2 },
+      "reasons": ["ESEMPIO", "engagement basso rispetto ai follower"] },
+    { "handle": "esempio_gamma", "label": "evitare", "score": 18, "checkedAt": "2026-11-14T04:30:00+01:00",
+      "signals": { "accountAgeDays": 40, "verified": true, "followers": 90000, "following": 90000, "engagementRate": 0.0007, "shillHitRate": 0.1, "walletProof": "non_confermato", "deletedPosts": 9 },
+      "reasons": ["ESEMPIO", "9 post spariti dopo i pump", "il wallet dichiarato non ha comprato"] }
+  ]
+}

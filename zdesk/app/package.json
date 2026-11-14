@@ -1,0 +1,19 @@
+{
+  "name": "zdesk-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dashboard Solana privata stile GMGN per HighKali desk (solo lettura, locale)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "screenshots": "node scripts/screenshots.js",
+    "ninja": "node scripts/ninja-daemon.js",
+    "ninja:test": "node scripts/ninja-selftest.js",
+    "copytop": "node scripts/copytop-fetch.js"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "express": "4.21.2",
+    "puppeteer-core": "24.22.3"
+  }
+}

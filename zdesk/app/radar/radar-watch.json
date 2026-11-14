@@ -1,0 +1,7 @@
+{
+  "schema": "zdos-radar-watch/1",
+  "example": true,
+  "note": "Watchlist Radar. Aggiungi qui mint e handle da seguire. I token desk ($OV, $DSN meme) e i survivors sono già inclusi da zdesk.",
+  "tokens": [],
+  "handles": []
+}

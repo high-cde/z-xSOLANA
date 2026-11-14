@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZDOS — Stato verificabile</title>
+  <style>
+    :root { color-scheme: dark; --bg:#09090b; --panel:#111827; --line:#334155; --text:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8; --ok:#34d399; --warn:#fbbf24; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; background:var(--bg); color:var(--text); font:16px/1.55 system-ui,sans-serif; }
+    main { width:min(980px,calc(100% - 32px)); margin:0 auto; padding:64px 0; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,4rem); letter-spacing:-.04em; }
+    h2 { margin:0 0 12px; font-size:1.2rem; }
+    p { color:var(--muted); }
+    .eyebrow { color:var(--accent); font:700 .78rem/1.2 ui-monospace,monospace; letter-spacing:.14em; text-transform:uppercase; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin-top:32px; }
+    .panel { border:1px solid var(--line); border-radius:12px; background:var(--panel); padding:22px; }
+    .panel.wide { grid-column:1/-1; }
+    .status { border-left:3px solid var(--warn); padding-left:14px; }
+    .status.ok { border-left-color:var(--ok); }
+    pre { overflow:auto; margin:16px 0 0; padding:14px; background:#020617; border-radius:8px; color:#cbd5e1; }
+    a { color:var(--accent); }
+    ul { margin:0; padding-left:20px; color:var(--muted); }
+    footer { margin-top:32px; color:var(--muted); font-size:.9rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">ZDOS / local status surface</div>
+    <h1>Build what you can prove.</h1>
+    <p>Questa pagina mostra esclusivamente la configurazione e la raggiungibilità locale esposte da <code>/backend/api.php?action=status</code>. Non presenta nodi remoti, Starlink, consenso distribuito, C2 o capability non verificate.</p>
+    <section class="grid">
+      <article class="panel wide status" id="status-panel">
+        <h2>Stato effettivo</h2>
+        <p id="status-message">Lettura della telemetria locale in corso.</p>
+        <pre id="telemetry">Nessun dato ricevuto.</pre>
+      </article>
+      <article class="panel">
+        <h2>Superfici verificate</h2>
+        <ul>
+          <li>Build e boot x86_64 tramite la pipeline CI.</li>
+          <li>Contratto bytecode ZLB2 del compilatore Zlang.</li>
+          <li><a href="https://x-zdos.it/retro-computing.html" target="_blank" rel="noopener">ZRetro</a>: ambiente retro nativo e pagina Retro Computing.</li>
+          <li>Endpoint PHP di stato locale, senza autenticazione incorporata nella pagina.</li>
+        </ul>
+      </article>
+      <article class="panel">
+        <h2>Non implementato qui</h2>
+        <ul>
+          <li>Consenso L1, mining e pagamenti.</li>
+          <li>Collegamenti satellitari o shell remota.</li>
+          <li>Certificazione di anonimato, cifratura o sicurezza.</li>
+        </ul>
+      </article>
+      <article class="panel wide">
+        <h2>Codice e prove</h2>
+        <p><a href="https://github.com/high-cde/ZDOS">Repository ZDOS</a> · <a href="https://github.com/high-cde/ZDOS/releases">Release</a> · <a href="../docs/OPERATIONS.md">Operazioni</a> · <a href="../evidence/README.md">Evidence Chain</a></p>
+      </article>
+    </section>
+    <footer>ZDOS · stato locale osservabile · nessuna azione remota viene avviata da questa pagina.</footer>
+  </main>
+  <script>
+    const statusMessage = document.getElementById('status-message');
+    const telemetry = document.getElementById('telemetry');
+    const panel = document.getElementById('status-panel');
+    fetch('/backend/api.php?action=status', { credentials: 'same-origin' })
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error(`HTTP ${response.status}`)))
+      .then((data) => {
+        statusMessage.textContent = `Stato: ${data.status || 'UNVERIFIED_LOCAL'} · il risultato non è un’attestazione indipendente.`;
+        panel.classList.toggle('ok', data.status === 'LOCAL_STATUS_ONLY');
+        telemetry.textContent = JSON.stringify(data, null, 2);
+      })
+      .catch((error) => {
+        statusMessage.textContent = 'Telemetria locale non disponibile; nessuna capability viene assunta attiva.';
+        telemetry.textContent = error.message;
+      });
+  </script>
+</body>
+</html>
