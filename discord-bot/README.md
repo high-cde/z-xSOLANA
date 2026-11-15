@@ -50,3 +50,20 @@ Ogni 60 s il bot legge `GET /api/events/feed` di OurVelvet (127.0.0.1:8000). Pub
 
 - **AutoMod nativo** (serve *Gestire il server*): regole `ZDOS · anti-spam`, `ZDOS · menzioni di massa` (max 5, protezione raid di menzioni), `ZDOS · link esterni` (bloccati tutti i link http/https tranne x-zdos.it, discord.com/.gg, discordapp.com, discord.media, solscan.io, polygonscan.com, jup.ag, t.me/telegram.me), `ZDOS · Telegram solo ufficiale` (solo t.me/OurVelvetHub), `ZDOS · frasi truffa`. Admin e chi ha *Gestire il server* sono esentati da Discord. Le regole di altri bot non vengono toccate.
 - **Anti-raid lato bot** (serve l'intent *Server Members* nel Developer Portal): chi entra con un account più giovane di `MIN_ACCOUNT_DAYS` (7) riceve il ruolo **In verifica** e vede solo #verifica-accesso; si sblocca da solo quando l'account raggiunge l'età minima o con il pulsante *Approva* in #mod-log (staff con *Gestire i ruoli*). Con `RAID_JOINS` (8) ingressi in `RAID_WINDOW_S` (60) secondi scatta la modalità raid per `RAID_MINUTES` (15): tutti i nuovi ingressi vanno in verifica e servono l'approvazione dello staff. Log in #mod-log.
+
+## Airdrop VELVET e invito pubblico
+
+- `/setup-server` crea la categoria **🎁 AIRDROP VELVET** con #airdrop-velvet (sola lettura, messaggio fisso con periodo 15/12/2026–24/03/2027, massimo 100 wallet, 20.000 VELVET ($OV) ciascuno, requisiti: risposta al post su X, quest su https://quest.x-zdos.it, ruolo verificato su Discord) e #airdrop-domande. Nessuna promessa di guadagno, DYOR, nota anti-truffa (lo staff non scrive mai in DM per primo), link solo x-zdos.it.
+- Il ruolo che conta come verificato si indica con `AIRDROP_VERIFIED_ROLE` in `config.env` (solo testo). Finché è vuoto il messaggio mostra "DA COMUNICARE". Il bot **non crea né assegna** ruoli airdrop.
+- Invito pubblico permanente (max_age 0, usi illimitati) su #benvenuto: riusa quello salvato in `state.json`, poi un invito permanente già presente sul canale, altrimenti ne crea uno. Mostrato in anteprima, loggato in #log-bot e nel journal all'applicazione.
+
+## Applicare dal terminale del VPS
+
+Il bot in esecuzione apre un socket locale `/var/lib/zdiscord/admin.sock` (Unix, 0600, non esposto da nginx). Lo script usa la stessa logica del comando slash, con lo stato e la connessione del servizio:
+
+```
+node /opt/zdiscord/scripts/apply.js --dry-run          # anteprima, non cambia nulla
+node /opt/zdiscord/scripts/apply.js --apply            # chiede di scrivere APPLICA
+node /opt/zdiscord/scripts/apply.js --apply --yes      # non interattivo (SSH)
+# opzioni: --guild <id>  --archive-old  --json
+```

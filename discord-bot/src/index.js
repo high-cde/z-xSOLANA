@@ -16,6 +16,8 @@ const { makeSolana } = require('./solana');
 const { makeNonceStore } = require('./verify');
 const { dispatch } = require('./commands');
 const { makeServer } = require('./http');
+const { makeAdminServer, listenAdmin } = require('./admin');
+const path = require('path');
 
 if (!cfg.token) { console.error('DISCORD_TOKEN mancante: lancia /opt/zdiscord/setup-token.sh'); process.exit(1); }
 
@@ -204,30 +206,58 @@ async function onModal(it) {
   return it.reply({ content: r.msg, flags: MessageFlags.Ephemeral });
 }
 
+let setupBusy = false;
+// /setup-server condiviso tra comando slash e terminale (scripts/apply.js via socket locale).
+async function runSetup(guild, mode, { archiveOld = false, by = 'terminale VPS' } = {}) {
+  await guild.roles.fetch(); await guild.channels.fetch();
+  const missing = guild.members.me.permissions.missing(club.BOT_PERMS);
+  if (missing.length) return { missing };
+  const opts = { archiveOld, memberIntent, minAccountDays: cfg.antiRaid.minAccountDays, airdropRole: cfg.airdropRole };
+  if (mode === 'preview') return { preview: await setup.preview(guild, state, opts) };
+  if (setupBusy) throw new Error('un /setup-server applica è già in corso: riprova quando finisce');
+  setupBusy = true;
+  let r; try { r = await setup.apply(guild, state, opts); } finally { setupBusy = false; }
+  console.log('setup-server applicato da', by, '·', r.done + '/' + r.planned, 'modifiche ·', r.errors.length, 'errori', r.invite ? '· invito ' + r.invite.url : '');
+  await sendTo(guild.id, 'log-bot', { content: 'setup-server applicato da ' + by + ': ' + r.done + '/' + r.planned + ' modifiche, ' + r.errors.length + ' errori.' + (r.invite ? '\nInvito pubblico (' + r.invite.how + '): ' + r.invite.url : ''), allowedMentions: { parse: [] } });
+  return { result: r };
+}
+
+async function adminHandle(req) {
+  if (!client.isReady()) return { ok: false, error: 'bot non ancora connesso a Discord' };
+  const mode = req.mode === 'apply' ? 'apply' : 'preview';
+  const guilds = [...client.guilds.cache.values()];
+  const guild = req.guildId ? client.guilds.cache.get(String(req.guildId)) : (guilds.length === 1 ? guilds[0] : null);
+  if (!guild) return { ok: false, error: req.guildId ? 'server non trovato' : 'il bot è in ' + guilds.length + ' server: indica --guild <id>', guilds: guilds.map((g) => ({ id: g.id, name: g.name })) };
+  const out = await runSetup(guild, mode, { archiveOld: !!req.archiveOld, by: 'terminale VPS' });
+  const base = { ok: !out.missing, mode, guild: { id: guild.id, name: guild.name }, memberIntent };
+  if (out.missing) return { ...base, missing: out.missing };
+  if (out.preview) { const p = out.preview; return { ...base, lines: p.lines, warnings: p.warnings, invite: p.invite, missingExtra: p.perms.missingExtra }; }
+  const r = out.result; return { ...base, planned: r.planned, done: r.done, errors: r.errors, warnings: r.warnings, msgs: r.msgs, invite: r.invite };
+}
+
 async function onVelvetCommand(it) {
   const eph = { flags: MessageFlags.Ephemeral };
   if (it.commandName === 'ingresso-18') return it.reply({ ...setup.gateMessage(), ...eph });
   if (it.commandName === 'setup-server') {
     if (!isAdmin(it)) return it.reply({ content: 'Solo il proprietario del server o un amministratore può usare /setup-server.', ...eph });
     await it.deferReply(eph);
-    await it.guild.roles.fetch(); await it.guild.channels.fetch();
-    const missing = it.guild.members.me.permissions.missing(club.BOT_PERMS);
-    if (missing.length) return it.editReply({ content: 'Al bot mancano questi permessi: ' + missing.join(', ') + '.\nRiautorizzalo con il link di invito aggiornato:\n' + require('./invite').inviteUrl(cfg.applicationId) });
     const archiveOld = !!it.options.getBoolean('archivia_vecchie');
-    const opts = { archiveOld, memberIntent, minAccountDays: cfg.antiRaid.minAccountDays };
-    if (it.options.getSubcommand() === 'anteprima') {
-      const p = await setup.preview(it.guild, state, opts);
+    const mode = it.options.getSubcommand() === 'anteprima' ? 'preview' : 'apply';
+    const out = await runSetup(it.guild, mode, { archiveOld, by: '<@' + it.user.id + '>' });
+    if (out.missing) return it.editReply({ content: 'Al bot mancano questi permessi: ' + out.missing.join(', ') + '.\nRiautorizzalo con il link di invito aggiornato:\n' + require('./invite').inviteUrl(cfg.applicationId) });
+    if (mode === 'preview') {
+      const p = out.preview;
       const body = (p.lines.length ? p.lines.join('\n') : 'Nessuna modifica: il server è già allineato.');
       const warn = p.warnings.join('\n');
       const embeds = [
         { title: '/setup-server · anteprima (' + p.lines.length + ' modifiche)', color: 0xffd56a, description: body.slice(0, 4000) + (body.length > 4000 ? '\n…' : '') },
         { title: 'Struttura finale', color: 0x9945ff, description: club.layoutText().slice(0, 4000) },
       ];
+      embeds[0].description = (embeds[0].description + '\n\n🔗 Invito pubblico #benvenuto: ' + (p.invite.url || (p.invite.op === 'invite.blocked' ? 'non creabile (permesso mancante)' : 'verrà creato con applica'))).slice(0, 4096);
       if (warn) embeds.push({ title: 'Avvisi', color: 0xffc93c, description: (warn + (p.perms.missingExtra.length ? '\n\nNuovo link di invito (aggiunge ' + p.perms.missingExtra.join(', ') + '):\n' + require('./invite').inviteUrl(cfg.applicationId) : '')).slice(0, 4000) });
       return it.editReply({ embeds });
     }
-    const r = await setup.apply(it.guild, state, opts);
-    await sendTo(it.guild.id, 'log-bot', { content: 'setup-server applicato da <@' + it.user.id + '>: ' + r.done + '/' + r.planned + ' modifiche, ' + r.errors.length + ' errori.', allowedMentions: { parse: [] } });
+    const r = out.result;
     return it.editReply({ embeds: [{ title: '/setup-server · applicato', color: r.errors.length ? 0xffc93c : 0x14f195,
       description: ('Modifiche: ' + r.done + '/' + r.planned + '\n' + r.msgs.join('\n') + (r.errors.length ? '\n\n**Errori**\n' + r.errors.join('\n') : '') + (r.warnings.length ? '\n\n**Avvisi**\n' + r.warnings.join('\n') : '') + '\n\nRilanciare il comando è sicuro: applica solo quello che manca.').slice(0, 4000) }] });
   }
@@ -313,6 +343,10 @@ client.on(Events.InteractionCreate, async (it) => {
 
 deps.relayStatus = () => ({ setupGuilds: Object.keys(state.data.guilds).filter((g) => state.data.guilds[g].setupAt).length, latestEventId: state.latestEventId });
 makeServer(deps).listen(cfg.port, cfg.host, () => console.log('API verifica su', cfg.host + ':' + cfg.port));
+if (cfg.stateDir) {
+  const sockPath = path.join(cfg.stateDir, 'admin.sock');
+  listenAdmin(makeAdminServer(adminHandle), sockPath, () => console.log('socket admin locale su', sockPath));
+}
 (async () => {
   memberIntent = await detectMemberIntent();
   if (memberIntent) client.options.intents = new IntentsBitField([GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers]).freeze();

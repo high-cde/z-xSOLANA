@@ -1,11 +1,12 @@
 'use strict';
 // /setup-server: fotografia del server, piano (src/club.js) e applicazione con discord.js. Idempotente.
 // Oltre alla struttura: messaggi guida fissati (src/guides.js), regole AutoMod native (src/automod.js),
-// quarantena anti-raid (ruolo "In verifica"). Nulla viene cancellato.
-const { ChannelType, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+// quarantena anti-raid (ruolo "In verifica"), categoria Airdrop VELVET, invito pubblico permanente su #benvenuto. Nulla viene cancellato.
+const { ChannelType, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
 const club = require('./club');
 const guides = require('./guides');
 const automod = require('./automod');
+const inviteLib = require('./invite');
 
 function snapshot(guild) {
   const me = guild.members.me;
@@ -94,13 +95,40 @@ function permsInfo(guild, memberIntent) {
   return { missingExtra, warnings, canAutomod: !missingExtra.includes('ManageGuild'), canPin: !missingExtra.includes('PinMessages') };
 }
 
+// Invito pubblico permanente su #benvenuto: legge gli inviti del canale (serve Manage Channels, già nei permessi minimi).
+async function planInviteFor(guild, state) {
+  const ch = textByName(guild, inviteLib.PUBLIC_CHANNEL);
+  const g = state.guild(guild.id);
+  if (!ch) return { ...inviteLib.planInvite({ stored: g.invite, channelId: null }), channelObj: null };
+  const me = guild.members.me;
+  const canCreate = ch.permissionsFor(me).has(PermissionFlagsBits.CreateInstantInvite);
+  const invites = [...(await ch.fetchInvites()).values()].map(inviteLib.fromDiscord);
+  return { ...inviteLib.planInvite({ stored: g.invite, invites, channelId: ch.id, botId: me.id, canCreate }), channelObj: ch };
+}
+
+async function ensureInvite(guild, state) {
+  const p = await planInviteFor(guild, state);
+  const g = state.guild(guild.id);
+  if (p.op === 'invite.pending') throw new Error('#' + inviteLib.PUBLIC_CHANNEL + ' non esiste');
+  if (p.op === 'invite.blocked') throw new Error('al bot manca Crea invito su #' + inviteLib.PUBLIC_CHANNEL);
+  let code = p.code; let how = p.op === 'invite.ok' ? 'già salvato' : 'riusato';
+  if (p.op === 'invite.create') {
+    const inv = await p.channelObj.createInvite({ maxAge: 0, maxUses: 0, temporary: false, unique: false, reason: 'setup-server: invito pubblico permanente' });
+    code = inv.code; how = 'creato';
+  }
+  if (!g.invite || g.invite.code !== code || g.invite.channelId !== p.channelObj.id) { g.invite = { code, channelId: p.channelObj.id, at: new Date().toISOString() }; state.save(); }
+  const url = inviteLib.publicUrl(code);
+  console.log('setup-server invito pubblico', how, url, 'server', guild.id);
+  return { url, code, how };
+}
+
 async function planAutomod(guild, modLogId, canAutomod) {
   if (!canAutomod) return { actions: [], warnings: [], skipped: true };
   const rules = await guild.autoModerationRules.fetch();
   return automod.plan([...rules.values()].map(automod.fromDiscord), modLogId);
 }
 
-async function apply(guild, state, { maxMax = 200, archiveOld = false, memberIntent = false, minAccountDays = 7 } = {}) {
+async function apply(guild, state, { maxMax = 200, archiveOld = false, memberIntent = false, minAccountDays = 7, airdropRole = '' } = {}) {
   await guild.roles.fetch(); await guild.channels.fetch();
   const snap = snapshot(guild);
   const p = club.plan(snap, { archiveOld });
@@ -152,7 +180,7 @@ async function apply(guild, state, { maxMax = 200, archiveOld = false, memberInt
   await guild.channels.fetch();
   const perms = permsInfo(guild, memberIntent);
   const msgs = [];
-  for (const m of allMessages({ minAccountDays })) {
+  for (const m of allMessages({ minAccountDays, airdropRole })) {
     const ch = textByName(guild, m.channel);
     if (ch) { try { msgs.push('#' + m.channel + ': ' + await ensureMessage(ch, m, state, perms.canPin)); } catch (e) { errors.push('#' + m.channel + ': ' + e.message); } }
   }
@@ -171,25 +199,34 @@ async function apply(guild, state, { maxMax = 200, archiveOld = false, memberInt
       }
     } catch (e) { errors.push('AutoMod: ' + e.message); }
   }
+  // Invito pubblico permanente su #benvenuto (creato una volta, poi riusato).
+  let invite = null;
+  try { invite = await ensureInvite(guild, state); msgs.push('🔗 invito pubblico ' + invite.how + ': ' + invite.url); } catch (e) { errors.push('invito pubblico: ' + e.message); }
   const g = state.guild(guild.id);
   if (g.cursor == null) g.cursor = state.latestEventId != null ? state.latestEventId : 0;
   g.setupAt = new Date().toISOString(); state.save();
-  return { planned: p.actions.length + am.actions.length, done: done.length, errors, warnings: [...p.warnings, ...perms.warnings, ...am.warnings], msgs };
+  return { planned: p.actions.length + am.actions.length, done: done.length, errors, warnings: [...p.warnings, ...perms.warnings, ...am.warnings], msgs, invite };
 }
 
-async function preview(guild, state, { archiveOld = false, memberIntent = false, minAccountDays = 7 } = {}) {
+async function preview(guild, state, { archiveOld = false, memberIntent = false, minAccountDays = 7, airdropRole = '' } = {}) {
   const snap = snapshot(guild);
   const p = club.plan(snap, { archiveOld });
   const perms = permsInfo(guild, memberIntent);
   const warnings = [...p.warnings, ...perms.warnings];
-  const msgActions = await planMessages(guild, state, { minAccountDays }).catch((e) => { warnings.push('messaggi fissi: ' + e.message); return []; });
+  const msgActions = await planMessages(guild, state, { minAccountDays, airdropRole }).catch((e) => { warnings.push('messaggi fissi: ' + e.message); return []; });
   const modLog = textByName(guild, 'mod-log');
   let am = { actions: [], warnings: [] };
   try { am = await planAutomod(guild, modLog ? modLog.id : 'new:staff/mod-log', perms.canAutomod); } catch (e) { warnings.push('AutoMod non leggibile: ' + e.message); }
   if (am.skipped) warnings.push('AutoMod: 5 regole ZDOS (anti-spam, menzioni di massa, link esterni, Telegram solo ufficiale, frasi truffa) verranno create quando il bot avrà Manage Guild.');
   warnings.push(...am.warnings);
-  const actions = [...p.actions, ...msgActions, ...am.actions];
-  return { actions, warnings, lines: actions.map(club.describe), perms };
+  let inv = { op: 'invite.pending', channel: inviteLib.PUBLIC_CHANNEL };
+  try { inv = await planInviteFor(guild, state); } catch (e) { warnings.push('invito pubblico non leggibile: ' + e.message); }
+  const invAct = (inv.op === 'invite.create' || inv.op === 'invite.reuse') ? [{ op: inv.op, channel: inv.channel, code: inv.code }] : [];
+  if (inv.op === 'invite.pending') invAct.push({ op: 'invite.create', channel: inv.channel });
+  if (inv.op === 'invite.blocked') warnings.push('Invito pubblico: al bot manca il permesso Crea invito su #' + inv.channel + '.');
+  const invite = { op: inv.op, url: inv.code ? inviteLib.publicUrl(inv.code) : null };
+  const actions = [...p.actions, ...msgActions, ...am.actions, ...invAct];
+  return { actions, warnings, lines: actions.map(club.describe), perms, invite };
 }
 
-module.exports = { snapshot, apply, preview, gateMessage, rulesMessage, allMessages, permsInfo };
+module.exports = { snapshot, apply, preview, gateMessage, rulesMessage, allMessages, permsInfo, planInviteFor, ensureInvite };

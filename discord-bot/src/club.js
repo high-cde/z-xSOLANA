@@ -49,6 +49,11 @@ const LAYOUT = [
     { name: 'verifica-accesso', access: 'quarantine', topic: 'Account nuovi o ingressi durante un raid: qui aspetti la verifica dello staff.' },
     { name: 'ingresso-18', access: 'readonly', topic: 'Accesso alla 18+ ROOM e al Velvet Club: dichiarazione di maggiore età e accettazione delle regole.' },
   ] },
+  // Airdrop VELVET: regole in sola lettura + canale domande. Nessun ruolo airdrop creato o assegnato dal bot.
+  { key: 'airdrop', name: '🎁 AIRDROP VELVET', access: 'public', channels: [
+    { name: 'airdrop-velvet', access: 'readonly', topic: 'Airdrop VELVET ($OV) 15/12/2026–24/03/2027: regole ufficiali, solo lettura. Nessun guadagno promesso, DYOR.' },
+    { name: 'airdrop-domande', topic: 'Domande sull\'airdrop VELVET. Lo staff non scrive mai in DM per primo. Mai condividere seed phrase o chiavi.' },
+  ] },
   { key: 'zx', name: '🌐 Z-XSOLANA', access: 'public', channels: [
     { name: 'info', access: 'readonly', topic: 'Cos\'è z-xSOLANA: $DSN, VELVET, zRoute, Zlang IDE. Nessun rendimento promesso.' },
     { name: 'stato', topic: 'Usa /stato per lo stato dei servizi ZDOS.' },
@@ -219,6 +224,8 @@ function describe(a) {
     case 'guide.pin': return '📍 #' + a.channel + ': fissa il messaggio "' + a.title + '"';
     case 'automod.create': return '🛡️ AutoMod: crea regola **' + a.name + '**';
     case 'automod.update': return '🛡️ AutoMod: aggiorna regola **' + a.name + '**';
+    case 'invite.create': return '🔗 #' + a.channel + ': crea invito pubblico permanente (max_age 0, usi illimitati)';
+    case 'invite.reuse': return '🔗 #' + a.channel + ': riusa l\'invito permanente esistente discord.gg/' + a.code + ' e lo salva';
     default: return a.op;
   }
 }

@@ -14,6 +14,12 @@ const LINKS = {
   telegram: 'https://t.me/OurVelvetHub',
   home: 'https://x-zdos.it/',
 };
+// Airdrop VELVET: dati comunicati da ZDOS1.3. Il ruolo Discord che conta come "verificato" non è ancora deciso:
+// finché AIRDROP_VERIFIED_ROLE (solo testo, in config.env) è vuoto si mostra il segnaposto. Il bot non crea né assegna ruoli airdrop.
+const AIRDROP = {
+  from: '15/12/2026', to: '24/03/2027', maxWallets: 100, amount: '20.000',
+  rolePlaceholder: '⏳ DA COMUNICARE: lo staff indicherà qui quale ruolo Discord conta come verificato',
+};
 const FOOT = { text: 'Server $DSN · ZDOS1.3 · nessun rendimento promesso, non è consulenza finanziaria' };
 const linkList = () => [
   '• Token $DSN e VELVET: ' + LINKS.token,
@@ -44,7 +50,8 @@ function build(opts = {}) {
       description: 'Il server della community dell\'ecosistema ZDOS (z-xSOLANA): $DSN, VELVET, zRoute, Zlang IDE, ZQuest e xCLOUD. Gestito da ZDOS1.3.\n\n'
         + '**Da dove partire**\n1. Leggi #regole.\n2. Segui #annunci per le novità ufficiali.\n3. In #info trovi cosa sono $DSN e VELVET.\n'
         + '4. Hai $DSN o VELVET? Usa /verifica per il ruolo Holder: firmi un messaggio di testo, nessuna transazione.\n'
-        + '5. Sei maggiorenne e vuoi la 18+ ROOM? Vai in #ingresso-18.\n\n'
+        + '5. Sei maggiorenne e vuoi la 18+ ROOM? Vai in #ingresso-18.\n'
+        + '6. Airdrop VELVET: regole solo in #airdrop-velvet.\n\n'
         + '**Comandi**: /stato · /token · /kira <mint> · /quest · /velvet\n\n**Link ufficiali**\n' + linkList(),
       footer: { text: 'Nessuno dello staff ti scrive in privato per primo · ZDOS1.3' },
     }] } },
@@ -57,7 +64,7 @@ function build(opts = {}) {
       title: '📢 Annunci ufficiali', color: C.COLORS.violet,
       description: 'Qui scrive solo lo staff di ZDOS1.3: aggiornamenti dei servizi, eventi, manutenzioni.\n\n'
         + '• Gli annunci non chiedono mai di collegare il wallet fuori dai domini x-zdos.it.\n'
-        + '• Nessun airdrop, nessun rendimento, nessuna "prevendita".\n'
+        + '• Nessun rendimento e nessuna "prevendita". L\'unico airdrop ufficiale (VELVET) è descritto in #airdrop-velvet: diffida di ogni altro.\n'
         + '• Se qualcuno ti scrive in privato dicendo di essere dello staff, è una truffa: segnalalo.',
       footer: FOOT,
     }] } },
@@ -70,7 +77,7 @@ function build(opts = {}) {
         { name: 'Servizi', value: '• zRoute: ' + LINKS.zroute + '\n• Zlang IDE: ' + LINKS.ide + '\n• ZQuest: ' + LINKS.quest + '\n• xCLOUD by ZDOS (gestionale, versione demo con dati di prova): ' + LINKS.xcloud },
         { name: 'Pagina ufficiale', value: LINKS.token },
       ],
-      description: 'Nessun rendimento, nessun airdrop promesso. Prima di comprare qualsiasi token usa /kira <mint>.',
+      description: 'Nessun rendimento promesso. L\'airdrop VELVET ha regole proprie in #airdrop-velvet. Prima di comprare qualsiasi token usa /kira <mint>.',
       footer: FOOT,
     }] } },
     { channel: 'zroute', kind: 'g:zroute', title: 'Guida zRoute', payload: { embeds: [{
@@ -104,6 +111,44 @@ function build(opts = {}) {
       fields: [{ name: 'Regole in breve', value: RULES.slice(0, 6).map((r) => '• ' + r).join('\n').slice(0, 1024) }],
       footer: FOOT,
     }] } },
+    ...airdrop(opts),
+  ];
+}
+
+function airdrop(opts = {}) {
+  const role = String(opts.airdropRole || '').trim();
+  const AD = AIRDROP;
+  return [
+    { channel: 'airdrop-velvet', kind: 'g:airdrop', title: 'Airdrop VELVET · regole', payload: { embeds: [{
+      title: '🎁 Airdrop VELVET ($OV) · regole', color: C.COLORS.violet,
+      description: 'Airdrop di comunità di VELVET organizzato da ZDOS1.3.\n\n'
+        + '**Periodo**: dal ' + AD.from + ' al ' + AD.to + '.\n'
+        + '**Posti**: massimo ' + AD.maxWallets + ' wallet.\n'
+        + '**Quantità**: ' + AD.amount + ' VELVET ($OV) per ogni wallet ammesso.\n\n'
+        + '**Requisiti (tutti e tre)**\n'
+        + '1. Rispondere al post ufficiale dell\'airdrop su X: il link sarà pubblicato qui e in #annunci.\n'
+        + '2. Completare la quest su ' + LINKS.quest + '.\n'
+        + '3. Avere su Discord il ruolo verificato: ' + (role ? '**' + role + '**' : '**' + AD.rolePlaceholder + '**') + '.\n\n'
+        + 'Le modalità per indicare il wallet e i criteri se le richieste superano i posti saranno pubblicati solo qui.',
+      fields: [
+        { name: 'Da sapere', value: '• Nessuna promessa di guadagno o di valore: VELVET è un token di comunità e il suo prezzo può anche essere zero. DYOR.\n'
+          + '• Non è consulenza finanziaria. Partecipare non dà diritto ad altri premi.' },
+        { name: '🛡️ Anti-truffa', value: '• Lo staff non scrive mai in DM per primo: chi lo fa è un truffatore, segnalalo in #airdrop-domande.\n'
+          + '• Nessuno ti chiederà seed phrase, chiavi private, pagamenti o "fee" anticipate.\n'
+          + '• Non firmare transazioni per "ricevere" l\'airdrop da link ricevuti in privato.\n'
+          + '• Link validi solo sui domini x-zdos.it.' },
+      ],
+      footer: { text: 'Airdrop VELVET · ZDOS1.3 · DYOR · nessun guadagno promesso' },
+    }] } },
+    { channel: 'airdrop-domande', kind: 'g:airdrop-domande', title: 'Domande airdrop', payload: { embeds: [{
+      title: '❓ Domande sull\'airdrop VELVET', color: C.COLORS.cyan,
+      description: 'Qui puoi chiedere chiarimenti sull\'airdrop. Le regole ufficiali sono solo in #airdrop-velvet.\n\n'
+        + '• Non pubblicare seed phrase, chiavi private o dati personali.\n'
+        + '• Lo staff risponde qui, in pubblico: non scrive mai in DM per primo.\n'
+        + '• Ignora chi ti offre "posti garantiti" o ti chiede di pagare.\n'
+        + '• Link validi solo sui domini x-zdos.it. DYOR.',
+      footer: FOOT,
+    }] } },
   ];
 }
 
@@ -113,4 +158,4 @@ function hashPayload(payload) {
   return crypto.createHash('sha256').update(norm).digest('hex').slice(0, 16);
 }
 
-module.exports = { build, hashPayload, LINKS, RULES };
+module.exports = { build, airdrop, hashPayload, LINKS, RULES, AIRDROP };

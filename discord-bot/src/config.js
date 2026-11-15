@@ -13,6 +13,8 @@ module.exports = {
   roles: { dsn: env.ROLE_DSN || 'Holder $DSN', velvet: env.ROLE_VELVET || 'Holder VELVET' },
   ourvelvetUrl: env.OURVELVET_URL || 'http://127.0.0.1:8000',
   stateDir: env.STATE_DIRECTORY || env.STATE_DIR || '',
+  // Airdrop VELVET: nome (solo testo) del ruolo Discord che conta come verificato. Vuoto = segnaposto "da comunicare".
+  airdropRole: env.AIRDROP_VERIFIED_ROLE || '',
   relayMs: Number(env.RELAY_MS || 60000),
   nonceTtlMs: Number(env.NONCE_TTL_MS || 10 * 60 * 1000),
   // Anti-raid: età minima dell'account (giorni), soglia ingressi in finestra (secondi), durata modalità raid (minuti).
