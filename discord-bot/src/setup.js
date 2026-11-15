@@ -122,16 +122,35 @@ async function ensureInvite(guild, state) {
   return { url, code, how };
 }
 
+// Opzioni di protezione per club.plan: aggiunge i canali con un invito permanente pubblico non creato dal bot
+// (es. l'invito storico su #collabland-config). Gli inviti del bot / quello salvato su #benvenuto non contano.
+async function protectOpts(guild, state, protect = {}) {
+  const out = { names: protect.names || [], ids: protect.ids || [], inviteChannelIds: [] }; const warnings = [];
+  if (protect.inviteChannels === false) return { protect: out, warnings };
+  try {
+    const g = state.guild(guild.id); const mine = g.invite && g.invite.code; const botId = guild.members.me.id;
+    const invites = [...(await guild.invites.fetch()).values()].map(inviteLib.fromDiscord);
+    for (const i of invites) {
+      if (Number(i.maxAge) !== 0 || Number(i.maxUses) || i.temporary) continue;
+      if (i.code === mine || String(i.inviterId) === String(botId)) continue;
+      if (i.channelId && !out.inviteChannelIds.includes(String(i.channelId))) out.inviteChannelIds.push(String(i.channelId));
+    }
+  } catch (e) { warnings.push('Inviti del server non leggibili (' + e.message + '): protetti solo i canali per nome/ID.'); }
+  return { protect: out, warnings };
+}
+
 async function planAutomod(guild, modLogId, canAutomod) {
   if (!canAutomod) return { actions: [], warnings: [], skipped: true };
   const rules = await guild.autoModerationRules.fetch();
   return automod.plan([...rules.values()].map(automod.fromDiscord), modLogId);
 }
 
-async function apply(guild, state, { maxMax = 200, archiveOld = false, memberIntent = false, minAccountDays = 7, airdropRole = '' } = {}) {
+async function apply(guild, state, { maxMax = 200, archiveOld = false, memberIntent = false, minAccountDays = 7, airdropRole = '', protect = {} } = {}) {
   await guild.roles.fetch(); await guild.channels.fetch();
   const snap = snapshot(guild);
-  const p = club.plan(snap, { archiveOld });
+  const pr = await protectOpts(guild, state, protect);
+  const p = club.plan(snap, { archiveOld, protect: pr.protect });
+  p.warnings.push(...pr.warnings);
   const created = {}; const done = []; const errors = [];
   const map = (id) => (typeof id === 'string' && id.startsWith('new:') ? created[id] : id);
   for (const a of p.actions.slice(0, maxMax)) {
@@ -208,11 +227,12 @@ async function apply(guild, state, { maxMax = 200, archiveOld = false, memberInt
   return { planned: p.actions.length + am.actions.length, done: done.length, errors, warnings: [...p.warnings, ...perms.warnings, ...am.warnings], msgs, invite };
 }
 
-async function preview(guild, state, { archiveOld = false, memberIntent = false, minAccountDays = 7, airdropRole = '' } = {}) {
+async function preview(guild, state, { archiveOld = false, memberIntent = false, minAccountDays = 7, airdropRole = '', protect = {} } = {}) {
   const snap = snapshot(guild);
-  const p = club.plan(snap, { archiveOld });
+  const pr = await protectOpts(guild, state, protect);
+  const p = club.plan(snap, { archiveOld, protect: pr.protect });
   const perms = permsInfo(guild, memberIntent);
-  const warnings = [...p.warnings, ...perms.warnings];
+  const warnings = [...p.warnings, ...pr.warnings, ...perms.warnings];
   const msgActions = await planMessages(guild, state, { minAccountDays, airdropRole }).catch((e) => { warnings.push('messaggi fissi: ' + e.message); return []; });
   const modLog = textByName(guild, 'mod-log');
   let am = { actions: [], warnings: [] };
@@ -229,4 +249,4 @@ async function preview(guild, state, { archiveOld = false, memberIntent = false,
   return { actions, warnings, lines: actions.map(club.describe), perms, invite };
 }
 
-module.exports = { snapshot, apply, preview, gateMessage, rulesMessage, allMessages, permsInfo, planInviteFor, ensureInvite };
+module.exports = { protectOpts, snapshot, apply, preview, gateMessage, rulesMessage, allMessages, permsInfo, planInviteFor, ensureInvite };

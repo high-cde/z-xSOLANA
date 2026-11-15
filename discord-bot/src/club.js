@@ -132,6 +132,23 @@ function overwrites(access, ids, ch = {}) {
 }
 const owKey = (ow) => JSON.stringify([...ow].map((o) => [String(o.id), o.type, String(BigInt(o.allow)), String(BigInt(o.deny))]).sort());
 
+// Canali protetti: non vengono spostati in Archivio, non ricevono l'override anti-raid e non vengono modificati.
+// protect = { names: ['collab'], ids: [], inviteChannelIds: [] } (nomi = sottostringa, senza maiuscole/accenti).
+function protectedChannels(snap, protect = {}) {
+  const out = new Map();
+  const names = (protect.names || []).map((n) => norm(n)).filter(Boolean);
+  const ids = new Set((protect.ids || []).map(String).filter(Boolean));
+  const inv = new Set((protect.inviteChannelIds || []).map(String).filter(Boolean));
+  for (const c of snap.channels) {
+    if (c.type === 4) continue;
+    const n = norm(c.name);
+    if (ids.has(String(c.id))) out.set(c.id, 'lista ID');
+    else if (names.some((x) => n.includes(x))) out.set(c.id, 'nome contiene "' + names.find((x) => n.includes(x)) + '"');
+    else if (inv.has(String(c.id))) out.set(c.id, 'invito pubblico permanente attivo');
+  }
+  return out;
+}
+
 /**
  * snap: { everyoneId, botId, botTopRolePosition, roles:[{id,name,color,position,managed}],
  *         channels:[{id,name,type,parentId,nsfw,topic,position,overwrites:[{id,type,allow,deny}]}] }
@@ -140,6 +157,7 @@ const owKey = (ow) => JSON.stringify([...ow].map((o) => [String(o.id), o.type, S
  */
 function plan(snap, opts = {}) {
   const actions = []; const warnings = [];
+  const prot = protectedChannels(snap, opts.protect);
   const roleIds = {};
   for (const R of ROLES) {
     const ex = snap.roles.find((x) => x.name === R.name);
@@ -169,6 +187,7 @@ function plan(snap, opts = {}) {
       const ow = overwrites(access === 'public' ? 'public' : access, ids, C);
       const nsfw = !!L.nsfw;
       const ex = snap.channels.find((c) => c.type === 0 && c.name === C.name && !managed.has(c.id));
+      if (ex && prot.has(ex.id)) { managed.add(ex.id); warnings.push('#' + C.name + ' è protetto (' + prot.get(ex.id) + '): lasciato com\'è, nessuna modifica.'); continue; }
       if (!ex) { actions.push({ op: 'channel.create', key: L.key + '/' + C.name, name: C.name, parent: catIds[L.key], topic: C.topic, nsfw, overwrites: ow }); order.push({ ref: 'new:' + L.key + '/' + C.name, kind: 'channel', parent: catIds[L.key] }); continue; }
       managed.add(ex.id);
       const ch = {};
@@ -191,7 +210,7 @@ function plan(snap, opts = {}) {
   // il resto dei permessi resta com'è. Un'unica azione raggruppata.
   const qid = roleIds.quarantena; const lock = [];
   for (const c of snap.channels) {
-    if (managed.has(c.id) || c.id === catIds.archivio) continue;
+    if (managed.has(c.id) || c.id === catIds.archivio || prot.has(c.id)) continue;
     const has = (c.overwrites || []).some((o) => String(o.id) === String(qid) && (BigInt(o.deny) & P.ViewChannel));
     if (!has) lock.push({ id: c.id, name: c.name });
   }
@@ -199,11 +218,13 @@ function plan(snap, opts = {}) {
   const inArchive = snap.channels.filter((c) => c.parentId && c.parentId === catIds.archivio).length;
   let room = 50 - inArchive; let skipped = 0;
   for (const c of snap.channels) {
-    if (managed.has(c.id) || c.type === 4 || c.parentId) continue;
+    if (managed.has(c.id) || c.type === 4 || c.parentId || prot.has(c.id)) continue;
     if (room <= 0) { skipped++; continue; }
     actions.push({ op: 'channel.archive', id: c.id, name: c.name, parent: catIds.archivio }); room--;
   }
   if (oldCats.length) warnings.push(oldCats.length + ' categorie esistenti restano intatte sotto la nuova struttura' + (opts.archiveOld ? ', rinominate con 🗄️' : ' (con `archivia_vecchie:True` le rinomino con 🗄️)') + ': ' + oldCats.map((c) => c.name).join(', ').slice(0, 600));
+  const protList = [...prot.entries()].filter(([id]) => !LAYOUT.some((L) => L.channels.some((C) => (snap.channels.find((c) => c.id === id) || {}).name === C.name)));
+  if (protList.length) warnings.push(protList.length + ' canali protetti lasciati dove sono, con i loro permessi (niente Archivio, niente override anti-raid): ' + protList.map(([id, why]) => '#' + snap.channels.find((c) => c.id === id).name + ' (' + why + ')').join(', ').slice(0, 600));
   if (skipped) warnings.push(skipped + ' canali senza categoria non spostati: Archivio pieno (massimo 50 per categoria).');
   return { actions, warnings, order, ids };
 }
@@ -234,4 +255,4 @@ function layoutText() {
   return LAYOUT.map((L) => '**' + L.name + '**' + (L.nsfw ? ' (18+, solo Verificato 18+)' : L.access === 'holder' ? ' (solo Holder)' : L.access === 'staff' ? ' (privata)' : '') + '\n' + L.channels.map((c) => '#' + c.name).join(' · ')).join('\n') + '\n**' + ARCHIVE.name + '**\ncanali esistenti non previsti (spostati, non cancellati)';
 }
 
-module.exports = { P, BOT_PERMS, EXTRA_PERMS, INVITE_PERMS, ROLES, LAYOUT, ARCHIVE, ADULT_CATS, RULES_18, plan, describe, layoutText, overwrites, catKey, norm };
+module.exports = { protectedChannels, P, BOT_PERMS, EXTRA_PERMS, INVITE_PERMS, ROLES, LAYOUT, ARCHIVE, ADULT_CATS, RULES_18, plan, describe, layoutText, overwrites, catKey, norm };

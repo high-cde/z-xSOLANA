@@ -15,6 +15,14 @@ module.exports = {
   stateDir: env.STATE_DIRECTORY || env.STATE_DIR || '',
   // Airdrop VELVET: nome (solo testo) del ruolo Discord che conta come verificato. Vuoto = segnaposto "da comunicare".
   airdropRole: env.AIRDROP_VERIFIED_ROLE || '',
+  // Canali protetti da /setup-server (niente Archivio, niente override, nessuna modifica): nomi per sottostringa
+  // separati da virgola (default "collab", es. Collab.Land), ID espliciti, e i canali con un invito permanente
+  // pubblico non creato dal bot (PROTECT_INVITE_CHANNELS=0 per disattivare).
+  protect: {
+    names: (env.PROTECT_CHANNEL_NAMES != null ? env.PROTECT_CHANNEL_NAMES : 'collab').split(',').map((x) => x.trim()).filter(Boolean),
+    ids: (env.PROTECT_CHANNEL_IDS || '').split(',').map((x) => x.trim()).filter(Boolean),
+    inviteChannels: env.PROTECT_INVITE_CHANNELS !== '0',
+  },
   relayMs: Number(env.RELAY_MS || 60000),
   nonceTtlMs: Number(env.NONCE_TTL_MS || 10 * 60 * 1000),
   // Anti-raid: età minima dell'account (giorni), soglia ingressi in finestra (secondi), durata modalità raid (minuti).

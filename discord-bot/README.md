@@ -54,6 +54,7 @@ Ogni 60 s il bot legge `GET /api/events/feed` di OurVelvet (127.0.0.1:8000). Pub
 ## Airdrop VELVET e invito pubblico
 
 - `/setup-server` crea la categoria **🎁 AIRDROP VELVET** con #airdrop-velvet (sola lettura, messaggio fisso con periodo 15/12/2026–24/03/2027, massimo 100 wallet, 20.000 VELVET ($OV) ciascuno, requisiti: risposta al post su X, quest su https://quest.x-zdos.it, ruolo verificato su Discord) e #airdrop-domande. Nessuna promessa di guadagno, DYOR, nota anti-truffa (lo staff non scrive mai in DM per primo), link solo x-zdos.it.
+- Canali protetti: `/setup-server` non sposta in Archivio, non aggiunge override e non modifica i canali il cui nome contiene una voce di `PROTECT_CHANNEL_NAMES` (default `collab`, per Collab.Land), quelli in `PROTECT_CHANNEL_IDS` e quelli con un invito permanente pubblico non creato dal bot (es. l'invito storico su #collabland-config). `PROTECT_INVITE_CHANNELS=0` disattiva l'ultima regola.
 - Il ruolo che conta come verificato si indica con `AIRDROP_VERIFIED_ROLE` in `config.env` (solo testo). Finché è vuoto il messaggio mostra "DA COMUNICARE". Il bot **non crea né assegna** ruoli airdrop.
 - Invito pubblico permanente (max_age 0, usi illimitati) su #benvenuto: riusa quello salvato in `state.json`, poi un invito permanente già presente sul canale, altrimenti ne crea uno. Mostrato in anteprima, loggato in #log-bot e nel journal all'applicazione.
 

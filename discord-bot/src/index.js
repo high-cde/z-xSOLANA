@@ -212,7 +212,7 @@ async function runSetup(guild, mode, { archiveOld = false, by = 'terminale VPS' 
   await guild.roles.fetch(); await guild.channels.fetch();
   const missing = guild.members.me.permissions.missing(club.BOT_PERMS);
   if (missing.length) return { missing };
-  const opts = { archiveOld, memberIntent, minAccountDays: cfg.antiRaid.minAccountDays, airdropRole: cfg.airdropRole };
+  const opts = { archiveOld, memberIntent, minAccountDays: cfg.antiRaid.minAccountDays, airdropRole: cfg.airdropRole, protect: cfg.protect };
   if (mode === 'preview') return { preview: await setup.preview(guild, state, opts) };
   if (setupBusy) throw new Error('un /setup-server applica è già in corso: riprova quando finisce');
   setupBusy = true;
