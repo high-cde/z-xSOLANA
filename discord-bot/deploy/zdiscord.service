@@ -1,0 +1,28 @@
+[Unit]
+Description=zdiscord · bot Discord z-xSOLANA (API verifica su 127.0.0.1:8790)
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/etc/zdiscord/bot.env
+
+[Service]
+Type=simple
+User=zdiscord
+Group=zdiscord
+WorkingDirectory=/opt/zdiscord
+EnvironmentFile=/opt/zdiscord/config.env
+EnvironmentFile=/etc/zdiscord/bot.env
+ExecStart=/usr/bin/node /opt/zdiscord/src/index.js
+Restart=on-failure
+RestartSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryMax=300M
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>zRoute · swap con controlli K.I.R.A. sopra Jupiter · ZDOS</title>
+<meta name="description" content="zRoute: swap su Solana tramite Jupiter, con controlli K.I.R.A. sul token prima di ogni quotazione, percorso spiegato in italiano e firma solo nel tuo Phantom.">
+<meta name="theme-color" content="#070112">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="zroute.css?v=20261115a">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="https://x-zdos.it" aria-label="x-zdos.it"><span class="logo">z</span><span>zRoute</span></a>
+  <nav class="links" aria-label="Ecosistema">
+    <a href="https://swap.x-zdos.it/">ZSwap</a><a href="https://x-zdos.it/ide/">IDE</a><a href="https://x-zdos.it">x-zdos.it</a>
+  </nav>
+  <button id="connect" class="btn ghost" type="button">Connetti Phantom</button>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <p class="kicker mono">z-xSOLANA · strato sopra Jupiter</p>
+    <h1>Swap con <span class="g">K.I.R.A.</span> prima della firma</h1>
+    <p class="lead">zRoute chiede il prezzo a Jupiter, controlla i token on-chain e su RugCheck, ti spiega il percorso e blocca gli acquisti con red flag gravi. Firmi solo tu, nel tuo Phantom. Nessuna commissione zRoute.</p>
+  </section>
+
+  <section class="card swap" aria-labelledby="t-swap">
+    <h2 id="t-swap" class="sr">Swap</h2>
+    <div class="side">
+      <label for="in-tok">Vendi</label>
+      <div class="row"><select id="in-tok"></select><input id="amount" inputmode="decimal" autocomplete="off" placeholder="0,0" aria-label="Quantità da vendere"></div>
+      <input id="in-mint" class="mint mono" placeholder="mint personalizzato" hidden aria-label="Mint del token da vendere">
+      <small id="bal" class="muted mono"></small>
+    </div>
+    <button id="flip" class="flip" type="button" aria-label="Inverti">⇅</button>
+    <div class="side">
+      <label for="out-tok">Compri</label>
+      <div class="row"><select id="out-tok"></select><output id="out-amt" class="mono">—</output></div>
+      <input id="out-mint" class="mint mono" placeholder="mint personalizzato" hidden aria-label="Mint del token da comprare">
+    </div>
+    <div class="opts">
+      <fieldset class="slip"><legend>Slippage</legend>
+        <label><input type="radio" name="slip" value="50" checked>0,5%</label><label><input type="radio" name="slip" value="100">1%</label><label><input type="radio" name="slip" value="300">3%</label>
+      </fieldset>
+      <fieldset class="mev"><legend>Protezione MEV (Jito)</legend>
+        <label class="sw"><input type="checkbox" id="mev"> invia tramite Jito block engine, solo bundle</label>
+        <label class="tip">Tip a Jito, pagata da te:
+          <select id="tip"><option value="10000">0,00001 SOL</option><option value="100000" selected>0,0001 SOL</option><option value="500000">0,0005 SOL</option><option value="1000000">0,001 SOL</option></select></label>
+      </fieldset>
+    </div>
+    <button id="quote" class="btn primary wide" type="button">Controlla e quota</button>
+  </section>
+
+  <section id="res" class="grid" hidden>
+    <article class="card" aria-labelledby="t-kira"><h2 id="t-kira">K.I.R.A.</h2><div id="kira"></div></article>
+    <article class="card" aria-labelledby="t-route"><h2 id="t-route">Percorso Jupiter</h2><div id="route"></div></article>
+  </section>
+
+  <section id="go" class="card" hidden aria-labelledby="t-go">
+    <h2 id="t-go">Firma</h2>
+    <label class="ack"><input type="checkbox" id="ack1"> Ho capito: è uno swap reale su Solana mainnet, irreversibile, e lo firmo io.</label>
+    <label class="ack" id="ack2w" hidden><input type="checkbox" id="ack2"> K.I.R.A. segnala avvisi sul token che compro: li ho letti.</label>
+    <button id="swap" class="btn primary wide" type="button" disabled>Swap con Phantom</button>
+    <div id="log" class="log mono" aria-live="polite"></div>
+  </section>
+
+  <section class="card note">
+    <h2>Come funziona, senza promesse</h2>
+    <ul>
+      <li>Prezzi e transazione arrivano dall'API pubblica di <b>Jupiter</b> (swap v1). zRoute non aggiunge commissioni: <span class="mono">platformFeeBps</span> non è impostato.</li>
+      <li><b>K.I.R.A.</b>: mint e freeze authority, estensioni Token-2022, supply, holder principali (RPC o RugCheck, pool escluse) e rischi RugCheck. Se il token che compri ha un red flag grave il pulsante si blocca. La vendita non viene mai bloccata.</li>
+      <li><b>Jito</b>: con la protezione MEV, Jupiter aggiunge alla transazione un trasferimento della tip a un tip account Jito. zRoute verifica importo e destinatario prima della firma, poi invia la transazione firmata al block engine Jito come bundle. Senza protezione invia Phantom, con priority fee fino a 0,0001 SOL.</li>
+      <li>Nessuna chiave sul server, nessun accesso ai fondi. Non è consulenza finanziaria e nessun token qui ha rendimenti promessi.</li>
+      <li>$DSN su Solana (<span class="mono">35w7…R3F4</span>) oggi non ha pool: Jupiter non trova un percorso e zRoute lo dice.</li>
+    </ul>
+    <p class="muted small">zRoute non è affiliato a Jupiter, Jito, Phantom o RugCheck.</p>
+  </section>
+</main>
+<footer class="foot mono">© 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza ZSEL proprietaria · <a href="https://x-zdos.it">x-zdos.it</a></footer>
+<script src="vendor/solana-web3-zroute.min.js?v=20261115a"></script>
+<script src="kira-core.js?v=20261115a"></script>
+<script src="zroute.js?v=20261115a"></script>
+</body>
+</html>

@@ -26,6 +26,8 @@ const SITES = [
     note: 'Home dell\'ecosistema: progetti, token, accesso con Phantom.' },
   { id: 'swap', name: 'ZSwap', url: 'https://swap.x-zdos.it/', tag: 'Solana · Swap', tone: 'swap',
     note: 'Esplorazione token, controllo rischi, swap via Jupiter.' },
+  { id: 'zroute', name: 'zRoute', url: 'https://swap.x-zdos.it/zroute/', tag: 'Solana · Jupiter · K.I.R.A.', tone: 'swap',
+    note: 'Swap via Jupiter con controlli K.I.R.A. prima della firma; firma solo in Phantom, nessuna fee zRoute.' },
   { id: 'ide', name: 'Zlang IDE', url: 'https://x-zdos.it/ide/', tag: 'ZLang · Solana devnet', tone: 'kira',
     note: 'Editor e compilatore ZLang nel browser (WASM). Ancoraggio del bytecode su devnet con Phantom.' },
   { id: 'rpg', name: 'Pinguino RPG', url: 'https://swap.x-zdos.it/rpg.html', tag: 'Gioco browser', tone: 'rpg',

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verifica holder · Discord z-xSOLANA</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#070112">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070112;--line:#2a1650;--v:#9945FF;--g:#14F195;--c:#66e3ff;--t:#ece7ff;--m:#a79cc9;--f:#ff5c7a}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(800px 400px at 80% -10%,#9945ff33,transparent 60%),var(--bg);color:var(--t);font:16px/1.5 "Space Grotesk",system-ui,sans-serif}
+main{max-width:520px;margin:0 auto;padding:24px 16px}h1{font-size:1.6rem;margin:.2em 0}.k{color:var(--g);font:600 .8rem "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase}
+.card{background:linear-gradient(180deg,#140830,#0e0520);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+pre{white-space:pre-wrap;font:.8rem "IBM Plex Mono",monospace;color:var(--m);background:#0b0418;border-radius:10px;padding:10px;margin:0}
+button{width:100%;margin-top:12px;border:0;border-radius:12px;padding:12px;font:600 15px "Space Grotesk",sans-serif;color:var(--t);background:linear-gradient(90deg,var(--v),#7b2ff7);cursor:pointer}button:disabled{opacity:.45}
+#out{margin-top:12px;font-size:.95rem}.ok{color:var(--g)}.err{color:var(--f)}.m{color:var(--m);font-size:.85rem}a{color:var(--c)}footer{text-align:center;color:var(--m);font:.75rem "IBM Plex Mono",monospace;padding:20px}
+</style>
+</head>
+<body>
+<main>
+  <p class="k">Discord z-xSOLANA</p>
+  <h1>Verifica holder</h1>
+  <p class="m">Firmi un messaggio di testo con Phantom. Non è una transazione: nessun costo, nessun accesso ai tuoi fondi. Il server controlla la firma e il saldo di $DSN e VELVET, assegna i ruoli e non salva il tuo wallet.</p>
+  <div class="card"><b>Messaggio da firmare</b><pre id="msg">Carico…</pre></div>
+  <button id="go" type="button" disabled>Collega Phantom e firma</button>
+  <div id="out" aria-live="polite"></div>
+</main>
+<footer>© 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza ZSEL · <a href="https://x-zdos.it">x-zdos.it</a></footer>
+<script>
+(() => {
+  'use strict';
+  const API = '/discord/api';
+  const A = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  function b58(u8) { let n = 0n; for (const b of u8) n = n * 256n + BigInt(b); let s = ''; while (n > 0n) { s = A[Number(n % 58n)] + s; n /= 58n; } for (const b of u8) { if (b === 0) s = '1' + s; else break; } return s; }
+  const $ = (id) => document.getElementById(id);
+  const out = (t, c) => { $('out').className = c || ''; $('out').textContent = t; };
+  const nonce = new URLSearchParams(location.search).get('n') || '';
+  const prov = () => { const p = (window.phantom && window.phantom.solana) || window.solana; return p && p.isPhantom ? p : null; };
+  let message = null;
+  async function load() {
+    if (!nonce) { $('msg').textContent = '—'; out('Manca il codice di verifica: usa il link che ti dà /verifica su Discord.', 'err'); return; }
+    try {
+      const r = await fetch(API + '/message?n=' + encodeURIComponent(nonce));
+      if (r.status === 502 || r.status === 503 || r.status === 504) { $('msg').textContent = '—'; out('Il servizio di verifica non è ancora attivo. Riprova più tardi.', 'err'); return; }
+      const j = await r.json();
+      if (!j.ok) { $('msg').textContent = '—'; out(j.error || 'Link non valido.', 'err'); return; }
+      message = j.message; $('msg').textContent = message; $('go').disabled = false;
+    } catch (e) { $('msg').textContent = '—'; out('Servizio non raggiungibile.', 'err'); }
+  }
+  $('go').onclick = async () => {
+    const p = prov();
+    if (!p) {
+      if (/Android|iPhone|iPad/i.test(navigator.userAgent)) { location.href = 'https://phantom.app/ul/browse/' + encodeURIComponent(location.href) + '?ref=' + encodeURIComponent(location.origin); return; }
+      out('Phantom non trovato: installalo da phantom.app.', 'err'); return;
+    }
+    $('go').disabled = true;
+    try {
+      const { publicKey } = await p.connect();
+      out('Firma il messaggio in Phantom…');
+      const s = await p.signMessage(new TextEncoder().encode(message), 'utf8');
+      const sig = s.signature || s;
+      const r = await fetch(API + '/verify', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ nonce, publicKey: publicKey.toString(), signature: b58(sig) }) });
+      const j = await r.json();
+      if (!j.ok) { out(j.error || 'Verifica non riuscita.', 'err'); $('go').disabled = false; return; }
+      const h = j.holder; const got = [h.dsn && 'Holder $DSN', h.velvet && 'Holder VELVET'].filter(Boolean);
+      out(got.length ? 'Fatto: ruoli ' + got.join(' e ') + ' assegnati. Puoi tornare su Discord.' : 'Firma valida, ma questo wallet non ha $DSN né VELVET: nessun ruolo holder.', 'ok');
+    } catch (e) { out('Fermato: ' + (e.message || e), 'err'); $('go').disabled = false; }
+  };
+  load();
+})();
+</script>
+</body>
+</html>
