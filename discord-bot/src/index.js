@@ -1,7 +1,13 @@
 'use strict';
 // Bot Discord z-xSOLANA · © 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza ZSEL proprietaria.
 // Intent: solo Guilds (nessun intent privilegiato, nessuna lettura dei messaggi). Risponde solo ai comandi slash.
-const { Client, GatewayIntentBits, Events, MessageFlags } = require('discord.js');
+const { Client, GatewayIntentBits, Events, MessageFlags, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ChannelType } = require('discord.js');
+const club = require('./club');
+const setup = require('./setup');
+const velvetLib = require('./velvet');
+const { makeRubina, httpPost } = require('./rubina');
+const { makeRelay } = require('./relay');
+const { makeState } = require('./state');
 const cfg = require('./config');
 const C = require('./constants');
 const { makeSolana } = require('./solana');
@@ -43,9 +49,186 @@ const deps = {
   discordReady: () => client.isReady(),
 };
 
-client.once(Events.ClientReady, (c) => console.log('zdiscord online come', c.user.tag, '· server:', c.guilds.cache.size));
+const state = makeState(cfg.stateDir);
+const rubina = makeRubina({ post: httpPost(cfg.ourvelvetUrl) });
+const ovJson = async (path, opts = {}) => {
+  const r = await fetch(cfg.ourvelvetUrl + path, { ...opts, headers: { 'content-type': 'application/json', ...(opts.headers || {}) }, signal: AbortSignal.timeout(15000) });
+  let j = null; try { j = await r.json(); } catch (_) { /* */ }
+  return { status: r.status, json: j };
+};
+const declined = new Map(); // userId -> scadenza: chi si dichiara minorenne non può riprovare per 24 ore (in memoria, nessuna data salvata)
+
+async function roleByKey(guild, key) {
+  const R = club.ROLES.find((x) => x.key === key);
+  await guild.roles.fetch();
+  return guild.roles.cache.find((r) => r.name === R.name) || guild.roles.create({ name: R.name, color: R.color, hoist: R.hoist, mentionable: false, permissions: [], reason: 'ruolo Velvet Club' });
+}
+const hasRole = (member, key) => member.roles.cache.some((r) => r.name === velvetLib.roleName(key));
+const isAdmin = (it) => it.guild && (it.guild.ownerId === it.user.id || (it.memberPermissions && it.memberPermissions.has(PermissionFlagsBits.Administrator)));
+
+async function sendTo(guildId, channelName, payload) {
+  const guild = client.guilds.cache.get(guildId); if (!guild) return false;
+  const ch = guild.channels.cache.find((c) => c.type === ChannelType.GuildText && c.name === channelName);
+  if (!ch) return false;
+  try { await ch.send(payload); return true; } catch (e) { console.error('relay invio', channelName, e.message); return false; }
+}
+const relay = makeRelay({
+  fetchFeed: async (after) => { const r = await ovJson('/api/events/feed?after=' + after + '&limit=20'); if (r.status !== 200) throw new Error('feed HTTP ' + r.status); return r.json; },
+  state, listGuilds: () => [...client.guilds.cache.keys()], send: sendTo, log: (m) => console.error(m),
+});
+
+// Collegamenti Radar: ogni 30 minuti ricontrolla che il profilo esista ancora e non sia nascosto, altrimenti toglie il ruolo.
+async function radarSync() {
+  for (const [gid, g] of Object.entries(state.data.guilds)) {
+    const guild = client.guilds.cache.get(gid); if (!guild || !g.links) continue;
+    for (const [uid, links] of Object.entries(g.links)) {
+      for (const l of [...links]) {
+        try {
+          const r = await ovJson('/api/events/radar-link/state?kind=' + l.kind + '&ref=' + encodeURIComponent(l.ref));
+          if (r.status !== 200) continue;
+          if (!r.json.exists || r.json.hidden) {
+            const m = await guild.members.fetch(uid).catch(() => null);
+            const role = guild.roles.cache.find((x) => x.name === l.role);
+            if (m && role) await m.roles.remove(role, 'profilo Radar rimosso o nascosto').catch(() => {});
+            g.links[uid] = g.links[uid].filter((x) => x !== l);
+          }
+        } catch (_) { /* riprova al prossimo giro */ }
+      }
+      if (!g.links[uid].length) delete g.links[uid];
+    }
+  }
+  state.save();
+}
+
+client.once(Events.ClientReady, (c) => {
+  console.log('zdiscord online come', c.user.tag, '· server:', c.guilds.cache.size);
+  relay.tick().catch(() => {});
+  setInterval(() => relay.tick().catch(() => {}), cfg.relayMs);
+  setInterval(() => radarSync().catch(() => {}), 30 * 60000);
+});
+
+function gateModal() {
+  return new ModalBuilder().setCustomId('v18:modal').setTitle('Ingresso 18+ ROOM').addComponents(
+    new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('birth').setLabel('Data di nascita (GG/MM/AAAA) · non salvata').setStyle(TextInputStyle.Short).setMinLength(8).setMaxLength(10).setRequired(true)),
+    new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('accept').setLabel('Scrivi ACCETTO per accettare le regole').setStyle(TextInputStyle.Short).setMaxLength(10).setRequired(true)),
+  );
+}
+
+async function onButton(it) {
+  if (it.customId === 'v18:start') {
+    const until = declined.get(it.user.id);
+    if (until && until > Date.now()) return it.reply({ content: 'La 18+ ROOM è riservata ai maggiorenni.', flags: MessageFlags.Ephemeral });
+    return it.showModal(gateModal());
+  }
+  if (it.customId === 'v18:leave') {
+    const member = await it.guild.members.fetch(it.user.id);
+    const keys = ['v18', 'curioso'];
+    for (const k of keys) { const r = it.guild.roles.cache.find((x) => x.name === velvetLib.roleName(k)); if (r && member.roles.cache.has(r.id)) await member.roles.remove(r, 'uscita volontaria dalla 18+ ROOM'); }
+    return it.reply({ content: 'Sei uscito dalla 18+ ROOM. Puoi rientrare quando vuoi da #ingresso-18.', flags: MessageFlags.Ephemeral });
+  }
+}
+
+async function onModal(it) {
+  if (it.customId !== 'v18:modal') return;
+  const r = velvetLib.checkDeclaration({ birth: it.fields.getTextInputValue('birth'), accept: it.fields.getTextInputValue('accept') });
+  if (!r.ok) { if (!r.retry) declined.set(it.user.id, Date.now() + 86400000); return it.reply({ content: r.msg, flags: MessageFlags.Ephemeral }); }
+  const member = await it.guild.members.fetch(it.user.id);
+  const role = await roleByKey(it.guild, 'v18');
+  if (!member.roles.cache.has(role.id)) await member.roles.add(role, 'dichiarazione 18+ e regole accettate');
+  console.log('v18', mask(it.user.id), 'ok');
+  return it.reply({ content: r.msg, flags: MessageFlags.Ephemeral });
+}
+
+async function onVelvetCommand(it) {
+  const eph = { flags: MessageFlags.Ephemeral };
+  if (it.commandName === 'ingresso-18') return it.reply({ ...setup.gateMessage(), ...eph });
+  if (it.commandName === 'setup-server') {
+    if (!isAdmin(it)) return it.reply({ content: 'Solo il proprietario del server o un amministratore può usare /setup-server.', ...eph });
+    await it.deferReply(eph);
+    await it.guild.roles.fetch(); await it.guild.channels.fetch();
+    const missing = it.guild.members.me.permissions.missing(club.BOT_PERMS);
+    if (missing.length) return it.editReply({ content: 'Al bot mancano questi permessi: ' + missing.join(', ') + '.\nRiautorizzalo con il link di invito aggiornato:\n' + require('./invite').inviteUrl(cfg.applicationId) });
+    const archiveOld = !!it.options.getBoolean('archivia_vecchie');
+    if (it.options.getSubcommand() === 'anteprima') {
+      const p = setup.preview(it.guild, { archiveOld });
+      const body = (p.lines.length ? p.lines.join('\n') : 'Nessuna modifica: il server è già allineato.');
+      return it.editReply({ embeds: [
+        { title: '/setup-server · anteprima (' + p.lines.length + ' modifiche)', color: 0xffd56a, description: body.slice(0, 4000) + (body.length > 4000 ? '\n…' : '') },
+        { title: 'Struttura finale', color: 0x9945ff, description: club.layoutText().slice(0, 4000), fields: p.warnings.length ? [{ name: 'Avvisi', value: p.warnings.join('\n').slice(0, 1024) }] : [] },
+      ] });
+    }
+    const r = await setup.apply(it.guild, state, { archiveOld });
+    await sendTo(it.guild.id, 'log-bot', { content: 'setup-server applicato da <@' + it.user.id + '>: ' + r.done + '/' + r.planned + ' modifiche, ' + r.errors.length + ' errori.', allowedMentions: { parse: [] } });
+    return it.editReply({ embeds: [{ title: '/setup-server · applicato', color: r.errors.length ? 0xffc93c : 0x14f195,
+      description: ('Modifiche: ' + r.done + '/' + r.planned + '\n' + r.msgs.join('\n') + (r.errors.length ? '\n\n**Errori**\n' + r.errors.join('\n') : '') + (r.warnings.length ? '\n\n**Avvisi**\n' + r.warnings.join('\n') : '') + '\n\nRilanciare il comando è sicuro: applica solo quello che manca.').slice(0, 4000) }] });
+  }
+  if (it.commandName === 'rubina') {
+    const member = it.guild ? await it.guild.members.fetch(it.user.id) : null;
+    const allowed = !!(member && velvetLib.isAdultChannel(it.channel) && hasRole(member, 'v18'));
+    const text = it.options.getString('messaggio'); const resume = it.options.getBoolean('riprendi');
+    const quick = !allowed || !text || /\brosso\b/i.test(text || '');
+    if (quick) { const r = await rubina.talk({ userId: it.user.id, text, allowed, resume }); return it.reply({ content: r.content, ...eph }); }
+    await it.deferReply();
+    const r = await rubina.talk({ userId: it.user.id, text, allowed, resume });
+    if (r.ephemeral) { await it.deleteReply().catch(() => {}); return it.followUp({ content: r.content, ...eph }); }
+    return it.editReply({ content: r.content, allowedMentions: { parse: [] } });
+  }
+  if (it.commandName === 'curioso') {
+    const member = await it.guild.members.fetch(it.user.id);
+    if (!hasRole(member, 'v18')) return it.reply({ content: 'Prima entra nella 18+ ROOM da #ingresso-18.', ...eph });
+    const role = await roleByKey(it.guild, 'curioso');
+    if (member.roles.cache.has(role.id)) { await member.roles.remove(role, 'opt-out Curioso'); return it.reply({ content: 'Ruolo Curioso tolto.', ...eph }); }
+    await member.roles.add(role, 'opt-in Curioso'); return it.reply({ content: 'Ora sei **Curioso**. Usa di nuovo /curioso per toglierlo.', ...eph });
+  }
+  if (it.commandName === 'radar-collega') {
+    await it.deferReply(eph);
+    const member = await it.guild.members.fetch(it.user.id);
+    if (!hasRole(member, 'v18')) return it.editReply('Prima entra nella 18+ ROOM da #ingresso-18.');
+    const kind = it.options.getString('tipo');
+    const body = { kind, token: it.options.getString('token'), handle: it.options.getString('handle') || undefined, fedele_id: it.options.getInteger('id') || undefined };
+    if (kind === 'mistress' && !body.handle) return it.editReply('Per Mistress/Master serve anche l\'handle X del profilo.');
+    if (kind === 'fedele' && !body.fedele_id) return it.editReply('Per Fedele serve anche il numero (id) che ti ha dato il Radar.');
+    const key = 'dc-' + require('crypto').createHash('sha256').update('zdiscord:' + it.user.id).digest('hex').slice(0, 16);
+    const r = await ovJson('/api/events/radar-link/check', { method: 'POST', body: JSON.stringify(body), headers: { 'x-real-ip': key } });
+    if (r.status !== 200) return it.editReply((r.json && r.json.detail) || 'Verifica non riuscita.');
+    if (r.json.hidden) return it.editReply('Il profilo è nascosto sul Radar: niente ruolo finché non torna visibile.');
+    const rk = r.json.role === 'Master' ? 'master' : r.json.role === 'Fedele' ? 'fedele' : 'mistress';
+    const role = await roleByKey(it.guild, rk);
+    await member.roles.add(role, 'Radar della Carne: profilo verificato');
+    const g = state.guild(it.guild.id); g.links = g.links || {};
+    g.links[it.user.id] = (g.links[it.user.id] || []).filter((x) => !(x.kind === kind && x.ref === r.json.ref)).concat([{ kind, ref: r.json.ref, role: role.name }]);
+    state.save();
+    return it.editReply('Collegato: ruolo **' + role.name + '**. Il token non viene salvato; se cancelli o nascondi il profilo sul Radar il ruolo viene tolto. Per scollegare: /radar-scollega.');
+  }
+  if (it.commandName === 'radar-scollega') {
+    const member = await it.guild.members.fetch(it.user.id);
+    const g = state.guild(it.guild.id); const links = (g.links && g.links[it.user.id]) || [];
+    for (const l of links) { const role = it.guild.roles.cache.find((x) => x.name === l.role); if (role && member.roles.cache.has(role.id)) await member.roles.remove(role, 'scollegato dal Radar'); }
+    if (g.links) delete g.links[it.user.id]; state.save();
+    return it.reply({ content: links.length ? 'Scollegato: ruoli Radar tolti.' : 'Nessun collegamento Radar attivo.', ...eph });
+  }
+}
+const VELVET_CMDS = new Set(['setup-server', 'rubina', 'ingresso-18', 'curioso', 'radar-collega', 'radar-scollega']);
+
 client.on(Events.InteractionCreate, async (it) => {
+  try {
+    if (it.isButton()) return await onButton(it);
+    if (it.isModalSubmit()) return await onModal(it);
+  } catch (e) {
+    console.error('interazione', it.customId, e.message);
+    if (!it.replied && !it.deferred) await it.reply({ content: 'Errore temporaneo, riprova tra poco.', flags: MessageFlags.Ephemeral }).catch(() => {});
+    return;
+  }
   if (!it.isChatInputCommand()) return;
+  if (VELVET_CMDS.has(it.commandName)) {
+    if (!it.guild) return it.reply({ content: 'Usa questo comando dentro il server.', flags: MessageFlags.Ephemeral }).catch(() => {});
+    try { return await onVelvetCommand(it); } catch (e) {
+      console.error('comando', it.commandName, e.message);
+      const msg = { content: 'Errore temporaneo, riprova tra poco.' };
+      if (it.deferred || it.replied) await it.editReply(msg).catch(() => {}); else await it.reply({ ...msg, flags: MessageFlags.Ephemeral }).catch(() => {});
+      return;
+    }
+  }
   const ctx = { guildId: it.guildId, userId: it.user.id, options: { mint: it.options.getString('mint') } };
   try {
     const eph = ['verifica', 'radar'].includes(it.commandName);
@@ -59,6 +242,7 @@ client.on(Events.InteractionCreate, async (it) => {
   }
 });
 
+deps.relayStatus = () => ({ setupGuilds: Object.keys(state.data.guilds).filter((g) => state.data.guilds[g].setupAt).length, latestEventId: state.latestEventId });
 makeServer(deps).listen(cfg.port, cfg.host, () => console.log('API verifica su', cfg.host + ':' + cfg.port));
 client.login(cfg.token);
 for (const s of ['SIGTERM', 'SIGINT']) process.on(s, () => { client.destroy(); process.exit(0); });

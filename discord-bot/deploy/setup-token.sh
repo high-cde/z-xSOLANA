@@ -25,7 +25,7 @@ sleep 4
 systemctl --no-pager --lines=5 status zdiscord || true
 curl -fsS http://127.0.0.1:8790/discord/api/health && echo
 echo
-echo "Invita il bot nel server con questo link (permessi: Gestire i ruoli, Inviare messaggi, Incorporare link, Usare i comandi):"
+echo "Invita il bot nel server con questo link (permessi: Gestire canali e ruoli, Vedere canali, Inviare messaggi, Incorporare link, Allegare file, Leggere la cronologia, Usare i comandi):"
 node /opt/zdiscord/src/invite.js "$APP"
 echo
-echo "Dopo l'invito, in Impostazioni server > Ruoli trascina il ruolo del bot sopra 'Holder \$DSN' e 'Holder VELVET'."
+echo "Dopo l'invito, nel server usa /setup-server anteprima e poi /setup-server applica."

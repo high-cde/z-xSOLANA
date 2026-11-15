@@ -9,8 +9,8 @@ const C = require('../src/constants');
 
 test('definizioni comandi valide per Discord', () => {
   const names = cmd.DEFS.map((d) => d.name);
-  assert.deepStrictEqual(names, ['kira', 'stato', 'token', 'radar', 'verifica', 'quest']);
-  for (const d of cmd.DEFS) { assert.match(d.name, /^[a-z]{1,32}$/); assert.ok(d.description.length >= 1 && d.description.length <= 100); }
+  assert.deepStrictEqual(names, ['kira', 'stato', 'token', 'radar', 'verifica', 'quest', 'setup-server', 'rubina', 'velvet', 'ingresso-18', 'curioso', 'radar-collega', 'radar-scollega']);
+  for (const d of cmd.DEFS) { assert.match(d.name, /^[a-z0-9-]{1,32}$/); assert.ok(d.description.length >= 1 && d.description.length <= 100); }
 });
 test('/kira con dati simulati', async () => {
   const r = await cmd.kira(C.DSN_SOL, { rpc: fakeRpc({ ['getAccountInfo:' + C.DSN_SOL]: mintInfo({}) }), fetchJson: async () => { throw new Error('offline'); } });
@@ -44,5 +44,5 @@ test('/verifica crea un link monouso, solo in un server', () => {
 test('/quest e link di invito con permessi minimi', async () => {
   assert.match(cmd.quest().embeds[0].url, /quest\.x-zdos\.it/);
   const u = inviteUrl('123456789012345678');
-  assert.match(u, /scope=bot%20applications\.commands/); assert.match(u, /permissions=2415937536$/);
+  assert.match(u, /scope=bot%20applications\.commands/); assert.match(u, /permissions=2416036880$/);
 });

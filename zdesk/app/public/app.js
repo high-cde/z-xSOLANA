@@ -1555,7 +1555,7 @@
   // ---------- Pannello admin / Ecosistema (sola lettura) ----------
   const TAB_TITLES = {
     admin: 'Panoramica', trending: 'In tendenza', new: 'Nuove pair', watchlist: 'Watchlist', xstocks: 'Titoli tokenizzati',
-    copytrader: 'Copy trader', ninja: 'Ninja', desk: 'Desk', wallet: 'Wallet', radar: 'Radar · Connetti',
+    copytrader: 'Copy trader', ninja: 'Ninja', desk: 'Desk', wallet: 'Wallet', radar: 'Radar · Connetti', xdrafts: 'Bozze X',
   };
   const TONE = { kira: 'c-kira', swap: 'c-swap', rpg: 'c-rpg', velvet: 'c-velvet', git: 'c-git', quest: 'c-quest' };
   function fmtBytes(n) {
@@ -1687,6 +1687,17 @@
     }
   });
 
+  async function loadXdrafts() {
+    const st = $('#xd-status'); const box = $('#xd-list');
+    st.textContent = 'caricamento…';
+    let j;
+    try { const r = await fetch(BASE + '/api/xdrafts', { cache: 'no-store' }); j = await r.json(); if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status)); }
+    catch (e) { st.textContent = 'Bozze non disponibili: ' + e.message; box.innerHTML = ''; return; }
+    const tg = j.status && j.status.telegram;
+    st.textContent = (j.drafts || []).length + ' bozze · Telegram ' + (tg ? (tg.admin && tg.can_post ? 'attivo su ' + tg.channel : (tg.checked_at ? 'non attivo (bot non admin del canale)' : 'in attesa del primo controllo')) : 'n/d') + ' · ' + (j.note || '');
+    box.innerHTML = (j.drafts || []).map((d) => `<article class="card"><div class="tok"><b>${esc(d.title)}</b><span>${esc(d.kind)} · #${esc(d.id)} · ${esc(romeDate(new Date(d.created_at * 1000).toISOString(), true))}</span></div><pre style="white-space:pre-wrap;font-size:12px">${esc(d.x_text)}</pre><a class="button" href="${esc(d.x_intent)}" target="_blank" rel="noopener noreferrer">Apri su X ↗</a></article>`).join('') || '<p class="hint">Nessun evento ancora. Gli eventi si inseriscono con l\'endpoint admin di VelvetHub o arrivano dal Radar della Carne.</p>';
+  }
+
   function showTab(tab) {
     state.tab = tab;
     if ($('#page-title')) $('#page-title').textContent = TAB_TITLES[tab] || 'ZDESK';
@@ -1705,6 +1716,7 @@
     if (tab === 'copytrader') loadCopy().catch(console.error);
     if (tab === 'ninja') loadNinja().catch(console.error);
     if (tab === 'radar') loadRadar().catch(console.error);
+    if (tab === 'xdrafts') loadXdrafts().catch(console.error);
     if (tab === 'admin') loadAdmin().catch(console.error);
     loadAntifake().catch(() => {});
     if (tab === 'trending') renderTable('tbl-trending', state.pairs.trending, 'trending');

@@ -12,6 +12,8 @@ module.exports = {
     ['Zlang IDE', 'https://x-zdos.it/ide/'],
     ['x-zdos.it', 'https://x-zdos.it/'],
   ],
-  // Manage Roles (1<<28) + Send Messages (1<<11) + Embed Links (1<<14) + Use Application Commands (1<<31)
-  INVITE_PERMISSIONS: (1n << 28n) | (1n << 11n) | (1n << 14n) | (1n << 31n),
+  // Permessi minimi (src/club.js BOT_PERMS): Manage Channels (1<<4) + View Channel (1<<10) + Send Messages (1<<11)
+  // + Embed Links (1<<14) + Attach Files (1<<15) + Read Message History (1<<16) + Manage Roles (1<<28)
+  // + Use Application Commands (1<<31) = 2416036880. Niente Administrator, niente Manage Webhooks (non usati).
+  INVITE_PERMISSIONS: require('./club').BOT_PERMS,
 };

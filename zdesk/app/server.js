@@ -141,6 +141,16 @@ app.get('/api/copytop', wrap(async (_req, res) => {
 }));
 
 
+// Bozze X del Velvet Club (eventi OurVelvet): sola lettura da 127.0.0.1:8000. Nessun post su X da qui:
+// ogni bozza è un link intent che l'admin apre dal proprio account.
+app.get('/api/xdrafts', wrap(async (_req, res) => {
+  const r = await fetch((process.env.OURVELVET_URL || 'http://127.0.0.1:8000') + '/api/events/xdrafts?limit=50', { signal: AbortSignal.timeout(8000) });
+  if (!r.ok) { const e = new Error('OurVelvet non risponde (HTTP ' + r.status + ')'); e.status = 502; throw e; }
+  const j = await r.json();
+  const st = await fetch((process.env.OURVELVET_URL || 'http://127.0.0.1:8000') + '/api/events/status', { signal: AbortSignal.timeout(8000) }).then((x) => x.json()).catch(() => null);
+  res.json({ ...j, status: st });
+}));
+
 // ZDOS Radar: sola lettura, solo GET, nessuna chiamata X da qui (vedi lib/radar.js).
 app.get('/api/radar', wrap(async (_req, res) => {
   res.json(radar.getRadar());

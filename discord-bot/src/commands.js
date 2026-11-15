@@ -11,6 +11,24 @@ const DEFS = [
   { name: 'radar', description: 'Ultimi segnali del Radar zdesk (sola lettura)' },
   { name: 'verifica', description: 'Ottieni i ruoli holder firmando un messaggio con il tuo wallet' },
   { name: 'quest', description: 'Link a ZQuest' },
+  { name: 'setup-server', description: 'Riordina il server (solo owner/admin). Prima usa anteprima.', default_member_permissions: '8', options: [
+    { type: 1, name: 'anteprima', description: 'Mostra le modifiche senza applicarle', options: [{ type: 5, name: 'archivia_vecchie', description: 'Rinomina le categorie esistenti con 🗄️ (non sposta né cancella canali)', required: false }] },
+    { type: 1, name: 'applica', description: 'Applica la struttura (idempotente, non cancella canali)', options: [{ type: 5, name: 'archivia_vecchie', description: 'Rinomina le categorie esistenti con 🗄️ (non sposta né cancella canali)', required: false }] },
+  ] },
+  { name: 'rubina', description: 'Parla con Rubina (IA) · solo nei canali 18+ della 18+ ROOM', options: [
+    { type: 3, name: 'messaggio', description: 'Il tuo messaggio (ROSSO la ferma subito)', required: false, max_length: 1000 },
+    { type: 5, name: 'riprendi', description: 'Riprendi dopo una pausa ROSSO', required: false },
+  ] },
+  { name: 'velvet', description: 'VelvetHub 18+: mini app, Radar della Carne, categorie e regole del club' },
+  { name: 'ingresso-18', description: 'Accesso alla 18+ ROOM: dichiarazione di età e regole' },
+  { name: 'curioso', description: 'Prendi o togli il ruolo Curioso (serve Verificato 18+)' },
+  { name: 'radar-collega', description: 'Collega il tuo profilo del Radar della Carne e ricevi il ruolo', options: [
+    { type: 3, name: 'tipo', description: 'Mistress/Master oppure Fedele', required: true, choices: [{ name: 'Mistress / Master', value: 'mistress' }, { name: 'Fedele', value: 'fedele' }] },
+    { type: 3, name: 'token', description: 'Token di gestione (Mistress/Master) o token del Fedele dato dal Radar', required: true, min_length: 10, max_length: 100 },
+    { type: 3, name: 'handle', description: 'Handle X del profilo Mistress/Master (senza @)', required: false, max_length: 16 },
+    { type: 4, name: 'id', description: 'Numero del Fedele dato dal Radar', required: false, min_value: 1 },
+  ] },
+  { name: 'radar-scollega', description: 'Scollega il Radar della Carne e togli i ruoli collegati' },
 ].map((d) => ({ ...d, dm_permission: false }));
 
 const ICON = { ok: '✅', info: 'ℹ️', warn: '⚠️', fail: '⛔', nd: '➖' };
@@ -108,6 +126,22 @@ function verifica(ctx, deps) {
   }] };
 }
 
+function velvet() {
+  const club = require('./club');
+  return { embeds: [{
+    title: '🖤 VelvetHub 18+ · Velvet Club', url: 'https://velvet.x-zdos.it/app', color: 0xffd56a,
+    description: 'Il club 18+ di ZDOS1.3: sala, Radar della Carne, contest ed eventi. Solo adulti verificati, consenso sempre, safeword **ROSSO**.',
+    fields: [
+      { name: 'Mini app', value: '[velvet.x-zdos.it/app](https://velvet.x-zdos.it/app) · Telegram [@OurVelvetHub](https://t.me/OurVelvetHub)' },
+      { name: 'Radar della Carne', value: '[Apri il Radar](https://velvet.x-zdos.it/app#radar-section). Profili Mistress/Master verificati con un post X; Fedeli e Curiosi solo per scelta (opt-in). Collega il tuo profilo con /radar-collega.' },
+      { name: 'Categorie del club', value: club.LAYOUT.find((l) => l.key === 'club').channels.map((c) => '#' + c.name).join(' · ') },
+      { name: 'Ruoli', value: 'Verificato 18+ (#ingresso-18) · Curioso (/curioso) · Fedele, Mistress, Master (/radar-collega) · Creator (assegnato dagli admin ai creator verificati)' },
+      { name: 'Regole', value: club.RULES_18.slice(0, 5).map((r) => '• ' + r).join('\n').slice(0, 1024) },
+    ],
+    footer: { text: 'VelvetHub 18+ by ZDOS1.3 · VELVET è un token di comunità, nessun rendimento' },
+  }] };
+}
+
 async function dispatch(name, ctx, deps) {
   switch (name) {
     case 'kira': return kira(ctx.options.mint, deps);
@@ -116,8 +150,9 @@ async function dispatch(name, ctx, deps) {
     case 'radar': return radar(deps);
     case 'verifica': return verifica(ctx, deps);
     case 'quest': return quest();
+    case 'velvet': return velvet();
     default: return { ephemeral: true, content: 'Comando sconosciuto.' };
   }
 }
 
-module.exports = { DEFS, dispatch, kira, stato, token, radar, quest, verifica };
+module.exports = { DEFS, dispatch, kira, stato, token, radar, quest, verifica, velvet };

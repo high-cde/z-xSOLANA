@@ -11,5 +11,8 @@ module.exports = {
   zdeskUrl: env.ZDESK_URL || 'http://127.0.0.1:8787',
   rpcUrls: [env.SOLANA_RPC_URL, 'https://api.mainnet-beta.solana.com', 'https://solana-rpc.publicnode.com'].filter(Boolean),
   roles: { dsn: env.ROLE_DSN || 'Holder $DSN', velvet: env.ROLE_VELVET || 'Holder VELVET' },
+  ourvelvetUrl: env.OURVELVET_URL || 'http://127.0.0.1:8000',
+  stateDir: env.STATE_DIRECTORY || env.STATE_DIR || '',
+  relayMs: Number(env.RELAY_MS || 60000),
   nonceTtlMs: Number(env.NONCE_TTL_MS || 10 * 60 * 1000),
 };

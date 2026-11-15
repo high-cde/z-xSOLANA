@@ -20,7 +20,7 @@ function makeServer(deps) {
     const url = new URL(req.url, 'http://local');
     const p = url.pathname.replace(/^\/discord\/api/, '');
     try {
-      if (req.method === 'GET' && p === '/health') return send(res, 200, { ok: true, discord: deps.discordReady() });
+      if (req.method === 'GET' && p === '/health') return send(res, 200, { ok: true, discord: deps.discordReady(), ...(deps.relayStatus ? { relay: deps.relayStatus() } : {}) });
       if (req.method === 'GET' && p === '/message') {
         const rec = deps.store.peek(url.searchParams.get('n'));
         if (!rec) return send(res, 404, { ok: false, error: 'Link scaduto o già usato: rilancia /verifica su Discord.' });
