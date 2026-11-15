@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>xCLOUD by ZDOS — Gestionale (demo)</title>
+<meta name="description" content="xCLOUD by ZDOS: demo del gestionale multi-settore. Dati di esempio salvati solo nel tuo browser.">
+<meta name="theme-color" content="#070112">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css?v=1">
+</head>
+<body>
+<div class="fx" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div></div>
+<div class="demo-banner" role="note">DEMO · dati di esempio solo in questo browser · nessun invio SDI, nessun pagamento</div>
+<div class="app">
+  <aside class="side" id="side">
+    <a class="brand" href="#/dashboard"><img src="icon.svg" width="34" height="34" alt=""><span><b>xCLOUD</b><small>by ZDOS · gestionale</small></span></a>
+    <nav class="nav" id="nav" aria-label="Moduli"></nav>
+    <div class="side-foot">
+      <label class="lbl" for="roleSel">Ruolo attivo (demo RBAC)</label>
+      <select id="roleSel"></select>
+      <p class="tiny muted">ZDOS1.3 · P.IVA 11040550961 · licenza ZSEL</p>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="top">
+      <button class="iconbtn only-m" id="menuBtn" aria-label="Menu">☰</button>
+      <div class="crumb"><span class="muted">Azienda</span> <select id="tenantSel" aria-label="Azienda attiva"></select></div>
+      <span class="net" id="net" title="Stato rete">●</span>
+    </header>
+    <main id="view" tabindex="-1"></main>
+  </div>
+</div>
+<nav class="bottom only-m" id="bottom" aria-label="Moduli principali"></nav>
+<div class="modal hidden" id="modal" role="dialog" aria-modal="true"><div class="modal-card glass" id="modalCard"></div></div>
+<div class="toast hidden" id="toast" role="status"></div>
+<div id="print" class="print-only"></div>
+<script src="app.js?v=1"></script>
+</body>
+</html>
