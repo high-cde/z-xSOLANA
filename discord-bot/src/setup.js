@@ -62,7 +62,7 @@ async function planMessages(guild, state, opts) {
     if (!ch && !willExist(m.channel)) continue;
     const h = guides.hashPayload(m.payload);
     let msg = null;
-    if (ch && ids[m.kind]) msg = await ch.messages.fetch(ids[m.kind]).catch(() => null);
+    if (ch && ids[m.kind]) msg = await ch.messages.fetch({ message: ids[m.kind], force: true }).catch(() => null);
     if (!msg) out.push({ op: 'guide.publish', channel: m.channel, kind: m.kind, title: m.title });
     else if (hashes[m.kind] !== h) out.push({ op: 'guide.update', channel: m.channel, kind: m.kind, title: m.title });
     else if (!msg.pinned) out.push({ op: 'guide.pin', channel: m.channel, kind: m.kind, title: m.title });
@@ -73,7 +73,7 @@ async function planMessages(guild, state, opts) {
 async function ensureMessage(channel, m, state, canPin) {
   const g = state.guild(channel.guild.id); g.messages = g.messages || {}; g.msgHash = g.msgHash || {};
   const h = guides.hashPayload(m.payload);
-  let msg = g.messages[m.kind] ? await channel.messages.fetch(g.messages[m.kind]).catch(() => null) : null;
+  let msg = g.messages[m.kind] ? await channel.messages.fetch({ message: g.messages[m.kind], force: true }).catch(() => null) : null;
   let res;
   if (msg) { if (g.msgHash[m.kind] !== h) { await msg.edit(m.payload); res = 'aggiornato'; } else res = 'già allineato'; }
   else { msg = await channel.send(m.payload); g.messages[m.kind] = msg.id; res = 'pubblicato'; }
