@@ -1,7 +1,9 @@
 'use strict';
 // Bot Discord z-xSOLANA · © 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza ZSEL proprietaria.
-// Intent: solo Guilds (nessun intent privilegiato, nessuna lettura dei messaggi). Risponde solo ai comandi slash.
-const { Client, GatewayIntentBits, Events, MessageFlags, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ChannelType } = require('discord.js');
+// Intent: Guilds; in più Server Members (privilegiato) SOLO se l'app lo ha attivo nel Developer Portal, per l'anti-raid.
+// Nessuna lettura del contenuto dei messaggi. Risponde solo ai comandi slash e ai pulsanti.
+const { Client, GatewayIntentBits, IntentsBitField, ApplicationFlags, Events, MessageFlags, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require('discord.js');
+const { makeRaidGuard, DAY } = require('./antiraid');
 const club = require('./club');
 const setup = require('./setup');
 const velvetLib = require('./velvet');
@@ -56,6 +58,8 @@ const ovJson = async (path, opts = {}) => {
   let j = null; try { j = await r.json(); } catch (_) { /* */ }
   return { status: r.status, json: j };
 };
+const raid = makeRaidGuard(cfg.antiRaid);
+let memberIntent = false;
 const declined = new Map(); // userId -> scadenza: chi si dichiara minorenne non può riprovare per 24 ore (in memoria, nessuna data salvata)
 
 async function roleByKey(guild, key) {
@@ -100,11 +104,65 @@ async function radarSync() {
   state.save();
 }
 
+// ---- Anti-raid: account troppo nuovi / picchi di ingressi → ruolo "In verifica", log in #mod-log ----
+const modLog = (guild, payload) => sendTo(guild.id, 'mod-log', { allowedMentions: { parse: [] }, ...payload });
+async function quarantineRole(guild) { await guild.roles.fetch(); return guild.roles.cache.find((r) => r.name === velvetLib.roleName('quarantena')) || null; }
+const canModerate = (it) => isAdmin(it) || (it.memberPermissions && it.memberPermissions.has(PermissionFlagsBits.ManageRoles));
+
+client.on(Events.GuildMemberAdd, async (member) => {
+  try {
+    if (member.user.bot) return;
+    const v = raid.onJoin(member.guild.id, member.user.createdTimestamp);
+    if (v.raidStarted) await modLog(member.guild, { content: '🚨 **Possibile raid**: troppi ingressi in poco tempo. Per ' + cfg.antiRaid.raidMinutes + ' minuti tutti i nuovi ingressi vanno in verifica.' });
+    if (!v.quarantine) return;
+    const role = await quarantineRole(member.guild);
+    if (!role) return modLog(member.guild, { content: '⚠️ <@' + member.id + '> andrebbe in verifica (' + v.reason + ') ma il ruolo "In verifica" non esiste: lancia /setup-server applica.' });
+    await member.roles.add(role, 'anti-raid: ' + v.reason);
+    const g = state.guild(member.guild.id); g.quarantine = g.quarantine || {};
+    g.quarantine[member.id] = { at: Date.now(), release: v.autoRelease, reason: v.reason }; state.save();
+    console.log('antiraid', mask(member.id), v.reason);
+    await modLog(member.guild, {
+      content: '🚧 <@' + member.id + '> in verifica: ' + v.reason + (v.autoRelease ? ' · sblocco automatico <t:' + Math.floor(v.autoRelease / 1000) + ':R>' : ' · serve l\'approvazione dello staff'),
+      components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('mod:ok:' + member.id).setLabel('Approva').setStyle(ButtonStyle.Success))],
+    });
+  } catch (e) { console.error('antiraid', e.message); }
+});
+
+async function releaseMember(guild, uid, why) {
+  const role = await quarantineRole(guild);
+  const m = await guild.members.fetch(uid).catch(() => null);
+  if (m && role && m.roles.cache.has(role.id)) await m.roles.remove(role, why);
+  const g = state.guild(guild.id); if (g.quarantine) delete g.quarantine[uid]; state.save();
+  return !!m;
+}
+async function quarantineSweep() {
+  for (const [gid, g] of Object.entries(state.data.guilds)) {
+    const guild = client.guilds.cache.get(gid); if (!guild || !g.quarantine) continue;
+    for (const [uid, q] of Object.entries(g.quarantine)) {
+      if (q.release && q.release <= Date.now()) {
+        try { const here = await releaseMember(guild, uid, 'anti-raid: account ora abbastanza vecchio'); if (here) await modLog(guild, { content: '✅ <@' + uid + '> sbloccato in automatico (account ora con almeno ' + cfg.antiRaid.minAccountDays + ' giorni).' }); } catch (_) { /* riprova */ }
+      } else if (q.at < Date.now() - 30 * DAY) { delete g.quarantine[uid]; }
+    }
+  }
+  state.save();
+}
+
+// Rileva se l'app ha l'intent Server Members (verificato o limitato) senza rischiare un login rifiutato.
+async function detectMemberIntent() {
+  try {
+    const r = await fetch('https://discord.com/api/v10/applications/@me', { headers: { authorization: 'Bot ' + cfg.token }, signal: AbortSignal.timeout(10000) });
+    if (!r.ok) return false;
+    const f = Number((await r.json()).flags || 0);
+    return !!(f & (ApplicationFlags.GatewayGuildMembers | ApplicationFlags.GatewayGuildMembersLimited));
+  } catch (_) { return false; }
+}
+
 client.once(Events.ClientReady, (c) => {
-  console.log('zdiscord online come', c.user.tag, '· server:', c.guilds.cache.size);
+  console.log('zdiscord online come', c.user.tag, '· server:', c.guilds.cache.size, '· anti-raid:', memberIntent ? 'attivo' : 'in attesa di Server Members Intent');
   relay.tick().catch(() => {});
   setInterval(() => relay.tick().catch(() => {}), cfg.relayMs);
   setInterval(() => radarSync().catch(() => {}), 30 * 60000);
+  setInterval(() => quarantineSweep().catch(() => {}), 10 * 60000);
 });
 
 function gateModal() {
@@ -115,6 +173,13 @@ function gateModal() {
 }
 
 async function onButton(it) {
+  if (it.customId.startsWith('mod:ok:')) {
+    if (!canModerate(it)) return it.reply({ content: 'Solo lo staff (Gestisci ruoli) può approvare.', flags: MessageFlags.Ephemeral });
+    const uid = it.customId.slice(7);
+    const here = await releaseMember(it.guild, uid, 'anti-raid: approvato da staff');
+    console.log('antiraid approvato', mask(uid));
+    return it.update({ content: (it.message.content || '') + '\n✅ Approvato da <@' + it.user.id + '>' + (here ? '' : ' (non è più nel server)'), components: [], allowedMentions: { parse: [] } });
+  }
   if (it.customId === 'v18:start') {
     const until = declined.get(it.user.id);
     if (until && until > Date.now()) return it.reply({ content: 'La 18+ ROOM è riservata ai maggiorenni.', flags: MessageFlags.Ephemeral });
@@ -149,15 +214,19 @@ async function onVelvetCommand(it) {
     const missing = it.guild.members.me.permissions.missing(club.BOT_PERMS);
     if (missing.length) return it.editReply({ content: 'Al bot mancano questi permessi: ' + missing.join(', ') + '.\nRiautorizzalo con il link di invito aggiornato:\n' + require('./invite').inviteUrl(cfg.applicationId) });
     const archiveOld = !!it.options.getBoolean('archivia_vecchie');
+    const opts = { archiveOld, memberIntent, minAccountDays: cfg.antiRaid.minAccountDays };
     if (it.options.getSubcommand() === 'anteprima') {
-      const p = setup.preview(it.guild, { archiveOld });
+      const p = await setup.preview(it.guild, state, opts);
       const body = (p.lines.length ? p.lines.join('\n') : 'Nessuna modifica: il server è già allineato.');
-      return it.editReply({ embeds: [
+      const warn = p.warnings.join('\n');
+      const embeds = [
         { title: '/setup-server · anteprima (' + p.lines.length + ' modifiche)', color: 0xffd56a, description: body.slice(0, 4000) + (body.length > 4000 ? '\n…' : '') },
-        { title: 'Struttura finale', color: 0x9945ff, description: club.layoutText().slice(0, 4000), fields: p.warnings.length ? [{ name: 'Avvisi', value: p.warnings.join('\n').slice(0, 1024) }] : [] },
-      ] });
+        { title: 'Struttura finale', color: 0x9945ff, description: club.layoutText().slice(0, 4000) },
+      ];
+      if (warn) embeds.push({ title: 'Avvisi', color: 0xffc93c, description: (warn + (p.perms.missingExtra.length ? '\n\nNuovo link di invito (aggiunge ' + p.perms.missingExtra.join(', ') + '):\n' + require('./invite').inviteUrl(cfg.applicationId) : '')).slice(0, 4000) });
+      return it.editReply({ embeds });
     }
-    const r = await setup.apply(it.guild, state, { archiveOld });
+    const r = await setup.apply(it.guild, state, opts);
     await sendTo(it.guild.id, 'log-bot', { content: 'setup-server applicato da <@' + it.user.id + '>: ' + r.done + '/' + r.planned + ' modifiche, ' + r.errors.length + ' errori.', allowedMentions: { parse: [] } });
     return it.editReply({ embeds: [{ title: '/setup-server · applicato', color: r.errors.length ? 0xffc93c : 0x14f195,
       description: ('Modifiche: ' + r.done + '/' + r.planned + '\n' + r.msgs.join('\n') + (r.errors.length ? '\n\n**Errori**\n' + r.errors.join('\n') : '') + (r.warnings.length ? '\n\n**Avvisi**\n' + r.warnings.join('\n') : '') + '\n\nRilanciare il comando è sicuro: applica solo quello che manca.').slice(0, 4000) }] });
@@ -244,5 +313,9 @@ client.on(Events.InteractionCreate, async (it) => {
 
 deps.relayStatus = () => ({ setupGuilds: Object.keys(state.data.guilds).filter((g) => state.data.guilds[g].setupAt).length, latestEventId: state.latestEventId });
 makeServer(deps).listen(cfg.port, cfg.host, () => console.log('API verifica su', cfg.host + ':' + cfg.port));
-client.login(cfg.token);
+(async () => {
+  memberIntent = await detectMemberIntent();
+  if (memberIntent) client.options.intents = new IntentsBitField([GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers]).freeze();
+  await client.login(cfg.token);
+})().catch((e) => { console.error('login', e.message); process.exit(1); });
 for (const s of ['SIGTERM', 'SIGINT']) process.on(s, () => { client.destroy(); process.exit(0); });

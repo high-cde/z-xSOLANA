@@ -15,4 +15,11 @@ module.exports = {
   stateDir: env.STATE_DIRECTORY || env.STATE_DIR || '',
   relayMs: Number(env.RELAY_MS || 60000),
   nonceTtlMs: Number(env.NONCE_TTL_MS || 10 * 60 * 1000),
+  // Anti-raid: età minima dell'account (giorni), soglia ingressi in finestra (secondi), durata modalità raid (minuti).
+  antiRaid: {
+    minAccountDays: Number(env.MIN_ACCOUNT_DAYS || 7),
+    joins: Number(env.RAID_JOINS || 8),
+    windowS: Number(env.RAID_WINDOW_S || 60),
+    raidMinutes: Number(env.RAID_MINUTES || 15),
+  },
 };

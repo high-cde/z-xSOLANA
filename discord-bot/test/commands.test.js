@@ -44,5 +44,5 @@ test('/verifica crea un link monouso, solo in un server', () => {
 test('/quest e link di invito con permessi minimi', async () => {
   assert.match(cmd.quest().embeds[0].url, /quest\.x-zdos\.it/);
   const u = inviteUrl('123456789012345678');
-  assert.match(u, /scope=bot%20applications\.commands/); assert.match(u, /permissions=2416036880$/);
+  assert.match(u, /scope=bot%20applications\.commands/); assert.match(u, /permissions=2251802229722160$/);
 });

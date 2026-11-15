@@ -11,7 +11,7 @@ const DEFS = [
   { name: 'radar', description: 'Ultimi segnali del Radar zdesk (sola lettura)' },
   { name: 'verifica', description: 'Ottieni i ruoli holder firmando un messaggio con il tuo wallet' },
   { name: 'quest', description: 'Link a ZQuest' },
-  { name: 'setup-server', description: 'Riordina il server (solo owner/admin). Prima usa anteprima.', default_member_permissions: '8', options: [
+  { name: 'setup-server', description: 'Struttura, messaggi guida, AutoMod e anti-raid (solo owner/admin). Prima usa anteprima.', default_member_permissions: '8', options: [
     { type: 1, name: 'anteprima', description: 'Mostra le modifiche senza applicarle', options: [{ type: 5, name: 'archivia_vecchie', description: 'Rinomina le categorie esistenti con 🗄️ (non sposta né cancella canali)', required: false }] },
     { type: 1, name: 'applica', description: 'Applica la struttura (idempotente, non cancella canali)', options: [{ type: 5, name: 'archivia_vecchie', description: 'Rinomina le categorie esistenti con 🗄️ (non sposta né cancella canali)', required: false }] },
   ] },

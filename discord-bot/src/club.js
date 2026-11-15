@@ -7,9 +7,14 @@
 const P = {
   ManageChannels: 1n << 4n, ViewChannel: 1n << 10n, SendMessages: 1n << 11n, EmbedLinks: 1n << 14n,
   AttachFiles: 1n << 15n, ReadMessageHistory: 1n << 16n, ManageRoles: 1n << 28n, UseApplicationCommands: 1n << 31n,
+  ManageGuild: 1n << 5n, PinMessages: 1n << 51n,
 };
 // Il bot può impostare in un override solo permessi che ha anche lui: per questo servono AttachFiles e ReadMessageHistory.
 const BOT_PERMS = P.ManageChannels | P.ViewChannel | P.SendMessages | P.EmbedLinks | P.AttachFiles | P.ReadMessageHistory | P.ManageRoles | P.UseApplicationCommands;
+// Permessi aggiuntivi, non bloccanti: Manage Guild serve solo per le regole AutoMod native, Pin Messages solo per fissare
+// i messaggi guida. Se mancano, /setup-server anteprima lo segnala e applica salta solo quelle parti.
+const EXTRA_PERMS = { ManageGuild: P.ManageGuild, PinMessages: P.PinMessages };
+const INVITE_PERMS = BOT_PERMS | P.ManageGuild | P.PinMessages;
 
 const ROLES = [
   { key: 'dsn', name: 'Holder $DSN', color: 0x9945ff, hoist: false },
@@ -20,6 +25,8 @@ const ROLES = [
   { key: 'creator', name: 'Creator', color: 0xffd56a, hoist: true },
   { key: 'fedele', name: 'Fedele', color: 0x66e3ff, hoist: false },
   { key: 'curioso', name: 'Curioso', color: 0x14f195, hoist: false },
+  // Anti-raid: chi entra con un account troppo nuovo (o durante un raid) riceve questo ruolo e vede solo #verifica-accesso.
+  { key: 'quarantena', name: 'In verifica', color: 0x8a8f98, hoist: false },
 ];
 
 const RULES_18 = [
@@ -38,6 +45,8 @@ const LAYOUT = [
   { key: 'annunci', name: '📢 ANNUNCI', access: 'public', channels: [
     { name: 'annunci', access: 'readonly', topic: 'Annunci ufficiali ZDOS e Velvet Club. Solo lettura.' },
     { name: 'benvenuto', access: 'readonly', topic: 'Benvenuto nel server z-xSOLANA by ZDOS1.3. Regole generali e link utili.' },
+    { name: 'regole', access: 'readonly', topic: 'Regole generali del server $DSN by ZDOS1.3. Leggile prima di scrivere.' },
+    { name: 'verifica-accesso', access: 'quarantine', topic: 'Account nuovi o ingressi durante un raid: qui aspetti la verifica dello staff.' },
     { name: 'ingresso-18', access: 'readonly', topic: 'Accesso alla 18+ ROOM e al Velvet Club: dichiarazione di maggiore età e accettazione delle regole.' },
   ] },
   { key: 'zx', name: '🌐 Z-XSOLANA', access: 'public', channels: [
@@ -77,6 +86,7 @@ const LAYOUT = [
   { key: 'staff', name: '🛡️ STAFF', access: 'staff', channels: [
     { name: 'bozze-x', topic: 'Bozze per X generate dagli eventi: le apri e le pubblichi tu. Il bot non pubblica mai su X.' },
     { name: 'log-bot', topic: 'Log del bot (setup, errori del relay).' },
+    { name: 'mod-log', topic: 'Moderazione automatica: avvisi AutoMod, ingressi in verifica, raid. Solo staff.' },
   ] },
 ];
 const ARCHIVE = { key: 'archivio', name: '🗄️ ARCHIVIO' };
@@ -90,8 +100,15 @@ function overwrites(access, ids, ch = {}) {
   const r = ids.roles; const ow = [];
   const bot = { id: ids.bot, type: 1, allow: P.ViewChannel | P.SendMessages | P.EmbedLinks | P.ReadMessageHistory, deny: 0n };
   const ro = P.SendMessages;
+  // Chi è "In verifica" non vede i canali pubblici finché lo staff non lo approva (o l'account non è abbastanza vecchio).
+  const q = r.quarantena ? [{ id: r.quarantena, type: 0, allow: 0n, deny: P.ViewChannel }] : [];
   switch (access) {
-    case 'readonly': ow.push({ id: ids.everyone, type: 0, allow: 0n, deny: ro }, bot); break;
+    case 'public': ow.push(...q); break;
+    case 'readonly': ow.push({ id: ids.everyone, type: 0, allow: 0n, deny: ro }, bot, ...q); break;
+    case 'quarantine':
+      ow.push({ id: ids.everyone, type: 0, allow: 0n, deny: P.ViewChannel }, bot);
+      if (r.quarantena) ow.push({ id: r.quarantena, type: 0, allow: P.ViewChannel | P.ReadMessageHistory, deny: P.SendMessages });
+      break;
     case 'holder':
       ow.push({ id: ids.everyone, type: 0, allow: 0n, deny: P.ViewChannel }, bot);
       for (const k of ['dsn', 'velvet']) if (r[k]) ow.push({ id: r[k], type: 0, allow: P.ViewChannel | P.SendMessages | P.ReadMessageHistory, deny: 0n });
@@ -104,7 +121,7 @@ function overwrites(access, ids, ch = {}) {
       break;
     }
     case 'staff': ow.push({ id: ids.everyone, type: 0, allow: 0n, deny: P.ViewChannel }, bot); break;
-    default: break; // public: nessun override
+    default: break;
   }
   return ow;
 }
@@ -165,6 +182,15 @@ function plan(snap, opts = {}) {
     if (opts.archiveOld && !c.name.startsWith('🗄️')) actions.push({ op: 'category.rename', id: c.id, from: c.name, name: ('🗄️ ' + c.name).slice(0, 100) });
     order.push({ ref: c.id, kind: 'category' });
   }
+  // Quarantena anche sui canali e sulle categorie esistenti non gestiti: si AGGIUNGE solo un override "In verifica: non vede",
+  // il resto dei permessi resta com'è. Un'unica azione raggruppata.
+  const qid = roleIds.quarantena; const lock = [];
+  for (const c of snap.channels) {
+    if (managed.has(c.id) || c.id === catIds.archivio) continue;
+    const has = (c.overwrites || []).some((o) => String(o.id) === String(qid) && (BigInt(o.deny) & P.ViewChannel));
+    if (!has) lock.push({ id: c.id, name: c.name });
+  }
+  if (lock.length) actions.push({ op: 'quarantine.lock', role: qid, channels: lock });
   const inArchive = snap.channels.filter((c) => c.parentId && c.parentId === catIds.archivio).length;
   let room = 50 - inArchive; let skipped = 0;
   for (const c of snap.channels) {
@@ -187,6 +213,12 @@ function describe(a) {
     case 'channel.create': return '➕ #' + a.name + (a.nsfw ? ' 🔞' : '');
     case 'channel.update': return '🔧 #' + a.name + ': ' + ['parent', 'topic', 'nsfw', 'overwrites'].filter((k) => k in a).map((k) => ({ parent: 'categoria', topic: 'descrizione', nsfw: '18+', overwrites: 'permessi' }[k])).join(', ');
     case 'channel.archive': return '🗄️ #' + a.name + ' → Archivio';
+    case 'quarantine.lock': return '🚧 anti-raid: "In verifica" non vede ' + a.channels.length + ' canali/categorie esistenti (aggiunto 1 override, nient\'altro cambia)';
+    case 'guide.publish': return '📌 #' + a.channel + ': pubblica e fissa "' + a.title + '"';
+    case 'guide.update': return '📝 #' + a.channel + ': aggiorna il messaggio fisso "' + a.title + '"';
+    case 'guide.pin': return '📍 #' + a.channel + ': fissa il messaggio "' + a.title + '"';
+    case 'automod.create': return '🛡️ AutoMod: crea regola **' + a.name + '**';
+    case 'automod.update': return '🛡️ AutoMod: aggiorna regola **' + a.name + '**';
     default: return a.op;
   }
 }
@@ -195,4 +227,4 @@ function layoutText() {
   return LAYOUT.map((L) => '**' + L.name + '**' + (L.nsfw ? ' (18+, solo Verificato 18+)' : L.access === 'holder' ? ' (solo Holder)' : L.access === 'staff' ? ' (privata)' : '') + '\n' + L.channels.map((c) => '#' + c.name).join(' · ')).join('\n') + '\n**' + ARCHIVE.name + '**\ncanali esistenti non previsti (spostati, non cancellati)';
 }
 
-module.exports = { P, BOT_PERMS, ROLES, LAYOUT, ARCHIVE, ADULT_CATS, RULES_18, plan, describe, layoutText, overwrites, catKey, norm };
+module.exports = { P, BOT_PERMS, EXTRA_PERMS, INVITE_PERMS, ROLES, LAYOUT, ARCHIVE, ADULT_CATS, RULES_18, plan, describe, layoutText, overwrites, catKey, norm };

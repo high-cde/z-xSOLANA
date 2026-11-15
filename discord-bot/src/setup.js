@@ -1,7 +1,11 @@
 'use strict';
 // /setup-server: fotografia del server, piano (src/club.js) e applicazione con discord.js. Idempotente.
+// Oltre alla struttura: messaggi guida fissati (src/guides.js), regole AutoMod native (src/automod.js),
+// quarantena anti-raid (ruolo "In verifica"). Nulla viene cancellato.
 const { ChannelType, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const club = require('./club');
+const guides = require('./guides');
+const automod = require('./automod');
 
 function snapshot(guild) {
   const me = guild.members.me;
@@ -36,16 +40,67 @@ function rulesMessage() {
   return { embeds: [{ title: '📜 Regole della 18+ ROOM e del Velvet Club', color: 0xff4ecd, description: club.RULES_18.map((r, i) => (i + 1) + '. ' + r).join('\n') + '\n\nCategorie: ' + club.LAYOUT.find((l) => l.key === 'club').channels.map((c) => '#' + c.name).join(' · '), footer: { text: 'Chi viola le regole perde il ruolo Verificato 18+.' } }] };
 }
 
-async function ensureMessage(channel, kind, build, state) {
-  const g = state.guild(channel.guild.id); g.messages = g.messages || {};
-  const id = g.messages[kind];
-  if (id) { const m = await channel.messages.fetch(id).catch(() => null); if (m) { await m.edit(build()).catch(() => {}); return 'aggiornato'; } }
-  const m = await channel.send(build());
-  g.messages[kind] = m.id; state.save();
-  return 'pubblicato';
+// Tutti i messaggi fissi gestiti: canale, chiave nello stato, titolo, contenuto.
+function allMessages(opts = {}) {
+  return [
+    { channel: 'ingresso-18', kind: 'gate', title: 'Ingresso 18+ ROOM', payload: gateMessage() },
+    { channel: 'regole-18', kind: 'rules', title: 'Regole della 18+ ROOM', payload: rulesMessage() },
+    ...guides.build(opts),
+  ];
 }
 
-async function apply(guild, state, { maxMax = 200, archiveOld = false } = {}) {
+const textByName = (guild, n) => guild.channels.cache.find((c) => c.type === ChannelType.GuildText && c.name === n);
+const willExist = (name) => club.LAYOUT.some((L) => L.channels.some((c) => c.name === name));
+
+// Piano dei messaggi: guarda lo stato (id + impronta) e, se possibile, il messaggio reale.
+async function planMessages(guild, state, opts) {
+  const g = state.guild(guild.id); const ids = g.messages || {}; const hashes = g.msgHash || {};
+  const out = [];
+  for (const m of allMessages(opts)) {
+    const ch = textByName(guild, m.channel);
+    if (!ch && !willExist(m.channel)) continue;
+    const h = guides.hashPayload(m.payload);
+    let msg = null;
+    if (ch && ids[m.kind]) msg = await ch.messages.fetch(ids[m.kind]).catch(() => null);
+    if (!msg) out.push({ op: 'guide.publish', channel: m.channel, kind: m.kind, title: m.title });
+    else if (hashes[m.kind] !== h) out.push({ op: 'guide.update', channel: m.channel, kind: m.kind, title: m.title });
+    else if (!msg.pinned) out.push({ op: 'guide.pin', channel: m.channel, kind: m.kind, title: m.title });
+  }
+  return out;
+}
+
+async function ensureMessage(channel, m, state, canPin) {
+  const g = state.guild(channel.guild.id); g.messages = g.messages || {}; g.msgHash = g.msgHash || {};
+  const h = guides.hashPayload(m.payload);
+  let msg = g.messages[m.kind] ? await channel.messages.fetch(g.messages[m.kind]).catch(() => null) : null;
+  let res;
+  if (msg) { if (g.msgHash[m.kind] !== h) { await msg.edit(m.payload); res = 'aggiornato'; } else res = 'già allineato'; }
+  else { msg = await channel.send(m.payload); g.messages[m.kind] = msg.id; res = 'pubblicato'; }
+  g.msgHash[m.kind] = h; state.save();
+  if (!msg.pinned) {
+    if (canPin) { await msg.pin('setup-server: messaggio guida').then(() => { res += ' e fissato'; }).catch((e) => { res += ' (non fissato: ' + e.message + ')'; }); }
+    else res += ' (non fissato: manca il permesso Pin Messages)';
+  }
+  return res;
+}
+
+function permsInfo(guild, memberIntent) {
+  const me = guild.members.me;
+  const missingExtra = Object.entries(club.EXTRA_PERMS).filter(([, bit]) => !me.permissions.has(bit)).map(([k]) => k);
+  const warnings = [];
+  if (missingExtra.includes('ManageGuild')) warnings.push('Manca **Manage Guild** (Gestisci server): le regole AutoMod non possono essere lette né create. Riautorizza il bot con il nuovo link di invito.');
+  if (missingExtra.includes('PinMessages')) warnings.push('Manca **Pin Messages** (Fissa messaggi): i messaggi guida vengono pubblicati ma non fissati. Riautorizza il bot con il nuovo link di invito.');
+  if (!memberIntent) warnings.push('Anti-raid in attesa: attiva "Server Members Intent" nel Discord Developer Portal (Bot → Privileged Gateway Intents). Senza, il bot non vede gli ingressi; il resto funziona.');
+  return { missingExtra, warnings, canAutomod: !missingExtra.includes('ManageGuild'), canPin: !missingExtra.includes('PinMessages') };
+}
+
+async function planAutomod(guild, modLogId, canAutomod) {
+  if (!canAutomod) return { actions: [], warnings: [], skipped: true };
+  const rules = await guild.autoModerationRules.fetch();
+  return automod.plan([...rules.values()].map(automod.fromDiscord), modLogId);
+}
+
+async function apply(guild, state, { maxMax = 200, archiveOld = false, memberIntent = false, minAccountDays = 7 } = {}) {
   await guild.roles.fetch(); await guild.channels.fetch();
   const snap = snapshot(guild);
   const p = club.plan(snap, { archiveOld });
@@ -68,6 +123,17 @@ async function apply(guild, state, { maxMax = 200, archiveOld = false } = {}) {
         edit.lockPermissions = false;
         await ch.edit({ ...edit, reason: 'setup-server' });
       } else if (a.op === 'channel.archive') await guild.channels.cache.get(a.id).setParent(map(a.parent), { lockPermissions: false, reason: 'setup-server: archiviato, non cancellato' });
+      else if (a.op === 'quarantine.lock') {
+        // Aggiunge solo l'override del ruolo "In verifica" (deny View Channel): gli altri override restano com'erano.
+        const role = map(a.role); let ok = 0; const fail = [];
+        for (const c of a.channels) {
+          const ch = guild.channels.cache.get(c.id);
+          if (!ch) continue;
+          try { await ch.permissionOverwrites.edit(role, { ViewChannel: false }, { reason: 'setup-server: anti-raid, In verifica non vede' }); ok++; } catch (e) { fail.push('#' + c.name); }
+        }
+        if (fail.length) errors.push('anti-raid: override non impostato su ' + fail.length + ' canali (il bot non li vede o non ha permessi): ' + fail.join(', ').slice(0, 500));
+        if (!ok && fail.length) throw new Error('nessun canale aggiornato');
+      }
       done.push(a);
     } catch (e) { errors.push(club.describe(a) + ': ' + e.message); }
   }
@@ -82,24 +148,48 @@ async function apply(guild, state, { maxMax = 200, archiveOld = false } = {}) {
     }
     await guild.channels.setPositions(pos);
   } catch (e) { errors.push('ordine canali: ' + e.message); }
-  // Messaggi fissi: ingresso con pulsante, regole.
+  // Messaggi fissi: ingresso con pulsante, regole 18+, guide dei canali principali.
   await guild.channels.fetch();
-  const byName = (n) => guild.channels.cache.find((c) => c.type === ChannelType.GuildText && c.name === n);
+  const perms = permsInfo(guild, memberIntent);
   const msgs = [];
-  for (const [name, kind, build] of [['ingresso-18', 'gate', gateMessage], ['regole-18', 'rules', rulesMessage]]) {
-    const ch = byName(name);
-    if (ch) { try { msgs.push('#' + name + ': ' + await ensureMessage(ch, kind, build, state)); } catch (e) { errors.push('#' + name + ': ' + e.message); } }
+  for (const m of allMessages({ minAccountDays })) {
+    const ch = textByName(guild, m.channel);
+    if (ch) { try { msgs.push('#' + m.channel + ': ' + await ensureMessage(ch, m, state, perms.canPin)); } catch (e) { errors.push('#' + m.channel + ': ' + e.message); } }
+  }
+  // AutoMod nativo (serve Manage Guild).
+  const modLog = textByName(guild, 'mod-log');
+  let am = { actions: [], warnings: [] };
+  if (perms.canAutomod) {
+    try {
+      am = await planAutomod(guild, modLog ? modLog.id : null, true);
+      for (const a of am.actions) {
+        try {
+          if (a.op === 'automod.create') await guild.autoModerationRules.create(automod.toDiscord(a.rule));
+          else await guild.autoModerationRules.edit(a.id, automod.toDiscord(a.rule));
+          msgs.push(club.describe(a));
+        } catch (e) { errors.push(club.describe(a) + ': ' + e.message); }
+      }
+    } catch (e) { errors.push('AutoMod: ' + e.message); }
   }
   const g = state.guild(guild.id);
   if (g.cursor == null) g.cursor = state.latestEventId != null ? state.latestEventId : 0;
   g.setupAt = new Date().toISOString(); state.save();
-  return { planned: p.actions.length, done: done.length, errors, warnings: p.warnings, msgs };
+  return { planned: p.actions.length + am.actions.length, done: done.length, errors, warnings: [...p.warnings, ...perms.warnings, ...am.warnings], msgs };
 }
 
-function preview(guild, { archiveOld = false } = {}) {
+async function preview(guild, state, { archiveOld = false, memberIntent = false, minAccountDays = 7 } = {}) {
   const snap = snapshot(guild);
   const p = club.plan(snap, { archiveOld });
-  return { actions: p.actions, warnings: p.warnings, lines: p.actions.map(club.describe) };
+  const perms = permsInfo(guild, memberIntent);
+  const warnings = [...p.warnings, ...perms.warnings];
+  const msgActions = await planMessages(guild, state, { minAccountDays }).catch((e) => { warnings.push('messaggi fissi: ' + e.message); return []; });
+  const modLog = textByName(guild, 'mod-log');
+  let am = { actions: [], warnings: [] };
+  try { am = await planAutomod(guild, modLog ? modLog.id : 'new:staff/mod-log', perms.canAutomod); } catch (e) { warnings.push('AutoMod non leggibile: ' + e.message); }
+  if (am.skipped) warnings.push('AutoMod: 5 regole ZDOS (anti-spam, menzioni di massa, link esterni, Telegram solo ufficiale, frasi truffa) verranno create quando il bot avrà Manage Guild.');
+  warnings.push(...am.warnings);
+  const actions = [...p.actions, ...msgActions, ...am.actions];
+  return { actions, warnings, lines: actions.map(club.describe), perms };
 }
 
-module.exports = { snapshot, apply, preview, gateMessage, rulesMessage };
+module.exports = { snapshot, apply, preview, gateMessage, rulesMessage, allMessages, permsInfo };

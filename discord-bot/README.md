@@ -2,7 +2,7 @@
 
 © 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza ZSEL proprietaria (vedi `../LICENSE`).
 
-discord.js v14, Node ≥ 20. Usa solo l'intent `Guilds`: niente intent privilegiati, niente lettura dei messaggi. Risponde ai comandi slash e ai pulsanti. Gli unici post automatici sono gli eventi pubblici di VelvetHub (relay, vedi sotto). Nessuno scraping, nessun airdrop, nessun post su X.
+discord.js v14, Node ≥ 20. Usa l'intent `Guilds` e, solo se attivo nel Developer Portal, `Server Members` (per l'anti-raid; il bot lo rileva da solo all'avvio, senza rischiare un login rifiutato). Niente lettura del contenuto dei messaggi. Risponde ai comandi slash e ai pulsanti. Gli unici post automatici sono gli eventi pubblici di VelvetHub (relay, vedi sotto). Nessuno scraping, nessun airdrop, nessun post su X.
 
 ## Comandi
 | Comando | Cosa fa |
@@ -13,7 +13,7 @@ discord.js v14, Node ≥ 20. Usa solo l'intent `Guilds`: niente intent privilegi
 | `/radar` | Ultimi segnali da `/api/radar` di zdesk in locale, in sola lettura (risposta visibile solo a chi lo usa) |
 | `/verifica` | Link monouso a https://x-zdos.it/discord/verify/: firmi un messaggio con Phantom (`signMessage`), il server verifica la firma ed25519 e assegna "Holder $DSN" e/o "Holder VELVET" se il saldo è maggiore di zero |
 | `/quest` | Link a ZQuest |
-| `/setup-server anteprima` / `applica` | Solo owner o Administrator. Crea o riordina ruoli, categorie e canali (vedi `src/club.js`), è idempotente e non cancella niente. Le categorie esistenti restano intatte sotto la nuova struttura (con `archivia_vecchie:True` vengono rinominate con 🗄️), i canali senza categoria vanno in 🗄️ ARCHIVIO. Pubblica il messaggio di ingresso con i pulsanti in #ingresso-18 e le regole in #regole-18 |
+| `/setup-server anteprima` / `applica` | Solo owner o Administrator. Crea o riordina ruoli, categorie e canali (vedi `src/club.js`), è idempotente e non cancella niente. Le categorie esistenti restano intatte sotto la nuova struttura (con `archivia_vecchie:True` vengono rinominate con 🗄️), i canali senza categoria vanno in 🗄️ ARCHIVIO. Pubblica il messaggio di ingresso con i pulsanti in #ingresso-18 e le regole in #regole-18, più i messaggi guida fissati (`src/guides.js`) in #benvenuto, #regole, #annunci, #info, #zroute, #ide, #zquest, #holder-lounge, #verifica-accesso: uno per canale, aggiornato se cambia, mai duplicato. Crea/aggiorna 5 regole AutoMod native con prefisso `ZDOS · ` (anti-spam, menzioni di massa, link esterni con whitelist, Telegram solo t.me/OurVelvetHub, frasi truffa; avvisi in #mod-log) e prepara la quarantena anti-raid (ruolo **In verifica**). L'anteprima elenca anche queste modifiche e segnala i permessi mancanti invece di fallire |
 | `/rubina messaggio` | Rubina (IA, Ollama tramite `/api/rubina/chat` con `mode: "discord"`): flirt e conversazione, niente contenuti espliciti. Risponde solo nei canali 18+ della 18+ ROOM e del Velvet Club e solo a chi ha Verificato 18+; altrove dà un messaggio neutro. ROSSO la ferma e la silenzia per 60 minuti (`riprendi:True` per ripartire). Limiti: 1 messaggio ogni 20 s, 15 all'ora. Le conversazioni restano solo in memoria |
 | `/velvet` | Mini app, Radar della Carne, categorie, ruoli e regole |
 | `/ingresso-18` | Pulsante di ingresso: data di nascita (non salvata) + "ACCETTO" → ruolo Verificato 18+. Chi risulta minorenne è bloccato per 24 ore |
@@ -32,7 +32,7 @@ La verifica non chiede nessuna transazione e non dà nessun accesso ai fondi. Il
   4. abilita e avvia il servizio;
   5. stampa il link di invito.
 
-  Permessi del link (`2416036880`, senza Administrator): Gestire canali, Vedere canali, Inviare messaggi, Incorporare link, Allegare file, Leggere la cronologia, Gestire i ruoli, Usare i comandi delle applicazioni. Allegare file e Leggere la cronologia servono perché Discord permette al bot di impostare negli override solo i permessi che ha anche lui.
+  Permessi del link (`2251802229722160`, senza Administrator): quelli di base (`2416036880`) più **Gestire il server** (solo per le regole AutoMod) e **Fissare i messaggi** (solo per i messaggi guida). Quelli di base: Gestire canali, Vedere canali, Inviare messaggi, Incorporare link, Allegare file, Leggere la cronologia, Gestire i ruoli, Usare i comandi delle applicazioni. Allegare file e Leggere la cronologia servono perché Discord permette al bot di impostare negli override solo i permessi che ha anche lui.
 - Dopo l'invito, il ruolo del bot va trascinato sopra i ruoli holder, altrimenti Discord non gli permette di assegnarli.
 
 ## Relay eventi VelvetHub
@@ -45,3 +45,8 @@ Ogni 60 s il bot legge `GET /api/events/feed` di OurVelvet (127.0.0.1:8000). Pub
 - ed25519 e base58;
 - nonce monouso e con scadenza;
 - API HTTP di verifica.
+
+## Moderazione automatica e anti-raid
+
+- **AutoMod nativo** (serve *Gestire il server*): regole `ZDOS · anti-spam`, `ZDOS · menzioni di massa` (max 5, protezione raid di menzioni), `ZDOS · link esterni` (bloccati tutti i link http/https tranne x-zdos.it, discord.com/.gg, discordapp.com, discord.media, solscan.io, polygonscan.com, jup.ag, t.me/telegram.me), `ZDOS · Telegram solo ufficiale` (solo t.me/OurVelvetHub), `ZDOS · frasi truffa`. Admin e chi ha *Gestire il server* sono esentati da Discord. Le regole di altri bot non vengono toccate.
+- **Anti-raid lato bot** (serve l'intent *Server Members* nel Developer Portal): chi entra con un account più giovane di `MIN_ACCOUNT_DAYS` (7) riceve il ruolo **In verifica** e vede solo #verifica-accesso; si sblocca da solo quando l'account raggiunge l'età minima o con il pulsante *Approva* in #mod-log (staff con *Gestire i ruoli*). Con `RAID_JOINS` (8) ingressi in `RAID_WINDOW_S` (60) secondi scatta la modalità raid per `RAID_MINUTES` (15): tutti i nuovi ingressi vanno in verifica e servono l'approvazione dello staff. Log in #mod-log.
