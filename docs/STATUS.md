@@ -8,6 +8,8 @@
 | Æsir | OK | 26 test Python (gate $DSN multi-catena, VELVET opzionale, ATA fallback) + 9 test Rust (policy). |
 | zdesk Radar v2.1 | OK in locale e sul VPS | Selftest offline (`scripts/radar-staking-selftest.js`, incluso il controllo mint $DSN / xZDOS legacy). Endpoint `/api/radar`, `/api/connect`, `/api/staking/:address`, `/api/copytrader`, `/api/health` 200 in locale. Sul VPS applicato il 14/11/2026 alle 15:09 (ora di Roma): ESITO OK (health, radar, connect, staking, watchlist, token $DSN, copytrader e ninja). `scripts/ninja-selftest.js` falliva già nel codice originale (non dipende dal Radar). |
 | Launchpad ZDOS + K.I.R.A. Guard | Solo piano | Non c'è codice di launchpad in questo monorepo. |
+| Zlang IDE | Online su x-zdos.it/ide/ | `zlang/ide/`: editor, zlangc v2.5 (port JS identico a `tools/zlangc.py`), compiler + VM Rust in WASM (`zlang/wasm/`), ancoraggio del bytecode su devnet via Memo firmato in Phantom, controlli K.I.R.A. parziali sui mint. ZLang non genera programmi Solana: niente deploy di contratti. |
+| Zcomm | Stub | `high-cde/Zcomm` ha solo un gateway che non cifra e una landing. Nell'IDE la busta del gateway è usata per il log delle chiamate RPC (zcomm-rpc). |
 | Nodi Solana | Pianificati | Non sono in esercizio. L'approccio previsto è un proxy RPC privato davanti a un fornitore, non un validator o un RPC full-node su VPS. |
 | ZLang | Pulito | Rimossi 3 backup tar identici da 80 MB. |
 | labs/hybrid-prototype | Prototipo, compila | Il runtime ZLang e il bridge LLM sono **mock** (vedi `labs/hybrid-prototype/MOCKS.md`). 1 test fallisce (`cortex policy::tests::zlang_policy_allows_non_null_block`) proprio perché il runtime è un mock; `organism-bin` va in panic sul parser. |

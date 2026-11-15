@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zlang IDE · ZDOS1.3</title>
+<meta name="description" content="Zlang IDE: editor, compilatore ZLang reale nel browser (WASM) e ancoraggio del bytecode su Solana devnet con Phantom.">
+<meta name="theme-color" content="#070112">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https:; base-uri 'self'; form-action 'none'">
+<link rel="icon" type="image/svg+xml" href="assets/zide.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vendor/codemirror/codemirror.css">
+<link rel="stylesheet" href="assets/ide.css?v=1">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="https://x-zdos.it/" title="Torna a x-zdos.it"><img src="assets/zide.svg" alt="" width="26" height="26"><span>Zlang <b>IDE</b></span></a>
+  <span class="pill" id="netPill" title="Rete Solana per Deploy &amp; Run">Devnet</span>
+  <span class="pill ghost" id="wasmPill" title="Stato compilatore WASM">WASM…</span>
+  <span class="grow"></span>
+  <button class="btn primary sm" id="topConnect" type="button">Collega Phantom</button>
+</header>
+
+<div class="app" id="app" data-view="editor">
+  <nav class="rail" aria-label="Pannelli">
+    <button type="button" data-panel="files" class="on" title="File"><span>▤</span><em>File</em></button>
+    <button type="button" data-panel="compile" title="Compila"><span>⚙</span><em>Compila</em></button>
+    <button type="button" data-panel="deploy" title="Deploy &amp; Run"><span>◎</span><em>Deploy</em></button>
+    <button type="button" data-panel="kira" title="K.I.R.A."><span>◈</span><em>K.I.R.A.</em></button>
+    <button type="button" data-panel="zcomm" title="zcomm"><span>⇄</span><em>zcomm</em></button>
+    <button type="button" data-panel="docs" title="Guida"><span>?</span><em>Guida</em></button>
+  </nav>
+
+  <aside class="side glass" id="side">
+    <!-- FILE -->
+    <section class="panel on" data-p="files">
+      <h2>File</h2>
+      <div class="row wrap">
+        <button class="btn sm" id="fNew" type="button">+ Nuovo</button>
+        <button class="btn sm" id="fRename" type="button">Rinomina</button>
+        <button class="btn sm" id="fDelete" type="button">Elimina</button>
+        <label class="btn sm">Carica<input type="file" id="fUpload" accept=".zl,.zlang,.txt" hidden></label>
+        <button class="btn sm" id="fDownload" type="button">Scarica</button>
+      </div>
+      <ul class="tree" id="tree"></ul>
+      <h3>Modelli</h3>
+      <ul class="tree tpl" id="templates"></ul>
+      <p class="tiny muted">I file restano solo in questo browser (localStorage). Nessun upload su server.</p>
+    </section>
+
+    <!-- COMPILE -->
+    <section class="panel" data-p="compile">
+      <h2>Compila</h2>
+      <label class="lbl">Toolchain</label>
+      <select id="toolchain">
+        <option value="zlangc">zlangc v2.5 → bytecode ZLB2</option>
+        <option value="rust">Compiler Rust + VM (WASM)</option>
+      </select>
+      <p class="tiny muted" id="tcNote"></p>
+      <div class="row wrap">
+        <button class="btn primary" id="bCompile" type="button">Compila <kbd>Ctrl+S</kbd></button>
+        <button class="btn" id="bRun" type="button">Esegui su VM</button>
+      </div>
+      <label class="row chk"><input type="checkbox" id="autoCompile" checked> Compila mentre scrivi</label>
+      <div id="compileOut" class="out"></div>
+    </section>
+
+    <!-- DEPLOY -->
+    <section class="panel" data-p="deploy">
+      <h2>Deploy &amp; Run</h2>
+      <label class="lbl">Rete</label>
+      <select id="cluster">
+        <option value="devnet" selected>Solana Devnet (consigliata)</option>
+        <option value="testnet">Solana Testnet</option>
+        <option value="mainnet-beta">Solana Mainnet (SOL reali)</option>
+      </select>
+      <div class="warn hidden" id="mainnetWarn">Mainnet: ogni transazione costa SOL veri e non si può annullare. L’IDE non sposta fondi: scrive solo un memo con l’hash del bytecode, ma la commissione la paghi tu.</div>
+      <div class="card mini">
+        <p><span class="muted">Wallet</span> <code id="dAddr">non collegato</code></p>
+        <p><span class="muted">Saldo</span> <b id="dBal">—</b></p>
+        <p class="tiny muted">Il faucet via RPC di devnet è chiuso: per i SOL di test (senza valore) usa faucet.solana.com con l’indirizzo qui sopra.</p>
+        <div class="row wrap">
+          <button class="btn sm" id="dConnect" type="button">Collega Phantom</button>
+          <button class="btn sm" id="dRefresh" type="button">Aggiorna saldo</button>
+          <a class="btn sm" id="dFaucet" href="https://faucet.solana.com/" target="_blank" rel="noopener">SOL di test ↗ faucet.solana.com</a>
+        </div>
+      </div>
+      <h3>Run</h3>
+      <p class="tiny muted">Esegue il programma sulla VM ZLang reale (Rust → WASM) nel tuo browser. Nessuna rete.</p>
+      <button class="btn" id="dRun" type="button">Esegui localmente</button>
+      <h3>Deploy (ancoraggio)</h3>
+      <p class="tiny">ZLang oggi non genera programmi Solana (SBF/BPF): non esiste un deploy di contratti. Qui il deploy è un <b>ancoraggio</b>: una transazione Memo con lo SHA-256 del bytecode ZLB2, firmata da te in Phantom. Serve come prova pubblica di quale versione hai compilato e quando.</p>
+      <div class="kv" id="anchorPreview"></div>
+      <button class="btn primary" id="dAnchor" type="button">Firma e ancora su Devnet</button>
+      <h3>Verifica</h3>
+      <div class="row"><input id="vSig" placeholder="Firma transazione (signature)" autocomplete="off"><button class="btn sm" id="vBtn" type="button">Verifica</button></div>
+      <ul class="hist" id="anchorHist"></ul>
+    </section>
+
+    <!-- KIRA -->
+    <section class="panel" data-p="kira">
+      <h2>K.I.R.A. Guard</h2>
+      <h3>Analisi del codice</h3>
+      <p class="tiny muted">Regole statiche dell’IDE sui due toolchain reali. Non è un audit.</p>
+      <ul class="lint" id="lintOut"></ul>
+      <h3>Controllo token SPL</h3>
+      <p class="tiny muted">Port parziale dei controlli K.I.R.A. del Radar di zdesk: mint e freeze authority, supply, estensioni. Solo lettura via RPC.</p>
+      <div class="row"><input id="kMint" value="35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4" autocomplete="off"><select id="kCluster"><option value="mainnet-beta">Mainnet</option><option value="devnet">Devnet</option></select></div>
+      <button class="btn" id="kBtn" type="button">Controlla</button>
+      <div id="kOut" class="out"></div>
+    </section>
+
+    <!-- ZCOMM -->
+    <section class="panel" data-p="zcomm">
+      <h2>zcomm</h2>
+      <p class="tiny">Ogni chiamata RPC dell’IDE passa da <b>zcomm-rpc</b> e viene registrata con la busta del gateway Zcomm v4.0.0 (<code>sender, recipient, payload, timestamp</code>). Come nel gateway originale non c’è cifratura applicativa: il canale è HTTPS verso l’endpoint.</p>
+      <label class="lbl">Endpoint RPC personalizzato per la rete scelta</label>
+      <div class="row"><input id="zRpc" placeholder="vuoto = endpoint pubblico Solana" autocomplete="off"><button class="btn sm" id="zSave" type="button">Salva</button></div>
+      <p class="tiny muted">Endpoint attuale: <code id="zEp"></code></p>
+      <button class="btn sm" id="zPing" type="button">Test connessione</button>
+      <ul class="hist" id="zLog"></ul>
+    </section>
+
+    <!-- DOCS -->
+    <section class="panel" data-p="docs">
+      <h2>Guida</h2>
+      <h3>Cosa compila davvero</h3>
+      <table class="tbl">
+        <tr><th>Istruzione</th><th>zlangc</th><th>VM Rust</th></tr>
+        <tr><td><code>emit testo</code></td><td>0x01</td><td>stampa</td></tr>
+        <tr><td><code>let x = 100</code></td><td>0x02</td><td>LOAD + STORE</td></tr>
+        <tr><td><code>let x = a - b</code></td><td>0x02</td><td>SUB</td></tr>
+        <tr><td><code>if x == 1 jump l</code></td><td>0x03</td><td>ignorata</td></tr>
+        <tr><td><code>etichetta:</code></td><td>0x04</td><td>ignorata</td></tr>
+        <tr><td><code>wait</code></td><td>0x05</td><td>ignorata</td></tr>
+        <tr><td><code>storage.read "p"</code></td><td>0x06</td><td>ignorata</td></tr>
+        <tr><td><code># commento</code></td><td>—</td><td>—</td></tr>
+      </table>
+      <p class="tiny">La specifica completa in <code>docs/language-spec.md</code> (funzioni, tipi, moduli) è un progetto: i compilatori attuali non la implementano ancora.</p>
+      <h3>Origine del codice</h3>
+      <ul class="tiny">
+        <li>zlangc: port JS fedele di <code>zlang/tools/zlangc.py</code>, verificato byte per byte.</li>
+        <li>VM: <code>zlang/src/compiler</code> + <code>zlang/src/vm</code> compilati in WASM senza modifiche.</li>
+        <li>Firma: solo Phantom. Nessuna chiave sul server.</li>
+      </ul>
+      <p class="tiny muted">© 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza proprietaria ZSEL, tutti i diritti riservati.</p>
+    </section>
+  </aside>
+
+  <main class="main">
+    <div class="tabs" id="tabs"></div>
+    <div class="editor" id="editorWrap"><textarea id="editor"></textarea></div>
+    <div class="console glass" id="console">
+      <div class="chead"><b>Console</b><span class="grow"></span><button class="btn xs" id="cClear" type="button">Pulisci</button><button class="btn xs" id="cToggle" type="button">▾</button></div>
+      <div class="clog" id="clog" role="log" aria-live="polite"></div>
+    </div>
+  </main>
+</div>
+
+<nav class="mbar" aria-label="Vista mobile">
+  <button type="button" data-view="editor" class="on">Editor</button>
+  <button type="button" data-view="panel">Pannello</button>
+  <button type="button" data-view="console">Console</button>
+</nav>
+
+<div class="modal hidden" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="mbox glass">
+    <h3 id="mTitle"></h3>
+    <div id="mBody"></div>
+    <div class="row end"><button class="btn" id="mNo" type="button">Annulla</button><button class="btn primary" id="mYes" type="button">Conferma</button></div>
+  </div>
+</div>
+
+<script src="vendor/codemirror/codemirror.js"></script>
+<script src="vendor/codemirror/simple.js"></script>
+<script src="assets/zlang-mode.js"></script>
+<script src="vendor/solana-web3-min.js"></script>
+<script src="assets/zlangc.js"></script>
+<script src="assets/zlang-wasm.js"></script>
+<script src="assets/zcomm.js"></script>
+<script src="assets/kira.js"></script>
+<script src="assets/ide.js?v=1"></script>
+</body>
+</html>

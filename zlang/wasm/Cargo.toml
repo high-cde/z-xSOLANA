@@ -1,0 +1,20 @@
+[package]
+name = "zlang-wasm"
+version = "0.1.0"
+edition = "2021"
+description = "Build WASM del compilatore e della VM ZLang (src/compiler, src/vm) per Zlang IDE. Nessuna modifica al codice originale."
+license-file = "../LICENSE"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+path = "src/lib.rs"
+
+[dependencies]
+
+[profile.release]
+opt-level = "s"
+lto = true
+panic = "abort"
+
+[workspace]
