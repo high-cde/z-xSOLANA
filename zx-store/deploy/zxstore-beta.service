@@ -1,0 +1,23 @@
+[Unit]
+Description=Z-X SOLANA Store beta (API locale: /api/grok, /api/starlink)
+After=network.target
+Documentation=https://beta.x-zdos.it
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/zxstore-beta
+Environment=HOST=127.0.0.1
+Environment=PORT=8742
+# XAI_API_KEY non impostata: Grok resta spento
+ExecStart=/usr/bin/node /var/www/zxstore-beta/server/dev-server.mjs
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=full
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target

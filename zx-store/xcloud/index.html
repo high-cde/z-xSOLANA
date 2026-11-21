@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>xCLOUD by ZDOS — beta / in costruzione</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' blob: data:; object-src 'none'; base-uri 'none'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="vendor/quill.snow.css">
+<link rel="stylesheet" href="xcloud.css">
+</head>
+<body>
+<div class="scan"></div>
+<header>
+  <a class="logo" href="../index.html"><img src="../zdos-pixel.svg" alt="" width="34" height="34"> x<b>CLOUD</b> <small>by ZDOS</small></a>
+  <div class="hbtns"><span class="beta">β BETA · IN COSTRUZIONE</span><a class="btn ghost" href="../index.html">← Z-X SOLANA</a></div>
+</header>
+<nav id="xnav">
+  <a href="#tasks" data-v="tasks">✅ Tasking</a><a href="#sheet" data-v="sheet">📊 Fogli</a><a href="#doc" data-v="doc">📝 Documenti</a><a href="#pdf" data-v="pdf">📄 PDF</a><a href="#zip" data-v="zip">🗜️ Archivi</a><a href="#zcomm" data-v="zcomm">🔐 ZComm</a><a href="#dish" data-v="dish">🛰️ Starlink Dish</a>
+</nav>
+<div class="hero"><div class="proto">⚠️ xCLOUD è in costruzione: tutto gira nel tuo browser, i dati restano in locale (localStorage) e nulla viene caricato su server. Non usarlo ancora per dati importanti.</div></div>
+<main>
+
+<section class="card view" id="v-tasks">
+  <h2>✅ Tasking <small class="lvl">KANBAN</small></h2>
+  <form id="tForm" class="tform">
+    <input id="tTitle" placeholder="Nuova attività…" required>
+    <select id="tPrio"><option value="alta">🔴 Alta</option><option value="media" selected>🟡 Media</option><option value="bassa">🟢 Bassa</option></select>
+    <input id="tDue" type="date">
+    <input id="tTags" placeholder="tag, separati da virgola">
+    <button class="btn">+ Aggiungi</button>
+  </form>
+  <div class="row wrap small"><span class="muted">Filtra per tag:</span><span id="tFilters"></span><span class="muted" id="tStats"></span><button class="btn ghost" id="tExport" type="button">Esporta JSON</button></div>
+  <div class="kanban" id="kanban">
+    <div class="col" data-s="todo"><h3>📋 Da fare</h3><div class="drop"></div></div>
+    <div class="col" data-s="doing"><h3>⚙️ In corso</h3><div class="drop"></div></div>
+    <div class="col" data-s="done"><h3>🏁 Fatto</h3><div class="drop"></div></div>
+  </div>
+  <p class="small muted">Trascina le schede tra le colonne. Salvato in localStorage (solo questo browser). Roadmap: sync cifrato tra dispositivi.</p>
+</section>
+
+<section class="card view hidden" id="v-sheet">
+  <h2>📊 Fogli di calcolo <small class="lvl">XLSX · CSV</small></h2>
+  <div class="row wrap">
+    <label class="btn ghost file">📂 Apri .xlsx / .xls / .csv / .ods<input type="file" id="sFile" accept=".xlsx,.xls,.csv,.ods" hidden></label>
+    <button class="btn ghost" id="sNew">Nuovo foglio</button><button class="btn ghost" id="sRow">+ Riga</button><button class="btn ghost" id="sCol">+ Colonna</button>
+    <select id="sSheets"></select>
+    <button class="btn" id="sXlsx">⬇ Esporta XLSX</button><button class="btn ghost" id="sCsv">⬇ CSV</button>
+  </div>
+  <div class="small muted" id="sInfo">SheetJS Community Edition (Apache-2.0). Le celle sono modificabili; le formule vengono conservate ma non ricalcolate nel prototipo (somma rapida sotto).</div>
+  <div class="sheetwrap"><table id="sTable" class="sheet"></table></div>
+  <div class="small" id="sSum"></div>
+</section>
+
+<section class="card view hidden" id="v-doc">
+  <h2>📝 Documenti <small class="lvl">DOCX</small></h2>
+  <div class="row wrap">
+    <label class="btn ghost file">📂 Importa .docx<input type="file" id="dFile" accept=".docx" hidden></label>
+    <button class="btn" id="dDocx">⬇ Esporta DOCX</button><button class="btn ghost" id="dHtml">⬇ HTML</button><button class="btn ghost" id="dClear">Nuovo</button>
+    <span class="small muted" id="dInfo">Quill (BSD-3) · import mammoth.js (BSD-2) · export docx.js (MIT). Salvataggio automatico locale.</span>
+  </div>
+  <div id="editor"></div>
+</section>
+
+<section class="card view hidden" id="v-pdf">
+  <h2>📄 PDF <small class="lvl">VIEW · MERGE · SPLIT</small></h2>
+  <div class="row wrap">
+    <label class="btn ghost file">📂 Apri PDF (anche più file)<input type="file" id="pFile" accept="application/pdf" multiple hidden></label>
+    <button class="btn ghost" id="pDemo">Crea 2 PDF demo</button>
+    <button class="btn" id="pMerge">🔗 Unisci tutti</button>
+    <input id="pRange" placeholder="Pagine es. 1-2,4" style="width:160px"><button class="btn ghost" id="pSplit">✂️ Estrai pagine</button>
+  </div>
+  <div class="small muted">pdf.js (Apache-2.0) per vedere, pdf-lib (MIT) per unire ed estrarre. Tutto in locale.</div>
+  <div id="pList" class="plist"></div>
+  <div id="pView" class="pview"></div>
+</section>
+
+<section class="card view hidden" id="v-zip">
+  <h2>🗜️ Archivi <small class="lvl">ZIP · RAR · 7Z</small></h2>
+  <div class="two">
+    <div class="box"><h3>Crea ZIP</h3>
+      <label class="btn ghost file">📂 Scegli file<input type="file" id="zIn" multiple hidden></label>
+      <button class="btn ghost" id="zDemo">File demo</button> <button class="btn" id="zMake">⬇ Crea .zip</button>
+      <ul id="zSel" class="list small"></ul>
+      <div class="small muted">JSZip (MIT), compressione DEFLATE.</div></div>
+    <div class="box"><h3>Estrai ZIP / RAR / 7Z / TAR</h3>
+      <label class="btn ghost file">📂 Apri archivio<input type="file" id="xIn" accept=".zip,.rar,.7z,.tar,.gz,.tgz,.bz2,.xz" hidden></label>
+      <ul id="xOut" class="list small"></ul>
+      <div class="small muted">libarchive.js (MIT, WebAssembly). <b>RAR: solo estrazione.</b> La creazione di file RAR richiede il software proprietario di RARLAB (licenza WinRAR), quindi non la offriamo: per comprimere usiamo ZIP.</div></div>
+  </div>
+</section>
+
+<section class="card view hidden" id="v-zcomm">
+  <h2>🔐 ZComm <small class="lvl">E2EE · PROTOTIPO</small></h2>
+  <div class="alert">⚠️ <b>Prototipo NON verificato da un audit di sicurezza.</b> Non usarlo per segreti reali (seed, password, dati di clienti) finché non c'è un audit indipendente. Mostra il principio: cifratura end-to-end nel browser, chiavi che non lasciano mai il dispositivo.</div>
+  <div class="two">
+    <div class="box">
+      <div class="row wrap"><label>Il tuo nome<input id="cName" value="doc"></label><button class="btn" id="cJoin">Entra nella stanza demo</button></div>
+      <div class="small muted" id="cMe">Chiavi: ECDH P-256 generate con WebCrypto (chiave privata non estraibile) → HKDF-SHA-256 → AES-GCM 256, nonce casuale da 96 bit per ogni messaggio, contatore anti-replay.</div>
+      <h3>Contatti</h3><div id="cPeers" class="small muted">Apri questa pagina in un'altra scheda (#zcomm) ed entra con un altro nome.</div>
+      <div id="cChat" class="chatlog"></div>
+      <form id="cForm" class="row"><select id="cTo"></select><input id="cMsg" class="search" placeholder="Messaggio cifrato…" disabled><button class="btn" id="cSend" disabled>Invia</button></form>
+    </div>
+    <div class="box">
+      <h3>👁️ Vista "sniffer"</h3>
+      <div class="small muted">Questo è tutto ciò che vede chi intercetta il canale (qui un BroadcastChannel; in produzione il relay server): solo testo cifrato.</div>
+      <pre id="cSniff" class="sniff"></pre>
+    </div>
+  </div>
+</section>
+
+<section class="card view hidden" id="v-dish">
+  <h2>🛰️ Starlink Dish <small class="lvl">PLAYER DISH · LIVE HUD</small></h2>
+  <div class="dishbar"><span id="dSrc" class="srcbadge">…</span><span class="small muted" id="dReason"></span></div>
+  <div class="hud">
+    <div class="tile"><div class="k">⬇ DOWNLINK</div><div class="v" id="dDown">—</div><div class="meter"><i id="mDown"></i></div></div>
+    <div class="tile"><div class="k">⬆ UPLINK</div><div class="v" id="dUp">—</div><div class="meter"><i id="mUp"></i></div></div>
+    <div class="tile"><div class="k">⏱ LATENZA POP</div><div class="v" id="dLat">—</div><div class="meter"><i id="mLat"></i></div></div>
+    <div class="tile"><div class="k">🌳 OSTRUZIONE</div><div class="v" id="dObs">—</div><div class="meter"><i id="mObs"></i></div></div>
+    <div class="tile"><div class="k">⏳ UPTIME</div><div class="v" id="dUptime">—</div><div class="small muted" id="dState"></div></div>
+    <div class="tile"><div class="k">⚠ ALERT</div><div id="dAlerts" class="alerts">—</div></div>
+  </div>
+  <canvas id="dChart" width="1000" height="160" class="dchart"></canvas>
+  <div class="small muted" id="dMeta"></div>
+  <p class="small muted">Legge <b>solo la tua antenna</b> sulla rete di casa: il dev-server chiama <code>192.168.100.1:9200</code> via gRPC (reflection) con <code>starlink-grpc-core</code> di starlink-grpc-tools, in sola lettura. Nessun comando (riavvio, stow) viene inviato. L'ID antenna è mascherato. Se l'antenna non risponde vedi dati <b>MOCK</b> chiaramente etichettati.</p>
+  <p class="small warn">Progetto personale, non affiliato a SpaceX/Starlink.</p>
+</section>
+</main>
+<footer>
+  <p class="small">xCLOUD by ZDOS · beta / in costruzione · nessun dato lascia il browser · librerie open source: SheetJS CE, Quill, docx.js, mammoth.js, pdf.js, pdf-lib, JSZip, libarchive.js</p>
+  <p class="flinks small"><a href="https://x-zdos.it/">x-zdos.it</a> · <a href="https://discord.gg/4CGZrAAxaq">Discord</a> · <a href="https://t.me/OurVelvetHub">Telegram</a> · <a href="https://x.com/ZDOS_Core">@ZDOS_Core</a> · <a href="../index.html">Z-X SOLANA Store</a></p>
+  <p class="small">© 2026 ZDOS1.3 — P.IVA 11040550961 · licenza ZSEL · beta riservata, non indicizzata. Progetto personale Starlink Dish: non affiliato a SpaceX/Starlink.</p>
+</footer>
+<div id="toast"></div>
+<script src="vendor/xlsx.full.min.js"></script>
+<script src="vendor/quill.js"></script>
+<script src="vendor/docx.iife.js"></script>
+<script src="vendor/mammoth.browser.min.js"></script>
+<script src="vendor/pdf-lib.min.js"></script>
+<script src="vendor/jszip.min.js"></script>
+<script src="xcloud.js"></script>
+<script type="module" src="office-modules.js"></script>
+<script src="zcomm.js"></script>
+<script src="dish.js"></script>
+</body>
+</html>

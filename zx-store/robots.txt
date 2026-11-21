@@ -1,0 +1,3 @@
+# Beta riservata: non indicizzare.
+User-agent: *
+Disallow: /

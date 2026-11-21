@@ -1,0 +1,10 @@
+{
+  "name": "zx-store",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Z-X SOLANA Store — beta riservata ZDOS. Nessuna dipendenza di runtime: Node 18+ per server/dev-server.mjs.",
+  "type": "module",
+  "scripts": {
+    "start": "HOST=127.0.0.1 PORT=8742 node server/dev-server.mjs"
+  }
+}
