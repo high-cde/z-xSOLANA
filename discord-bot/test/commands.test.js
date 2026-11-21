@@ -9,7 +9,7 @@ const C = require('../src/constants');
 
 test('definizioni comandi valide per Discord', () => {
   const names = cmd.DEFS.map((d) => d.name);
-  assert.deepStrictEqual(names, ['kira', 'stato', 'token', 'radar', 'verifica', 'quest', 'setup-server', 'rubina', 'zara', 'eventi', 'condividi-evento', 'ricordami', 'dimentica', 'bozza-x', 'invita', 'velvet', 'ingresso-18', 'curioso', 'radar-collega', 'radar-scollega']);
+  assert.deepStrictEqual(names, ['kira', 'radar', 'token', 'stato', 'verifica', 'quest', 'setup-server', 'rubina', 'zara', 'eventi', 'condividi-evento', 'ricordami', 'dimentica', 'bozza-x', 'invita', 'velvet', 'ingresso-18', 'curioso', 'radar-collega', 'radar-scollega', 'badge', 'dev', 'velvetstar', 'aiuto']);
   for (const d of cmd.DEFS) { assert.match(d.name, /^[a-z0-9-]{1,32}$/); assert.ok(d.description.length >= 1 && d.description.length <= 100); }
 });
 test('/kira con dati simulati', async () => {
@@ -23,15 +23,25 @@ test('/stato include zdesk locale e segnala i servizi giù', async () => {
   assert.match(d, /🔴 \*\*ZQuest\*\* · 502/); assert.match(d, /zdesk API \(locale\)\*\* · ok · .*trading spento/);
   assert.strictEqual(r.embeds[0].color, C.COLORS.warn);
 });
-test('/token: niente pump.fun, $DSN senza pool, prezzo VELVET da DexScreener', async () => {
-  const r = await cmd.token({ fetchJson: async () => ({ pairs: [{ chainId: 'solana', priceUsd: '0.0000019', liquidity: { usd: 1850 } }] }) });
-  const s = JSON.stringify(r);
-  assert.ok(!/pump\.fun/i.test(s)); assert.match(s, /nessuna pool/); assert.match(s, /0\.0000019/); assert.match(s, /Nessun rendimento promesso/);
+test('/token: dati on-chain, niente pump.fun e niente prezzi', async () => {
+  const orig = global.fetch;
+  global.fetch = async (url, opt) => {
+    const b = opt && opt.body ? JSON.parse(opt.body) : {};
+    let result;
+    if (b.method === 'getAccountInfo') result = { value: { owner: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb', data: { parsed: { info: { supply: '1000000000000000', decimals: 6, mintAuthority: null, freezeAuthority: null } } } } };
+    else if (b.method === 'eth_call') result = b.params[0].data === '0x313ce567' ? '0x12' : '0x' + (10n ** 30n).toString(16);
+    return { ok: true, json: async () => ({ jsonrpc: '2.0', id: 1, result }) };
+  };
+  try {
+    const r = await cmd.token({});
+    const s = JSON.stringify(r);
+    assert.ok(!/pump\.fun/i.test(s)); assert.ok(!/prezzo:|priceUsd|\$0\./i.test(s)); assert.match(s, /Nessuna pool/); assert.match(s, /1\.000\.000\.000/); assert.match(s, /revocata/); assert.match(s, /1\.000\.000\.000\.000/);
+  } finally { global.fetch = orig; }
 });
 test('/radar legge zdesk o dichiara che non risponde', async () => {
-  const ok = await cmd.radar({ zdeskJson: async () => ({ disclaimer: 'Solo lettura.', news: { example: true, fastPairs: [{ symbol: 'ABC', volH1: 12000, liqUsd: 9000, ageMin: 4, mint: 'M1' }] }, kira: { items: [{ symbol: 'XYZ', verdict: 'EVITARE' }] } }) });
+  const ok = await cmd.radarZdesk({ zdeskJson: async () => ({ disclaimer: 'Solo lettura.', news: { example: true, fastPairs: [{ symbol: 'ABC', volH1: 12000, liqUsd: 9000, ageMin: 4, mint: 'M1' }] }, kira: { items: [{ symbol: 'XYZ', verdict: 'EVITARE' }] } }) });
   assert.match(ok.embeds[0].description, /ABC/); assert.match(ok.embeds[0].description, /EVITARE/); assert.match(ok.embeds[0].fields[0].value, /dati di esempio/);
-  const ko = await cmd.radar({ zdeskJson: async () => { throw new Error('down'); } });
+  const ko = await cmd.radarZdesk({ zdeskJson: async () => { throw new Error('down'); } });
   assert.match(ko.embeds[0].description, /non risponde/);
 });
 test('/verifica crea un link monouso, solo in un server', () => {

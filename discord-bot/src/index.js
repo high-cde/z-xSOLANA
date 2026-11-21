@@ -174,7 +174,7 @@ client.on(Events.GuildCreate, async (guild) => {
   try {
     const g = state.guild(guild.id);
     if (guild.id !== cfg.guildId) { // server ospite: registra solo i comandi per i visitatori (niente setup/ruoli del club)
-      const VISIT = new Set(['rubina', 'zara', 'eventi', 'condividi-evento', 'ricordami', 'dimentica', 'bozza-x', 'invita', 'kira', 'stato', 'token', 'quest', 'velvet']);
+      const VISIT = new Set(['rubina', 'zara', 'eventi', 'condividi-evento', 'ricordami', 'dimentica', 'bozza-x', 'invita', 'kira', 'stato', 'token', 'quest', 'velvet', 'radar', 'badge', 'dev', 'velvetstar', 'aiuto']);
       await guild.commands.set(require('./commands').DEFS.filter((d) => VISIT.has(d.name))).catch((e) => console.error('comandi ospite', e.message));
     }
     if (g.agiIntroAt) return;
@@ -380,9 +380,12 @@ client.on(Events.InteractionCreate, async (it) => {
       return;
     }
   }
-  const ctx = { guildId: it.guildId, userId: it.user.id, options: { mint: it.options.getString('mint') } };
+  const ctx = { guildId: it.guildId, userId: it.user.id, options: { mint: it.options.getString('mint'), id: it.options.getString('id'), fonte: it.options.getString('fonte') } };
   try {
-    const eph = ['verifica', 'radar'].includes(it.commandName);
+    if (it.commandName === 'badge' && ctx.options.id && !/^OV-[A-Z0-9]{4}-VELVET$/.test(ctx.options.id.trim().toUpperCase())) {
+      return await it.reply({ content: 'ID non valido: il formato è `OV-XXXX-VELVET`.', flags: MessageFlags.Ephemeral });
+    }
+    const eph = ['verifica', 'aiuto'].includes(it.commandName) || (it.commandName === 'radar' && ctx.options.fonte === 'zdesk');
     await it.deferReply(eph ? { flags: MessageFlags.Ephemeral } : {});
     const r = await dispatch(it.commandName, ctx, deps);
     await it.editReply({ content: r.content || undefined, embeds: r.embeds || [] });

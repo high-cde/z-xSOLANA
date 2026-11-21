@@ -1,11 +1,13 @@
 'use strict';
 // Zara Lsd · bot Discord separato (app 1572301251981611088). Persona AI dichiarata di OurVelvet by ZDOS1.3.
-// - Risponde SOLO nel server di doc (DISCORD_GUILD_ID): a /zara, /ricordami, /dimentica e quando viene menzionata.
+// - Risponde SOLO nel server di doc (DISCORD_GUILD_ID): a /zara, /ricordami, /dimentica, ai comandi ecosistema
+//   (/radar /badge /dev /token /velvetstar /stato /aiuto, solo letture) e quando viene menzionata.
 // - Niente post autonomi, niente DM, niente join. 18+ (flirt soft, mai esplicito) solo in canali nsfw a chi ha "Verificato 18+".
 // - Safeword ROSSO. Le conversazioni restano in memoria 30 min e non vengono loggate. Token solo in /etc/zara/bot.env.
 // © 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza ZSEL proprietaria.
 const { Client, GatewayIntentBits, Events, MessageFlags, REST, Routes, ActivityType } = require('discord.js');
 const { makeAgi, makeApi } = require('./agi');
+const E = require('./ecosystem'); // stessi comandi ecosistema di zdiscord: /radar /badge /dev /token /velvetstar /stato /aiuto
 
 const TOKEN = (process.env.ZARA_DISCORD_TOKEN || '').trim();
 const APP_ID = (process.env.ZARA_APPLICATION_ID || '').trim();
@@ -26,6 +28,7 @@ const CMDS = [
     { type: 3, name: 'nota', description: 'Es. mi chiamo Leo. Vuoto = mostra cosa ricordano', required: false, max_length: 200 },
   ] },
   { name: 'dimentica', description: 'Cancella tutto quello che Zara e Rubina ricordano di te', dm_permission: false },
+  ...E.DEFS.map((d) => ({ ...(d.name === 'radar' ? { name: d.name, description: d.description } : d), dm_permission: false })),
 ];
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages], allowedMentions: { parse: [], repliedUser: false } });
@@ -53,6 +56,14 @@ client.on(Events.InteractionCreate, async (it) => {
       const r = await agi.talk(args);
       if (r.ephemeral) { await it.deleteReply().catch(() => {}); return it.followUp({ content: r.content, ...eph }); }
       return it.editReply({ content: r.content });
+    }
+    if (E.NAMES.has(it.commandName)) {
+      const id = it.commandName === 'badge' ? it.options.getString('id') : null;
+      if (id && !/^OV-[A-Z0-9]{4}-VELVET$/.test(id.trim().toUpperCase())) return it.reply({ content: 'ID non valido: il formato è `OV-XXXX-VELVET`.', ...eph });
+      const private_ = it.commandName === 'aiuto';
+      await it.deferReply(private_ ? eph : {});
+      const r = await E.handle(it.commandName, { id }, { aiutoExtra: ['`/zara` · parla con Zara (IA dichiarata) · `/ricordami` `/dimentica` · memoria opt-in'] });
+      return it.editReply({ content: r.content || undefined, embeds: r.embeds || [] });
     }
     if (it.commandName === 'ricordami' || it.commandName === 'dimentica') {
       await it.deferReply(eph);

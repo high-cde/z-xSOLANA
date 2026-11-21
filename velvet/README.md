@@ -24,3 +24,11 @@ curl -sS -X POST https://velvet.x-zdos.it/api/events/admin -H 'content-type: app
   -d '{"kind":"contest","category":"fetish","title":"Contest Carne e Lattice","body":"Iscrizioni aperte ai creator verificati 18+.","url":"https://velvet.x-zdos.it/app"}'
 ```
 Valori di `kind`: evento, contest, annuncio, radar, info. Valori di `category`: bdsm-consensuale, fetish, lgbtq, coppie, solo-creator, mistress-master, creator-showcase, asmr-audio, cosplay-adulti.
+
+## Comandi ecosistema (21/11/2026)
+
+- `ourvelvet/app/api/eco_tg.py`: `/radar`, `/badge [OV-XXXX-VELVET]`, `/dev`, `/token`, `/velvetstar`, `/stato`, `/aiuto`
+  sul bot Telegram, stesso Dispatcher di `app.api.bot`. Montato in `app/main.py` con
+  `from app.api import eco_tg` subito dopo `agi_tg`. Registrazione del menu: `venv/bin/python -m app.api.eco_tg` (setMyCommands).
+- `zara-bot/ecosystem.js`: copia di `discord-bot/src/ecosystem.js`, stessi comandi per Zara Lsd.
+- Solo letture (API Radar, badge, Velvet Star, RPC Solana e Polygon). Niente prezzi, nessun messaggio non richiesto.

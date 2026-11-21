@@ -3,12 +3,11 @@
 // così si testa senza token e senza Discord.
 const K = require('./kira-core');
 const C = require('./constants');
+const E = require('./ecosystem');
 
 const DEFS = [
   { name: 'kira', description: 'Controlli K.I.R.A. reali su un token Solana', options: [{ type: 3, name: 'mint', description: 'Indirizzo del mint', required: true, min_length: 32, max_length: 44 }] },
-  { name: 'stato', description: "Stato dei servizi dell'ecosistema ZDOS" },
-  { name: 'token', description: 'Informazioni su $DSN e VELVET' },
-  { name: 'radar', description: 'Ultimi segnali del Radar zdesk (sola lettura)' },
+  ...E.DEFS.filter((d) => ['stato', 'token', 'radar'].includes(d.name)),
   { name: 'verifica', description: 'Ottieni i ruoli holder firmando un messaggio con il tuo wallet' },
   { name: 'quest', description: 'Link a ZQuest' },
   { name: 'setup-server', description: 'Struttura, messaggi guida, AutoMod e anti-raid (solo owner/admin). Prima usa anteprima.', default_member_permissions: '8', options: [
@@ -44,6 +43,7 @@ const DEFS = [
     { type: 4, name: 'id', description: 'Numero del Fedele dato dal Radar', required: false, min_value: 1 },
   ] },
   { name: 'radar-scollega', description: 'Scollega il Radar della Carne e togli i ruoli collegati' },
+  ...E.DEFS.filter((d) => ['badge', 'dev', 'velvetstar', 'aiuto'].includes(d.name)),
 ].map((d) => ({ ...d, dm_permission: false }));
 
 const ICON = { ok: '✅', info: 'ℹ️', warn: '⚠️', fail: '⛔', nd: '➖' };
@@ -89,26 +89,16 @@ async function stato(deps) {
   }] };
 }
 
-async function token(deps) {
-  let velvetLine = 'Prezzo e liquidità: n/d';
-  try {
-    const d = await deps.fetchJson('https://api.dexscreener.com/latest/dex/tokens/' + C.VELVET);
-    const p = (d.pairs || []).filter((x) => x.chainId === 'solana').sort((a, b) => ((b.liquidity || {}).usd || 0) - ((a.liquidity || {}).usd || 0))[0];
-    if (p) { const liq = Math.round((p.liquidity || {}).usd || 0); velvetLine = 'Prezzo: $' + p.priceUsd + ' · liquidità: ' + (liq > 0 ? '$' + liq.toLocaleString('it-IT') : 'non riportata da DexScreener') + ' (DexScreener, ora)'; }
-  } catch (_) { /* n/d */ }
-  return { embeds: [{
-    title: 'Token ZDOS', color: C.COLORS.violet,
-    fields: [
-      { name: '$DSN · Solana (ufficiale)', value: '`' + C.DSN_SOL + '`\nToken-2022 · 6 decimali · mint e freeze authority revocate · **nessuna pool**: oggi non è scambiabile su Solana.\n[Solscan](https://solscan.io/token/' + C.DSN_SOL + ') · [DexScreener](https://dexscreener.com/solana/' + C.DSN_SOL + ')' },
-      { name: '$DSN · Polygon', value: '`' + C.DSN_POLYGON + '`\n[Polygonscan](https://polygonscan.com/token/' + C.DSN_POLYGON + ')' },
-      { name: 'VELVET ($OV) · Solana', value: '`' + C.VELVET + '`\n' + velvetLine + '\n[Solscan](https://solscan.io/token/' + C.VELVET + ') · [DexScreener](https://dexscreener.com/solana/' + C.VELVET + ')' },
-    ],
-    description: 'Nessun rendimento promesso, nessun airdrop. Prima di comprare usa /kira o [zRoute](https://swap.x-zdos.it/zroute/).',
-    footer: FOOT,
-  }] };
+// /token: dati on-chain reali da ecosystem.js (offerta, decimali, authority). Niente prezzi.
+async function token() { return E.token(); }
+
+// /radar senza opzioni = Radar OurVelvet; fonte:zdesk = segnali zdesk in sola lettura (come prima).
+async function radar(deps, fonte) {
+  if (fonte !== 'zdesk') return E.radar();
+  return radarZdesk(deps);
 }
 
-async function radar(deps) {
+async function radarZdesk(deps) {
   let r;
   try { r = await deps.zdeskJson('/api/radar'); }
   catch (_) { return { ephemeral: true, embeds: [{ title: 'Radar zdesk', color: C.COLORS.warn, description: "L'API locale di zdesk non risponde in questo momento: niente segnali da mostrare." }] }; }
@@ -157,12 +147,23 @@ function velvet() {
   }] };
 }
 
+const AIUTO_EXTRA = [
+  '`/kira` · controlli K.I.R.A. su un token Solana',
+  '`/verifica` · ruoli holder firmando con il wallet',
+  '`/velvet` · club 18+ · `/rubina` `/zara` · le AI dichiarate',
+  '`/eventi` · eventi OurVelvet · `/quest` · ZQuest',
+];
+
 async function dispatch(name, ctx, deps) {
   switch (name) {
     case 'kira': return kira(ctx.options.mint, deps);
     case 'stato': return stato(deps);
     case 'token': return token(deps);
-    case 'radar': return radar(deps);
+    case 'radar': return radar(deps, ctx.options.fonte);
+    case 'badge': return E.badge(ctx.options.id);
+    case 'dev': return E.dev();
+    case 'velvetstar': return E.velvetstar();
+    case 'aiuto': return E.aiuto(AIUTO_EXTRA);
     case 'verifica': return verifica(ctx, deps);
     case 'quest': return quest();
     case 'velvet': return velvet();
@@ -170,4 +171,4 @@ async function dispatch(name, ctx, deps) {
   }
 }
 
-module.exports = { DEFS, dispatch, kira, stato, token, radar, quest, verifica, velvet };
+module.exports = { DEFS, dispatch, kira, stato, token, radar, radarZdesk, quest, verifica, velvet };
