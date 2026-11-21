@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Esempi · Zlang Dev</title>
+<meta name="description" content="Esempi Zlang pronti da aprire nello Zlang IDE: hello, saldi, $DSN su Solana e Polygon, VELVET.">
+<meta name="theme-color" content="#070112">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src https://solana-rpc.publicnode.com https://polygon-bor-rpc.publicnode.com https://polygon.drpc.org; base-uri 'self'; form-action 'none'">
+<link rel="canonical" href="https://x-zdos.it/dev/esempi/">
+<link rel="icon" type="image/svg+xml" href="/dev/assets/zdev.svg">
+<link rel="preload" href="/assets/fonts/SpaceGrotesk-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="/dev/assets/dev.css?v=3">
+</head>
+<body>
+<a class="skip" href="#main">Vai al contenuto</a>
+<header class="top">
+  <a class="brand" href="/dev/"><img src="/dev/assets/zdev.svg" alt="" width="24" height="24"><span>Zlang <b>Dev</b></span></a>
+  <nav class="menu" aria-label="Sezioni del portale"><a href="/dev/">Portale</a><a href="/dev/linguaggio/">Linguaggio</a><a href="/dev/esempi/" aria-current="page">Esempi</a><a href="/dev/monete/">Monete</a><a href="/dev/api/">API</a></nav>
+  <a class="btn primary sm" href="/ide/">Apri l’IDE</a>
+</header>
+<main id="main">
+<section class="hero"><h1>Esempi</h1><p class="lead">Sono gli stessi modelli dell’IDE. “Apri nell’IDE” li carica in un file nel tuo browser; la compilazione e l’esecuzione restano locali. Le letture <code>chain/</code> sono in sola lettura.</p></section><h2 id="hello">Hello Zlang</h2><p>Il primo programma: due righe <code>emit</code>. Gira su entrambi i toolchain.</p><p class="tiny muted">zlangc v2.5: 88 byte di bytecode ZLB2, 2 istruzioni.</p><pre data-copy><code># Esempio da zlang/examples/hello.zlang
+emit Ciao dal programma Zlang nativo
+emit Il kernel ZDOS ha eseguito questo bytecode</code></pre><div class="row"><a class="btn primary sm" href="/ide/?esempio=hello">Apri nell’IDE</a></div><h2 id="vault">Saldo locale</h2><p>Variabili intere e sottrazione: la VM Rust esegue LOAD, SUB e STORE. Nessun fondo reale.</p><p class="tiny muted">zlangc v2.5: 160 byte di bytecode ZLB2, 5 istruzioni.</p><pre data-copy><code># Saldo e trasferimento: gira sulla VM Rust (LOAD, SUB, STORE)
+emit Vault ZLang su z-xSOLANA
+let balance = 1000
+let transfer = 250
+let balance = balance - transfer
+emit Trasferimento calcolato in locale, nessun fondo spostato</code></pre><div class="row"><a class="btn primary sm" href="/ide/?esempio=vault">Apri nell’IDE</a></div><h2 id="flusso-zlb2">Tutte le istruzioni ZLB2</h2><p>Etichette, <code>if … jump</code>, <code>wait</code> e <code>storage.read</code> compilati da zlangc.</p><p class="tiny muted">zlangc v2.5: 148 byte di bytecode ZLB2, 9 istruzioni.</p><pre data-copy><code># Tutte le istruzioni di zlangc v2.5 (bytecode ZLB2)
+emit Avvio nodo
+let tentativi = 3
+loop:
+storage.read &quot;config/nodo.json&quot;
+wait
+if tentativi == 0 jump fine
+let tentativi = tentativi - 1
+fine:
+emit Fine</code></pre><div class="row"><a class="btn primary sm" href="/ide/?esempio=flusso-zlb2">Apri nell’IDE</a></div><h2 id="dsn-solana">$DSN su Solana</h2><p>Legge supply, decimali, authority e metadati del mint $DSN su mainnet.</p><p class="tiny muted">zlangc v2.5: 177 byte di bytecode ZLB2, 4 istruzioni.</p><pre data-copy><code># $DSN su Solana (xZDOS, Token-2022, 6 decimali)
+# storage.read nel namespace chain/ lo risolve l&#x27;host dell&#x27;IDE in sola lettura (RPC pubblico).
+# zlangc lo compila nell&#x27;opcode 0x06; la VM Rust non lo esegue.
+emit Lettura del mint $DSN su Solana mainnet
+storage.read &quot;chain/solana/mainnet/mint/35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4&quot;
+let decimali = 6
+emit Nessuna firma e nessuna transazione</code></pre><div class="row"><a class="btn primary sm" href="/ide/?esempio=dsn-solana">Apri nell’IDE</a></div><h2 id="dsn-polygon">$DSN su Polygon</h2><p>Legge nome, simbolo, decimali e totalSupply del contratto ERC-20.</p><p class="tiny muted">zlangc v2.5: 168 byte di bytecode ZLB2, 4 istruzioni.</p><pre data-copy><code># $DSN su Polygon (ERC-20, 18 decimali)
+# Legge nome, simbolo, decimali e totalSupply dal contratto, in sola lettura.
+emit Lettura del contratto $DSN su Polygon
+storage.read &quot;chain/polygon/erc20/0xfc90516a1f736FaC557e09D8853dB80dA192c296&quot;
+let decimali = 18
+emit Nessuna firma e nessuna transazione</code></pre><div class="row"><a class="btn primary sm" href="/ide/?esempio=dsn-polygon">Apri nell’IDE</a></div><h2 id="velvet-ov">VELVET ($OV)</h2><p>Legge il mint VELVET: supply, decimali, authority, nome e simbolo.</p><p class="tiny muted">zlangc v2.5: 179 byte di bytecode ZLB2, 4 istruzioni.</p><pre data-copy><code># VELVET ($OV) su Solana (Token-2022, 6 decimali)
+# Gettone di comunità: nessun rendimento. Solo lettura del mint.
+emit Lettura del mint VELVET su Solana mainnet
+storage.read &quot;chain/solana/mainnet/mint/2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump&quot;
+let decimali = 6
+emit Nessuna firma e nessuna transazione</code></pre><div class="row"><a class="btn primary sm" href="/ide/?esempio=velvet-ov">Apri nell’IDE</a></div><h2 id="saldi-wallet">Saldi del tuo wallet</h2><p>Con Phantom collegato, <code>@wallet</code> diventa il tuo indirizzo: SOL, $DSN e VELVET.</p><p class="tiny muted">zlangc v2.5: 274 byte di bytecode ZLB2, 5 istruzioni.</p><pre data-copy><code># Saldi del tuo wallet (collega Phantom: @wallet = il tuo indirizzo)
+# Solo lettura: l&#x27;IDE non firma e non sposta nulla.
+emit Saldi del wallet collegato su Solana mainnet
+storage.read &quot;chain/solana/mainnet/sol/@wallet&quot;
+storage.read &quot;chain/solana/mainnet/balance/@wallet/35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4&quot;
+storage.read &quot;chain/solana/mainnet/balance/@wallet/2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump&quot;
+emit Fine lettura</code></pre><div class="row"><a class="btn primary sm" href="/ide/?esempio=saldi-wallet">Apri nell’IDE</a></div><p class="note">Con il toolchain Rust le righe <code>storage.read</code>, <code>if</code>, etichette e <code>wait</code> compaiono come <code>UNKNOWN_OPCODE</code>: è il comportamento reale della VM di oggi.</p>
+</main>
+<footer>
+  <p>Portale sviluppatori Zlang · <a href="https://x-zdos.it/">x-zdos.it</a> · <a href="/ide/">Zlang IDE</a> · <a href="https://github.com/high-cde/z-xSOLANA/tree/main/zlang" rel="noopener">Sorgenti su GitHub</a></p>
+  <p>Solo strumenti e documentazione: nessun consiglio finanziario, nessuna promessa di rendimento. Le firme le fa solo il tuo wallet.</p>
+  <p>© 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza proprietaria ZSEL</p>
+</footer>
+<script src="/dev/assets/dev.js?v=3"></script>
+</body>
+</html>

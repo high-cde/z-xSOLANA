@@ -15,6 +15,8 @@ ZDOS1.3 — P.IVA 11040550961. Licenza proprietaria ZSEL, tutti i diritti riserv
 | Esegui | `ZVirtualMachine` (vCPU 16 registri, 4 KB vRAM, max 3000 cicli) nel browser. | Sì. |
 | Deploy & Run | Ancoraggio: transazione Memo con lo SHA-256 del bytecode, firmata dall'utente in Phantom, inviata via zcomm-rpc. Devnet di default; mainnet solo dopo conferma esplicita. Verifica di una firma esistente. | Sì, ma **non è un deploy di contratti**. |
 | K.I.R.A. Guard | (1) Regole statiche sui due toolchain. (2) Port parziale di `kiraChecks()` di `zdesk/app/lib/radar.js`: mint/freeze authority, supply, estensioni Token-2022 via RPC. Top holder, LP, insider e RugCheck restano nel Radar di zdesk. | Parziale, dichiarato. |
+| Dati on-chain (`chain/`) | `storage.read "chain/…"` viene compilato da zlangc come ogni storage.read; dopo l'esecuzione sulla VM, l'host JS dell'IDE (`assets/zhost.js`) risolve quei percorsi in sola lettura con RPC pubblici: mint Solana (supply, decimali, authority, nome/simbolo), saldo SOL e saldo token via conto associato, ERC-20 su Polygon. `@wallet` = indirizzo Phantom collegato. | Sì, ma lo legge l'host, non la VM. |
+| Modelli e link | Modelli per le monete reali (`dsn-solana`, `dsn-polygon`, `velvet-ov`, `saldi-wallet`); `?esempio=<nome>` apre un modello (usato dal portale `x-zdos.it/dev/`). Link "Portale dev" nell'intestazione. | Sì. |
 | zcomm | Log di ogni chiamata RPC nella busta del gateway Zcomm; endpoint personalizzabile; test connessione. | Sì. |
 
 ## Limiti onesti

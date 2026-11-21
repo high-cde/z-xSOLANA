@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>API pubbliche · Zlang Dev</title>
+<meta name="description" content="API pubbliche dell’ecosistema ZDOS ed endpoint RPC usati da IDE e portale, con i loro limiti.">
+<meta name="theme-color" content="#070112">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src https://solana-rpc.publicnode.com https://polygon-bor-rpc.publicnode.com https://polygon.drpc.org; base-uri 'self'; form-action 'none'">
+<link rel="canonical" href="https://x-zdos.it/dev/api/">
+<link rel="icon" type="image/svg+xml" href="/dev/assets/zdev.svg">
+<link rel="preload" href="/assets/fonts/SpaceGrotesk-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="/dev/assets/dev.css?v=3">
+</head>
+<body>
+<a class="skip" href="#main">Vai al contenuto</a>
+<header class="top">
+  <a class="brand" href="/dev/"><img src="/dev/assets/zdev.svg" alt="" width="24" height="24"><span>Zlang <b>Dev</b></span></a>
+  <nav class="menu" aria-label="Sezioni del portale"><a href="/dev/">Portale</a><a href="/dev/linguaggio/">Linguaggio</a><a href="/dev/esempi/">Esempi</a><a href="/dev/monete/">Monete</a><a href="/dev/api/" aria-current="page">API</a></nav>
+  <a class="btn primary sm" href="/ide/">Apri l’IDE</a>
+</header>
+<main id="main">
+<section class="hero"><h1>API pubbliche</h1>
+<p class="lead">Le interfacce dell’ecosistema che oggi rispondono davvero a chiunque. Gli altri servizi hanno API interne o protette e non sono elencati qui.</p></section>
+
+<h2 id="ecosystem">Directory dei servizi · <code>ecosystem.json</code></h2>
+<p><span class="tag ok">GET</span> <code>https://x-zdos.it/ecosystem.json</code> — elenco dei servizi del portale con URL e maturità (<code>live</code>, <code>demo</code>, <code>beta</code>…).</p>
+<pre data-copy><code>curl -s https://x-zdos.it/ecosystem.json</code></pre>
+
+<h2 id="discord">Verifica holder del bot Discord</h2>
+<p>Usata dalla pagina <a href="/discord/verify/">/discord/verify/</a> dopo il comando <code>/verifica</code> su Discord. Limite: 30 richieste al minuto per IP.</p>
+<div class="tbl"><table>
+<tr><th>Metodo</th><th>Percorso</th><th>Cosa fa</th></tr>
+<tr><td><span class="tag ok">GET</span></td><td><code>/discord/api/health</code></td><td>Stato del servizio: <code>{"ok":true,"discord":true,…}</code></td></tr>
+<tr><td><span class="tag ok">GET</span></td><td><code>/discord/api/message?n=&lt;nonce&gt;</code></td><td>Messaggio da firmare per un nonce emesso da <code>/verifica</code>, con scadenza.</td></tr>
+<tr><td><span class="tag info">POST</span></td><td><code>/discord/api/verify</code></td><td>Corpo JSON <code>{nonce, publicKey, signature}</code>: verifica la firma ed25519 del messaggio. Non muove fondi.</td></tr>
+</table></div>
+<pre data-copy><code>curl -s https://x-zdos.it/discord/api/health</code></pre>
+
+<h2 id="rpc">RPC pubblici usati da IDE e portale</h2>
+<div class="tbl"><table>
+<tr><th>Rete</th><th>Endpoint</th><th>Note</th></tr>
+<tr><td>Solana mainnet</td><td><code>https://solana-rpc.publicnode.com</code></td><td>Funziona dal browser. Le chiamate indicizzate (<code>getProgramAccounts</code>, <code>getTokenAccountsByOwner</code>, <code>getTokenAccountBalance</code>) richiedono un token: per i saldi l’IDE calcola il conto associato e usa <code>getAccountInfo</code>.</td></tr>
+<tr><td>Solana mainnet</td><td><code>https://api.mainnet-beta.solana.com</code></td><td>Rifiuta le chiamate dai browser (403); va bene da server o da terminale.</td></tr>
+<tr><td>Solana devnet</td><td><code>https://api.devnet.solana.com</code></td><td>Il faucet via RPC è chiuso: SOL di test da faucet.solana.com.</td></tr>
+<tr><td>Polygon PoS</td><td><code>https://polygon-bor-rpc.publicnode.com</code></td><td>Riserva: <code>https://polygon.drpc.org</code>.</td></tr>
+</table></div>
+<p class="small">Nell’IDE puoi impostare un tuo endpoint Solana nel pannello <i>zcomm</i>; resta salvato solo nel tuo browser.</p>
+
+<h2 id="ide-host">Host dell’IDE (namespace chain/)</h2>
+<p>Non è un’API HTTP: è il modo in cui un programma Zlang chiede dati on-chain all’IDE con <code>storage.read</code>. Percorsi e risposte sono nella <a href="/dev/linguaggio/#storage">guida al linguaggio</a>.</p>
+
+<h2 id="non-pubblico">Cosa non è un’API pubblica</h2>
+<ul>
+<li>Lo swap zRoute usa le API di Jupiter direttamente dal browser: non c’è un’API zRoute da chiamare.</li>
+<li>zdesk, il Radar e i servizi di OurVelvet hanno API interne, protette o legate al sito 18+: non sono documentate qui.</li>
+</ul>
+
+</main>
+<footer>
+  <p>Portale sviluppatori Zlang · <a href="https://x-zdos.it/">x-zdos.it</a> · <a href="/ide/">Zlang IDE</a> · <a href="https://github.com/high-cde/z-xSOLANA/tree/main/zlang" rel="noopener">Sorgenti su GitHub</a></p>
+  <p>Solo strumenti e documentazione: nessun consiglio finanziario, nessuna promessa di rendimento. Le firme le fa solo il tuo wallet.</p>
+  <p>© 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza proprietaria ZSEL</p>
+</footer>
+<script src="/dev/assets/dev.js?v=3"></script>
+</body>
+</html>

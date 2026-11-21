@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guida al linguaggio · Zlang Dev</title>
+<meta name="description" content="Sintassi supportata da zlangc v2.5 e dalla VM Rust, formato bytecode ZLB2, storage.read e namespace chain/.">
+<meta name="theme-color" content="#070112">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src https://solana-rpc.publicnode.com https://polygon-bor-rpc.publicnode.com https://polygon.drpc.org; base-uri 'self'; form-action 'none'">
+<link rel="canonical" href="https://x-zdos.it/dev/linguaggio/">
+<link rel="icon" type="image/svg+xml" href="/dev/assets/zdev.svg">
+<link rel="preload" href="/assets/fonts/SpaceGrotesk-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="/dev/assets/dev.css?v=3">
+</head>
+<body>
+<a class="skip" href="#main">Vai al contenuto</a>
+<header class="top">
+  <a class="brand" href="/dev/"><img src="/dev/assets/zdev.svg" alt="" width="24" height="24"><span>Zlang <b>Dev</b></span></a>
+  <nav class="menu" aria-label="Sezioni del portale"><a href="/dev/">Portale</a><a href="/dev/linguaggio/" aria-current="page">Linguaggio</a><a href="/dev/esempi/">Esempi</a><a href="/dev/monete/">Monete</a><a href="/dev/api/">API</a></nav>
+  <a class="btn primary sm" href="/ide/">Apri l’IDE</a>
+</header>
+<main id="main">
+<section class="hero"><h1>Guida al linguaggio</h1>
+<p class="lead">Zlang oggi ha due toolchain reali, entrambe nel repo <a href="https://github.com/high-cde/z-xSOLANA/tree/main/zlang" rel="noopener">z-xSOLANA/zlang</a> ed entrambe nell’IDE. Qui trovi solo quello che compila davvero; la specifica più ampia è segnata come progetto.</p></section>
+
+<h2 id="toolchain">Le due toolchain</h2>
+<div class="grid">
+<div class="card"><h3>zlangc v2.5</h3><p class="small"><code>tools/zlangc.py</code>. Legge il sorgente riga per riga e produce il bytecode <b>ZLB2</b> e un header C. Nell’IDE gira un port JavaScript identico byte per byte.</p></div>
+<div class="card"><h3>Compiler + VM Rust</h3><p class="small"><code>src/compiler</code> e <code>src/vm</code>, compilati in WebAssembly senza modifiche. vCPU con 16 registri, 4 KB di memoria, massimo 3000 cicli.</p></div>
+</div>
+
+<h2 id="sintassi">Sintassi supportata</h2>
+<p>Una istruzione per riga. Le righe vuote e quelle che iniziano con <code>#</code> sono ignorate. Ogni altra riga non riconosciuta ferma zlangc con un errore.</p>
+<div class="tbl"><table>
+<tr><th>Istruzione</th><th>Opcode ZLB2</th><th>VM Rust</th><th>Note</th></tr>
+<tr><td><code>emit testo</code></td><td>0x01 EMIT</td><td>stampa</td><td>Le virgolette agli estremi vengono tolte.</td></tr>
+<tr><td><code>let x = 100</code></td><td>0x02 ASSIGN</td><td>LOAD + STORE</td><td>Solo interi.</td></tr>
+<tr><td><code>let x = a - b</code></td><td>0x02 ASSIGN</td><td>SUB</td><td><code>+ * /</code> non sono eseguiti: valgono 0.</td></tr>
+<tr><td><code>if x == 1 jump fine</code></td><td>0x03 JUMP_IF</td><td>ignorata</td><td>Il payload è la condizione testuale.</td></tr>
+<tr><td><code>fine:</code></td><td>0x04 LABEL</td><td>ignorata</td><td>Ogni riga che finisce con <code>:</code>.</td></tr>
+<tr><td><code>wait</code></td><td>0x05 WAIT</td><td>ignorata</td><td>Payload fisso <code>async_signal</code>.</td></tr>
+<tr><td><code>storage.read "percorso"</code></td><td>0x06 STORAGE_READ</td><td>ignorata</td><td>Percorso relativo: niente <code>/</code> iniziale, niente <code>..</code>.</td></tr>
+</table></div>
+
+<h2 id="zlb2">Formato del bytecode ZLB2</h2>
+<p>Intestazione di 6 byte: <code>5A 4C 42 32</code> (“ZLB2”) e la versione <code>02 05</code>. Poi una sequenza di istruzioni, ognuna fatta di opcode (1 byte), lunghezza del payload (2 byte little-endian) e payload UTF-8. Il programma termina con <code>FF 00 00</code> (HALT).</p>
+<pre><code># Esempio da zlang/examples/hello.zlang
+emit Ciao dal programma Zlang nativo
+emit Il kernel ZDOS ha eseguito questo bytecode</code></pre>
+<p class="small">Compilato, l’esempio sopra diventa 88 byte. Le prime righe del dump:</p>
+<pre><code>0000  5a 4c 42 32 02 05 01 1f 00 43 69 61 6f 20 64 61   ZLB2.....Ciao da
+0010  6c 20 70 72 6f 67 72 61 6d 6d 61 20 5a 6c 61 6e   l programma Zlan</code></pre>
+
+<h2 id="storage">storage.read e il namespace chain/</h2>
+<p><code>storage.read</code> legge un percorso dentro un namespace autorizzato. Da riga di comando, <code>tools/zlang_storage_read.py --root &lt;cartella&gt;</code> legge file locali (massimo 4096 byte di default) e rifiuta i percorsi che escono dalla cartella.</p>
+<p>Nell’IDE c’è un namespace in più, <code>chain/</code>, che l’host dell’IDE risolve in sola lettura con RPC pubblici quando premi <i>Esegui</i>. Il bytecode contiene il percorso; la lettura la fa l’host, non la VM.</p>
+<div class="tbl"><table>
+<tr><th>Percorso</th><th>Restituisce</th></tr>
+<tr><td><code>chain/solana/mainnet/mint/&lt;MINT&gt;</code></td><td>Programma token, supply, decimali, mint e freeze authority, nome e simbolo, estensioni Token-2022.</td></tr>
+<tr><td><code>chain/solana/mainnet/balance/&lt;WALLET&gt;/&lt;MINT&gt;</code></td><td>Saldo del conto token associato (ATA) del wallet. Altri conti token dello stesso wallet non vengono sommati.</td></tr>
+<tr><td><code>chain/solana/mainnet/sol/&lt;WALLET&gt;</code></td><td>Saldo in SOL.</td></tr>
+<tr><td><code>chain/polygon/erc20/&lt;0xTOKEN&gt;</code></td><td>Nome, simbolo, decimali, totalSupply.</td></tr>
+<tr><td><code>chain/polygon/erc20/&lt;0xTOKEN&gt;/balance/&lt;0xWALLET&gt;</code></td><td>Saldo ERC-20 di un indirizzo.</td></tr>
+</table></div>
+<p class="small">Al posto di <code>mainnet</code> puoi usare <code>devnet</code>. Nei percorsi Solana <code>@wallet</code> diventa l’indirizzo del Phantom collegato all’IDE.</p>
+
+<h2 id="cli">Da riga di comando</h2>
+<pre data-copy><code>git clone https://github.com/high-cde/z-xSOLANA.git
+cd z-xSOLANA/zlang
+python3 tools/zlangc.py examples/hello.zlang --bytecode hello.zbin --header hello.h
+cargo build --release   # compiler e VM Rust</code></pre>
+
+<h2 id="progetto">In progetto, non ancora implementato</h2>
+<ul>
+<li><code>docs/language-spec.md</code>: moduli, funzioni, tipi, <code>import</code>. Esempi come <code>examples/chain_node.zlang</code> usano questa sintassi e <b>non compilano</b> con le toolchain attuali.</li>
+<li><code>docs/bytecode-spec.md</code>: VM stack-based con bytecode <code>ZBC0</code>, tabella costanti e syscall. È una specifica, non codice.</li>
+<li>Nessuna toolchain genera programmi Solana (SBF/BPF): il “Deploy” dell’IDE è un ancoraggio dell’hash su devnet.</li>
+</ul>
+
+</main>
+<footer>
+  <p>Portale sviluppatori Zlang · <a href="https://x-zdos.it/">x-zdos.it</a> · <a href="/ide/">Zlang IDE</a> · <a href="https://github.com/high-cde/z-xSOLANA/tree/main/zlang" rel="noopener">Sorgenti su GitHub</a></p>
+  <p>Solo strumenti e documentazione: nessun consiglio finanziario, nessuna promessa di rendimento. Le firme le fa solo il tuo wallet.</p>
+  <p>© 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza proprietaria ZSEL</p>
+</footer>
+<script src="/dev/assets/dev.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portale sviluppatori Zlang · ZDOS1.3</title>
+<meta name="description" content="Documentazione Zlang, esempi da aprire nell’IDE e dati on-chain di $DSN e VELVET, in sola lettura.">
+<meta name="theme-color" content="#070112">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src https://solana-rpc.publicnode.com https://polygon-bor-rpc.publicnode.com https://polygon.drpc.org; base-uri 'self'; form-action 'none'">
+<link rel="canonical" href="https://x-zdos.it/dev/">
+<link rel="icon" type="image/svg+xml" href="/dev/assets/zdev.svg">
+<link rel="preload" href="/assets/fonts/SpaceGrotesk-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="/dev/assets/dev.css?v=3">
+</head>
+<body>
+<a class="skip" href="#main">Vai al contenuto</a>
+<header class="top">
+  <a class="brand" href="/dev/"><img src="/dev/assets/zdev.svg" alt="" width="24" height="24"><span>Zlang <b>Dev</b></span></a>
+  <nav class="menu" aria-label="Sezioni del portale"><a href="/dev/" aria-current="page">Portale</a><a href="/dev/linguaggio/">Linguaggio</a><a href="/dev/esempi/">Esempi</a><a href="/dev/monete/">Monete</a><a href="/dev/api/">API</a></nav>
+  <a class="btn primary sm" href="/ide/">Apri l’IDE</a>
+</header>
+<main id="main">
+<section class="hero">
+<h1>Portale sviluppatori <span>Zlang</span></h1>
+<p class="lead">Documentazione, esempi pronti e dati on-chain delle monete dell’ecosistema ZDOS: $DSN su Solana e Polygon, VELVET su Solana. Tutto si prova nel browser con lo <a href="/ide/">Zlang IDE</a>, senza installare nulla.</p>
+<div class="row"><a class="btn primary" href="/ide/?esempio=hello">Inizia dall’IDE</a><a class="btn" href="/dev/linguaggio/">Guida al linguaggio</a><a class="btn" href="/dev/monete/">Le monete</a></div>
+</section>
+
+<h2 id="quickstart">Quickstart in 4 passi</h2>
+<ol class="steps">
+<li><b>Apri un esempio.</b> <a class="btn primary sm" href="/ide/?esempio=dsn-solana">Apri “$DSN su Solana”</a> Il file si salva solo nel tuo browser.</li>
+<li><b>Compila.</b> Pannello <i>Compila</i> → <i>Compila</i> (o <kbd>Ctrl+S</kbd>). zlangc v2.5 produce il bytecode ZLB2, con disassemblato, hex e SHA-256.</li>
+<li><b>Esegui.</b> <i>Esegui</i> lancia la VM Rust compilata in WASM. Poi l’IDE legge in sola lettura i percorsi <code>chain/</code> e scrive i dati on-chain in console.</li>
+<li><b>Ancora (facoltativo).</b> In <i>Deploy</i> puoi firmare con Phantom un memo su <b>devnet</b> con l’hash del bytecode. È una prova pubblica della versione, non un deploy di contratti.</li>
+</ol>
+
+<h2 id="esempi">Esempi pronti</h2>
+<div class="grid"><div class="card"><h3>$DSN su Solana</h3><p class="small">Legge supply, decimali, authority e metadati del mint $DSN su mainnet.</p><p class="tiny muted">zlangc: 177 byte, 4 istruzioni</p><div class="row"><a class="btn primary sm" href="/ide/?esempio=dsn-solana">Apri nell’IDE</a><a class="btn sm" href="/dev/esempi/#dsn-solana">Vedi il codice</a></div></div><div class="card"><h3>$DSN su Polygon</h3><p class="small">Legge nome, simbolo, decimali e totalSupply del contratto ERC-20.</p><p class="tiny muted">zlangc: 168 byte, 4 istruzioni</p><div class="row"><a class="btn primary sm" href="/ide/?esempio=dsn-polygon">Apri nell’IDE</a><a class="btn sm" href="/dev/esempi/#dsn-polygon">Vedi il codice</a></div></div><div class="card"><h3>VELVET ($OV)</h3><p class="small">Legge il mint VELVET: supply, decimali, authority, nome e simbolo.</p><p class="tiny muted">zlangc: 179 byte, 4 istruzioni</p><div class="row"><a class="btn primary sm" href="/ide/?esempio=velvet-ov">Apri nell’IDE</a><a class="btn sm" href="/dev/esempi/#velvet-ov">Vedi il codice</a></div></div><div class="card"><h3>Saldi del tuo wallet</h3><p class="small">Con Phantom collegato, <code>@wallet</code> diventa il tuo indirizzo: SOL, $DSN e VELVET.</p><p class="tiny muted">zlangc: 274 byte, 5 istruzioni</p><div class="row"><a class="btn primary sm" href="/ide/?esempio=saldi-wallet">Apri nell’IDE</a><a class="btn sm" href="/dev/esempi/#saldi-wallet">Vedi il codice</a></div></div><div class="card"><h3>Hello Zlang</h3><p class="small">Il primo programma: due righe <code>emit</code>. Gira su entrambi i toolchain.</p><p class="tiny muted">zlangc: 88 byte, 2 istruzioni</p><div class="row"><a class="btn primary sm" href="/ide/?esempio=hello">Apri nell’IDE</a><a class="btn sm" href="/dev/esempi/#hello">Vedi il codice</a></div></div></div>
+<p class="small"><a href="/dev/esempi/">Tutti gli esempi con il codice →</a></p>
+
+<h2 id="monete">Le monete in breve</h2>
+<div class="grid">
+<div class="card" data-chain="solana" data-addr="35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4"><h3>$DSN · Solana</h3><dl class="kv"><dt>Nome on-chain</dt><dd data-f="name">xZDOS</dd><dt>Supply</dt><dd data-f="supply">1.000.000.000.000</dd><dt>Decimali</dt><dd data-f="decimals">6</dd></dl><p class="live">dato dell’ultima rilevazione</p><div class="row"><a class="btn sm" href="/dev/monete/#dsn-solana">Scheda</a></div></div>
+<div class="card" data-chain="polygon" data-addr="0xfc90516a1f736FaC557e09D8853dB80dA192c296"><h3>$DSN · Polygon</h3><dl class="kv"><dt>Nome on-chain</dt><dd data-f="name">NETkali</dd><dt>Supply</dt><dd data-f="supply">1.000.000.000.000</dd><dt>Decimali</dt><dd data-f="decimals">18</dd></dl><p class="live">dato dell’ultima rilevazione</p><div class="row"><a class="btn sm" href="/dev/monete/#dsn-polygon">Scheda</a></div></div>
+<div class="card" data-chain="solana" data-addr="2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump"><h3>VELVET ($OV) · Solana</h3><dl class="kv"><dt>Nome on-chain</dt><dd data-f="name">VELVET</dd><dt>Supply</dt><dd data-f="supply">1.000.000.000</dd><dt>Decimali</dt><dd data-f="decimals">6</dd></dl><p class="live">dato dell’ultima rilevazione</p><div class="row"><a class="btn sm" href="/dev/monete/#velvet">Scheda</a></div></div>
+</div>
+
+<h2 id="stato">Cosa funziona davvero, cosa è in arrivo</h2>
+<div class="tbl"><table>
+<tr><th>Componente</th><th>Stato</th><th>Dettaglio</th></tr>
+<tr><td>Zlang IDE</td><td><span class="tag ok">online</span></td><td>Editor, file nel browser, modelli, console. <a href="/ide/">x-zdos.it/ide/</a></td></tr>
+<tr><td>zlangc v2.5 → bytecode ZLB2</td><td><span class="tag ok">reale</span></td><td>Port JS identico byte per byte a <code>tools/zlangc.py</code>.</td></tr>
+<tr><td>Compiler + VM Rust (WASM)</td><td><span class="tag part">parziale</span></td><td>Esegue <code>emit</code> e <code>let</code> (interi, <code>a - b</code>). Le altre istruzioni diventano <code>UNKNOWN_OPCODE</code>.</td></tr>
+<tr><td>Lettura dati on-chain (<code>chain/</code>)</td><td><span class="tag ok">reale</span></td><td>Sola lettura via RPC pubblici, risolta dall’host dell’IDE, non dalla VM.</td></tr>
+<tr><td>Ancoraggio su devnet</td><td><span class="tag ok">reale</span></td><td>Memo con SHA-256 del bytecode, firmato in Phantom.</td></tr>
+<tr><td>Deploy di smart contract Solana</td><td><span class="tag no">non esiste</span></td><td>Zlang non genera programmi SBF/BPF né Rust/Anchor.</td></tr>
+<tr><td>Funzioni, tipi, moduli</td><td><span class="tag info">in progetto</span></td><td>Descritti in <code>docs/language-spec.md</code>, non implementati dai compilatori.</td></tr>
+<tr><td>Bytecode ZBC0 stack-based</td><td><span class="tag info">in progetto</span></td><td><code>docs/bytecode-spec.md</code>: specifica, non ancora codice.</td></tr>
+<tr><td>Saldi holder di $DSN su Polygon</td><td><span class="tag part">esterno</span></td><td>Non leggibili con RPC semplice: si usa Polygonscan.</td></tr>
+</table></div>
+<p class="note">Nessuna transazione parte da questo portale. L’IDE firma solo quello che approvi tu in Phantom, e di default solo su devnet.</p>
+
+</main>
+<footer>
+  <p>Portale sviluppatori Zlang · <a href="https://x-zdos.it/">x-zdos.it</a> · <a href="/ide/">Zlang IDE</a> · <a href="https://github.com/high-cde/z-xSOLANA/tree/main/zlang" rel="noopener">Sorgenti su GitHub</a></p>
+  <p>Solo strumenti e documentazione: nessun consiglio finanziario, nessuna promessa di rendimento. Le firme le fa solo il tuo wallet.</p>
+  <p>© 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza proprietaria ZSEL</p>
+</footer>
+<script src="/dev/assets/dev.js?v=3"></script>
+</body>
+</html>

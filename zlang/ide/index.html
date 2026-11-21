@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="vendor/codemirror/codemirror.css">
-<link rel="stylesheet" href="assets/ide.css?v=1">
+<link rel="stylesheet" href="assets/ide.css?v=2">
 </head>
 <body>
 <header class="top">
@@ -20,7 +20,8 @@
   <span class="pill" id="netPill" title="Rete Solana per Deploy &amp; Run">Devnet</span>
   <span class="pill ghost" id="wasmPill" title="Stato compilatore WASM">WASM…</span>
   <span class="grow"></span>
-  <a class="pill ghost" href="https://swap.x-zdos.it/zroute/" target="_blank" rel="noopener" title="Swap con controlli K.I.R.A.">zRoute ↗</a>
+  <a class="pill ghost" href="/dev/" title="Portale sviluppatori: guida Zlang, esempi, monete, API"><span class="hide-sm">Portale </span>dev</a>
+  <a class="pill ghost hide-sm" href="https://swap.x-zdos.it/zroute/" target="_blank" rel="noopener" title="Swap con controlli K.I.R.A.">zRoute ↗</a>
   <button class="btn primary sm" id="topConnect" type="button">Collega Phantom</button>
 </header>
 
@@ -140,6 +141,15 @@
         <tr><td><code># commento</code></td><td>—</td><td>—</td></tr>
       </table>
       <p class="tiny">La specifica completa in <code>docs/language-spec.md</code> (funzioni, tipi, moduli) è un progetto: i compilatori attuali non la implementano ancora.</p>
+      <h3>Dati on-chain (namespace chain/)</h3>
+      <p class="tiny"><code>storage.read "chain/…"</code> è compilato da zlangc come ogni storage.read. Quando premi Esegui, dopo la VM l’host dell’IDE legge quei percorsi in sola lettura con RPC pubblici e scrive il risultato in console. Non è la VM a leggerli.</p>
+      <ul class="tiny">
+        <li><code>chain/solana/mainnet/mint/&lt;MINT&gt;</code></li>
+        <li><code>chain/solana/mainnet/balance/@wallet/&lt;MINT&gt;</code></li>
+        <li><code>chain/solana/mainnet/sol/@wallet</code></li>
+        <li><code>chain/polygon/erc20/&lt;0x…&gt;</code></li>
+      </ul>
+      <p class="tiny">Modelli pronti: <code>dsn-solana</code>, <code>dsn-polygon</code>, <code>velvet-ov</code>, <code>saldi-wallet</code>. Guida completa ed esempi sul <a href="/dev/">portale sviluppatori</a>.</p>
       <h3>Origine del codice</h3>
       <ul class="tiny">
         <li>zlangc: port JS fedele di <code>zlang/tools/zlangc.py</code>, verificato byte per byte.</li>
@@ -182,6 +192,7 @@
 <script src="assets/zlang-wasm.js"></script>
 <script src="assets/zcomm.js"></script>
 <script src="assets/kira.js"></script>
-<script src="assets/ide.js?v=1"></script>
+<script src="assets/zhost.js?v=2"></script>
+<script src="assets/ide.js?v=2"></script>
 </body>
 </html>

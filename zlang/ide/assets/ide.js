@@ -11,6 +11,10 @@
     'hello.zlang': '# Esempio da zlang/examples/hello.zlang\nemit Ciao dal programma Zlang nativo\nemit Il kernel ZDOS ha eseguito questo bytecode\n',
     'vault.zlang': '# Saldo e trasferimento: gira sulla VM Rust (LOAD, SUB, STORE)\nemit Vault ZLang su z-xSOLANA\nlet balance = 1000\nlet transfer = 250\nlet balance = balance - transfer\nemit Trasferimento calcolato in locale, nessun fondo spostato\n',
     'flusso-zlb2.zlang': '# Tutte le istruzioni di zlangc v2.5 (bytecode ZLB2)\nemit Avvio nodo\nlet tentativi = 3\nloop:\nstorage.read "config/nodo.json"\nwait\nif tentativi == 0 jump fine\nlet tentativi = tentativi - 1\nfine:\nemit Fine\n',
+    'dsn-solana.zlang': '# $DSN su Solana (xZDOS, Token-2022, 6 decimali)\n# storage.read nel namespace chain/ lo risolve l\'host dell\'IDE in sola lettura (RPC pubblico).\n# zlangc lo compila nell\'opcode 0x06; la VM Rust non lo esegue.\nemit Lettura del mint $DSN su Solana mainnet\nstorage.read "chain/solana/mainnet/mint/35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4"\nlet decimali = 6\nemit Nessuna firma e nessuna transazione\n',
+    'dsn-polygon.zlang': '# $DSN su Polygon (ERC-20, 18 decimali)\n# Legge nome, simbolo, decimali e totalSupply dal contratto, in sola lettura.\nemit Lettura del contratto $DSN su Polygon\nstorage.read "chain/polygon/erc20/0xfc90516a1f736FaC557e09D8853dB80dA192c296"\nlet decimali = 18\nemit Nessuna firma e nessuna transazione\n',
+    'velvet-ov.zlang': '# VELVET ($OV) su Solana (Token-2022, 6 decimali)\n# Gettone di comunità: nessun rendimento. Solo lettura del mint.\nemit Lettura del mint VELVET su Solana mainnet\nstorage.read "chain/solana/mainnet/mint/2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump"\nlet decimali = 6\nemit Nessuna firma e nessuna transazione\n',
+    'saldi-wallet.zlang': '# Saldi del tuo wallet (collega Phantom: @wallet = il tuo indirizzo)\n# Solo lettura: l\'IDE non firma e non sposta nulla.\nemit Saldi del wallet collegato su Solana mainnet\nstorage.read "chain/solana/mainnet/sol/@wallet"\nstorage.read "chain/solana/mainnet/balance/@wallet/35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4"\nstorage.read "chain/solana/mainnet/balance/@wallet/2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump"\nemit Fine lettura\n',
     'test.zlang': '# Da zlang/test.zl\n# Prova locale del compilatore Zlang.\n# Le operazioni esterne non sono simulate né dichiarate attive.\nemit Inizializzazione sequenza di test locale...\nemit Compilazione e output locale completati.\n',
   };
 
@@ -134,9 +138,22 @@
   }
   async function doRun() {
     log('VM ZLang (Rust → WASM): esecuzione di ' + fs.active, 'info');
-    const r = await ZLangWasm.run(cm.getValue());
+    const src = cm.getValue();
+    const r = await ZLangWasm.run(src);
     if (!r.ok) return log(r.error, 'err');
     r.text.split('\n').filter(Boolean).forEach((l) => log(l, /Errore|UNKNOWN/.test(l) ? 'err' : /HALT|completata/.test(l) ? 'ok' : ''));
+    await runHost(src);
+  }
+  /* storage.read su chain/: lo risolve l'host dell'IDE (assets/zhost.js), in sola lettura, dopo la VM */
+  async function runHost(src) {
+    const c = ZLangC.compile(src); if (!c.ok) return;
+    const reads = ZLangC.disassemble(c.bytecode).filter((x) => x.op === 0x06 && x.payload.startsWith('chain/'));
+    if (!reads.length) return;
+    log('Host IDE: ' + reads.length + ' storage.read nel namespace chain/ (sola lettura, la VM Rust non li esegue)', 'info');
+    for (const x of reads) {
+      try { const v = await ZHost.resolve(x.payload, { wallet: pubkey }); log('storage.read ' + x.payload + ' → ' + ZHost.format(v), 'ok'); }
+      catch (e) { log('storage.read ' + x.payload + ' → ' + e.message, 'err'); }
+    }
   }
   $('#bCompile').onclick = () => doCompile(true);
   $('#bRun').onclick = doRun; $('#dRun').onclick = doRun;
@@ -284,6 +301,13 @@
 
   /* ---------- avvio ---------- */
   renderTree(); renderHist(); setCluster('devnet');
+  // ?esempio=<nome> apre un modello (link "Apri nell'IDE" del portale x-zdos.it/dev/)
+  const ex = new URLSearchParams(location.search).get('esempio');
+  const exFile = ex && /^[\w-]{1,40}$/.test(ex) ? ex + '.zlang' : null;
+  if (exFile && TEMPLATES[exFile]) {
+    if (fs.files[exFile] !== TEMPLATES[exFile]) { let f = exFile; while (f in fs.files && fs.files[f] !== TEMPLATES[exFile]) f = f.replace(/(\.\w+)$/, '-1$1'); fs.files[f] = TEMPLATES[exFile]; fs.active = f; } else fs.active = exFile;
+    save(); log('Esempio aperto dal portale: ' + fs.active, 'info');
+  } else if (ex) log('Esempio non trovato: ' + ex, 'warn');
   openFile(fs.active in fs.files ? fs.active : Object.keys(fs.files)[0]);
   ZLangWasm.version().then((v) => { const p = $('#wasmPill'); if (v.ok) { p.textContent = 'WASM ✓'; p.title = v.text; log('Compilatore pronto: ' + v.text, 'ok'); } else { p.textContent = 'WASM ✗'; log('WASM non disponibile: ' + v.error, 'err'); } }).catch((e) => { $('#wasmPill').textContent = 'WASM ✗'; log('WASM non disponibile: ' + e.message, 'err'); });
   log('Zlang IDE pronto. Rete predefinita: Devnet. Le firme le fa solo Phantom.', 'info');

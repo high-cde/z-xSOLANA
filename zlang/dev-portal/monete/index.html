@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Monete · Zlang Dev</title>
+<meta name="description" content="Schede on-chain di $DSN su Solana e Polygon e di VELVET ($OV) su Solana: supply, decimali, authority, link agli explorer.">
+<meta name="theme-color" content="#070112">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src https://solana-rpc.publicnode.com https://polygon-bor-rpc.publicnode.com https://polygon.drpc.org; base-uri 'self'; form-action 'none'">
+<link rel="canonical" href="https://x-zdos.it/dev/monete/">
+<link rel="icon" type="image/svg+xml" href="/dev/assets/zdev.svg">
+<link rel="preload" href="/assets/fonts/SpaceGrotesk-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="/dev/assets/dev.css?v=3">
+</head>
+<body>
+<a class="skip" href="#main">Vai al contenuto</a>
+<header class="top">
+  <a class="brand" href="/dev/"><img src="/dev/assets/zdev.svg" alt="" width="24" height="24"><span>Zlang <b>Dev</b></span></a>
+  <nav class="menu" aria-label="Sezioni del portale"><a href="/dev/">Portale</a><a href="/dev/linguaggio/">Linguaggio</a><a href="/dev/esempi/">Esempi</a><a href="/dev/monete/" aria-current="page">Monete</a><a href="/dev/api/">API</a></nav>
+  <a class="btn primary sm" href="/ide/">Apri l’IDE</a>
+</header>
+<main id="main">
+<section class="hero"><h1>Le monete</h1>
+<p class="lead">Dati letti dal browser direttamente on-chain, con RPC pubblici in sola lettura. Se l’RPC non risponde vedi i valori dell’ultima rilevazione. Nessun prezzo, nessuna previsione.</p></section>
+
+<h2 id="dsn-solana">$DSN su Solana</h2>
+<div class="card" data-chain="solana" data-addr="35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4">
+<dl class="kv"><dt>Mint</dt><dd>35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4</dd><dt>Nome on-chain</dt><dd data-f="name">xZDOS</dd><dt>Simbolo</dt><dd data-f="symbol">$DSN</dd><dt>Programma</dt><dd data-f="program">Token-2022</dd><dt>Supply</dt><dd data-f="supply">1.000.000.000.000</dd><dt>Decimali</dt><dd data-f="decimals">6</dd><dt>Mint authority</dt><dd data-f="mintAuth">revocata</dd><dt>Freeze authority</dt><dd data-f="freezeAuth">revocata</dd><dt>Conti con saldo</dt><dd>1 (rilevato il 21/11/2026 alle 15:41 (ora di Roma))</dd></dl>
+<p class="live">dato dell’ultima rilevazione</p>
+<p class="small">Al momento tutta la supply è in un solo conto e non c’è una pool di liquidità.</p>
+<div class="row"><a class="btn sm" href="https://solscan.io/token/35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4" rel="noopener">Solscan ↗</a><a class="btn sm" href="https://explorer.solana.com/address/35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4" rel="noopener">Solana Explorer ↗</a><a class="btn primary sm" href="/ide/?esempio=dsn-solana">Apri nell’IDE</a></div>
+</div>
+
+<h2 id="dsn-polygon">$DSN su Polygon</h2>
+<div class="card" data-chain="polygon" data-addr="0xfc90516a1f736FaC557e09D8853dB80dA192c296">
+<dl class="kv"><dt>Contratto</dt><dd>0xfc90516a1f736FaC557e09D8853dB80dA192c296</dd><dt>Nome on-chain</dt><dd data-f="name">NETkali</dd><dt>Simbolo</dt><dd data-f="symbol">$DSN</dd><dt>Standard</dt><dd>ERC-20 su Polygon PoS</dd><dt>Supply</dt><dd data-f="supply">1.000.000.000.000</dd><dt>Decimali</dt><dd data-f="decimals">18</dd><dt>Holder</dt><dd>non leggibili via RPC: vedi Polygonscan</dd></dl>
+<p class="live">dato dell’ultima rilevazione</p>
+<p class="small">Il nome registrato nel contratto è “NETkali”; il simbolo è $DSN.</p>
+<div class="row"><a class="btn sm" href="https://polygonscan.com/token/0xfc90516a1f736FaC557e09D8853dB80dA192c296" rel="noopener">Polygonscan ↗</a><a class="btn primary sm" href="/ide/?esempio=dsn-polygon">Apri nell’IDE</a></div>
+</div>
+
+<h2 id="velvet">VELVET ($OV) su Solana</h2>
+<div class="card" data-chain="solana" data-addr="2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump">
+<dl class="kv"><dt>Mint</dt><dd>2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump</dd><dt>Nome on-chain</dt><dd data-f="name">VELVET</dd><dt>Simbolo</dt><dd data-f="symbol">$OV</dd><dt>Programma</dt><dd data-f="program">Token-2022</dd><dt>Supply</dt><dd data-f="supply">1.000.000.000</dd><dt>Decimali</dt><dd data-f="decimals">6</dd><dt>Mint authority</dt><dd data-f="mintAuth">revocata</dd><dt>Freeze authority</dt><dd data-f="freezeAuth">revocata</dd><dt>Conti con saldo</dt><dd>6 (rilevato il 21/11/2026 alle 15:41 (ora di Roma))</dd></dl>
+<p class="live">dato dell’ultima rilevazione</p>
+<p class="small">Gettone di comunità di OurVelvet, senza alcun rendimento. È ancora nella curva di lancio iniziale: il conto più grande (circa 99,4% della supply) è quello della curva, non c’è una pool DEX e i volumi sono nulli.</p>
+<div class="row"><a class="btn sm" href="https://solscan.io/token/2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump" rel="noopener">Solscan ↗</a><a class="btn sm" href="https://explorer.solana.com/address/2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump" rel="noopener">Solana Explorer ↗</a><a class="btn primary sm" href="/ide/?esempio=velvet-ov">Apri nell’IDE</a></div>
+</div>
+
+<h2 id="leggere">Leggere i dati da soli</h2>
+<p>Le stesse letture con <code>curl</code>, senza chiavi:</p>
+<pre data-copy><code># Mint su Solana (supply, decimali, authority, estensioni)
+curl -s https://solana-rpc.publicnode.com -H &#x27;content-type: application/json&#x27; \
+  -d &#x27;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:1,&quot;method&quot;:&quot;getAccountInfo&quot;,&quot;params&quot;:[&quot;35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4&quot;,{&quot;encoding&quot;:&quot;jsonParsed&quot;}]}&#x27;
+
+# totalSupply su Polygon (selettore 0x18160ddd)
+curl -s https://polygon-bor-rpc.publicnode.com -H &#x27;content-type: application/json&#x27; \
+  -d &#x27;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:1,&quot;method&quot;:&quot;eth_call&quot;,&quot;params&quot;:[{&quot;to&quot;:&quot;0xfc90516a1f736FaC557e09D8853dB80dA192c296&quot;,&quot;data&quot;:&quot;0x18160ddd&quot;},&quot;latest&quot;]}&#x27;</code></pre>
+<p class="note">Contare gli holder richiede chiamate indicizzate (<code>getProgramAccounts</code>) che gli RPC pubblici gratuiti spesso bloccano dal browser. Per questo il numero dei conti con saldo è una rilevazione datata, non un valore in diretta.</p>
+
+</main>
+<footer>
+  <p>Portale sviluppatori Zlang · <a href="https://x-zdos.it/">x-zdos.it</a> · <a href="/ide/">Zlang IDE</a> · <a href="https://github.com/high-cde/z-xSOLANA/tree/main/zlang" rel="noopener">Sorgenti su GitHub</a></p>
+  <p>Solo strumenti e documentazione: nessun consiglio finanziario, nessuna promessa di rendimento. Le firme le fa solo il tuo wallet.</p>
+  <p>© 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza proprietaria ZSEL</p>
+</footer>
+<script src="/dev/assets/dev.js?v=3"></script>
+</body>
+</html>
