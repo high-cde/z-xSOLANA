@@ -1,0 +1,39 @@
+# DSN-X znft: galleria zNFT (SOLO DEVNET). Nuove location, non modifica i blocchi esistenti.
+location = /znft { return 301 /znft/; }
+location ^~ /znft/api/admin/ {
+    auth_basic "OurVelvet staff";
+    auth_basic_user_file /etc/nginx/htpasswd-velvet-staff;
+    limit_except GET POST { deny all; }
+    client_max_body_size 8k;
+    proxy_pass http://127.0.0.1:4190;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Znft-Admin "__ZNFT_ADMIN_KEY__";
+    proxy_set_header X-Staff-User $remote_user;
+    proxy_read_timeout 90s;
+}
+location ^~ /znft/api/ {
+    limit_except GET POST { deny all; }
+    client_max_body_size 3m;
+    proxy_pass http://127.0.0.1:4190;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Znft-Admin "";
+    proxy_read_timeout 90s;
+}
+location ^~ /znft/admin/ {
+    auth_basic "OurVelvet staff";
+    auth_basic_user_file /etc/nginx/htpasswd-velvet-staff;
+    alias /var/www/znft/current/admin/;
+    index index.html;
+    add_header Cache-Control "no-store" always;
+}
+location ^~ /znft/ {
+    alias /var/www/znft/current/;
+    index index.html;
+    types { text/html html; text/css css; application/javascript js; image/svg+xml svg; image/png png; application/json json; text/plain zlang; application/octet-stream zlb; }
+    add_header Content-Security-Policy "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'none'" always;
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+    add_header Cache-Control "public, max-age=120" always;
+}

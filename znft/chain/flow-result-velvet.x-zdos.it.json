@@ -1,0 +1,17 @@
+{
+  "work": {
+    "id": 7,
+    "slug": "primo-znft-di-prova",
+    "consent_link": "https://velvet.x-zdos.it/znft/#/consenso/7",
+    "persone": 1
+  },
+  "asset": "7e7dGEmkRqmWR443qrtGdL496sqnK32GtM49W1eA1ndH",
+  "mint_sig": "5ZLMFMRPUif17YBreehTm9Wkapgg3FU3waZoEfL6YxpLsqMNQgjpVKFGri1xUS2aZUfGGHggKau7NQxVqQxayDe1",
+  "listing": 5,
+  "pay": "5e4JGK7mHHnsxffa79Le1USThNDsdo2csQT32rADeYtt3oF9rrZRC1c7gu2Uijx1Piy7wjuekutgVKXocScasfKY",
+  "transfer": "2y4ontULQFwjehAwcKRYocpqJRtrqrkN7B6izSVPfhChUkjtRJxJvMUGJboh5F5u39rgNE8ZHHvZPf5gFygrq674",
+  "relist": 6,
+  "artist": "Dg6RYQNPR5GyTsS71zncKL4WjYRa9bHUMcmFN36kJ5PR",
+  "model": "GD6nLwajShz2NsYa3SN1WSMXPP3tG3t9Up7VzTPzrJMV",
+  "buyer": "7zPGurGUhWq3xpyWXmAAtgurBSyc72udJw2EBLfJqC8R"
+}

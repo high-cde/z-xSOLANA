@@ -1,0 +1,19 @@
+[Unit]
+Description=zNFT API · galleria e marketplace OurVelvet (SOLO DEVNET, 127.0.0.1:4190)
+After=network-online.target
+[Service]
+User=znft
+Group=znft
+EnvironmentFile=/etc/znft/znft.env
+WorkingDirectory=/opt/znft/current/api
+ExecStart=/usr/bin/node --no-warnings /opt/znft/current/api/server.mjs
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/znft
+PrivateTmp=true
+MemoryMax=400M
+[Install]
+WantedBy=multi-user.target

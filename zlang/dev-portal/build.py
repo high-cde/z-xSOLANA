@@ -82,7 +82,12 @@ EX = [
     ('dsn-polygon', '$DSN su Polygon', 'Legge nome, simbolo, decimali e totalSupply del contratto ERC-20.'),
     ('velvet-ov', 'VELVET ($OV)', 'Legge il mint VELVET: supply, decimali, authority, nome e simbolo.'),
     ('saldi-wallet', 'Saldi del tuo wallet', 'Con Phantom collegato, <code>@wallet</code> diventa il tuo indirizzo: SOL, $DSN e VELVET.'),
+    ('znft-regole', 'zNFT · regole di certificazione', 'Il programma che la galleria zNFT esegue prima della revisione: hash, dichiarazioni 18+, consensi, segnalazioni. Namespace <code>znft/</code>.'),
+    ('znft-vendita', 'zNFT · messa in vendita', 'Controlla possesso on-chain e prezzo prima di pubblicare un annuncio in Velvet Pay (devnet).'),
+    ('znft-acquisto', 'zNFT · acquisto', 'Pagamento VPAY verificato on-chain prima della consegna del certificato.'),
 ]
+ZNFT = 'https://velvet.x-zdos.it/znft/'
+VPAY = 'ESFG2VFX6ptALeruvT4mN7LN4DewoCrAXW9YfkaZLAKk'
 
 def excard(k, t, d):
     x = T[k + '.zlang']
@@ -104,8 +109,13 @@ home = f'''<section class="hero">
 </ol>
 
 <h2 id="esempi">Esempi pronti</h2>
-<div class="grid">{''.join(excard(*x) for x in EX[3:])}{excard(*EX[0])}</div>
+<div class="grid">{''.join(excard(*x) for x in EX[3:7])}{excard(*EX[0])}</div>
 <p class="small"><a href="/dev/esempi/">Tutti gli esempi con il codice →</a></p>
+
+<h2 id="znft">Zlang in produzione: regole della galleria zNFT</h2>
+<p>La <a href="{ZNFT}">galleria zNFT</a> di OurVelvet (18+, <b>devnet</b>) usa tre programmi Zlang compilati con zlangc. Il server esegue lo stesso bytecode ZLB2 prima di certificare, mettere in vendita e consegnare un’opera; ogni pagina d’opera lo può rieseguire nel browser e confrontarne lo SHA-256. I valori arrivano dal namespace <code>znft/</code>, risolto dall’host regole della galleria (nell’IDE quei percorsi non sono risolti: si compila e si legge il codice).</p>
+<div class="grid">{''.join(excard(*x) for x in EX if x[0].startswith('znft-'))}</div>
+<p class="small">Pagamenti in Velvet Pay (VPAY), moneta di test Token-2022 su devnet: <a href="https://explorer.solana.com/address/{VPAY}?cluster=devnet" rel="noopener">{VPAY}</a>. Nessun valore reale. Panorama onesto di cosa esiste e cosa manca per una rete propria: <a href="https://x-zdos.it/rete/">Rete zDOS</a>.</p>
 
 <h2 id="monete">Le monete in breve</h2>
 <div class="grid">
@@ -122,6 +132,8 @@ home = f'''<section class="hero">
 <tr><td>Compiler + VM Rust (WASM)</td><td><span class="tag part">parziale</span></td><td>Esegue <code>emit</code> e <code>let</code> (interi, <code>a - b</code>). Le altre istruzioni diventano <code>UNKNOWN_OPCODE</code>.</td></tr>
 <tr><td>Lettura dati on-chain (<code>chain/</code>)</td><td><span class="tag ok">reale</span></td><td>Sola lettura via RPC pubblici, risolta dall’host dell’IDE, non dalla VM.</td></tr>
 <tr><td>Ancoraggio su devnet</td><td><span class="tag ok">reale</span></td><td>Memo con SHA-256 del bytecode, firmato in Phantom.</td></tr>
+<tr><td>Regole zNFT (galleria OurVelvet)</td><td><span class="tag ok">reale · devnet</span></td><td>Tre programmi ZLB2 eseguiti dal server e nel browser prima di ogni passaggio. <a href="{ZNFT}#/regole">Vedi le regole</a></td></tr>
+<tr><td>Velvet Pay (VPAY)</td><td><span class="tag part">test · devnet</span></td><td>Token-2022, 6 decimali. Versione Polygon Amoy (18 decimali) pronta ma non pubblicata.</td></tr>
 <tr><td>Deploy di smart contract Solana</td><td><span class="tag no">non esiste</span></td><td>Zlang non genera programmi SBF/BPF né Rust/Anchor.</td></tr>
 <tr><td>Funzioni, tipi, moduli</td><td><span class="tag info">in progetto</span></td><td>Descritti in <code>docs/language-spec.md</code>, non implementati dai compilatori.</td></tr>
 <tr><td>Bytecode ZBC0 stack-based</td><td><span class="tag info">in progetto</span></td><td><code>docs/bytecode-spec.md</code>: specifica, non ancora codice.</td></tr>

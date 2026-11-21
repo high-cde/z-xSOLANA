@@ -1,0 +1,29 @@
+# Regole zNFT v1 (acquisto) · eseguite dal server dopo il pagamento, prima del trasferimento (devnet)
+storage.read "znft/acquisto/tx_confermata"
+storage.read "znft/acquisto/acquirente_firmatario"
+storage.read "znft/acquisto/importo_ok"
+storage.read "znft/acquisto/memo_ok"
+storage.read "znft/acquisto/annuncio_attivo"
+let sempre = 1
+if tx_confermata != 1 jump no_tx
+if acquirente_firmatario != 1 jump no_firma
+if importo_ok != 1 jump no_importo
+if memo_ok != 1 jump no_memo
+if annuncio_attivo != 1 jump no_annuncio
+emit "OK"
+if sempre == 1 jump fine
+no_tx:
+emit "BLOCCO:transazione non confermata o fallita"
+if sempre == 1 jump fine
+no_firma:
+emit "BLOCCO:la transazione non e' firmata dall'acquirente"
+if sempre == 1 jump fine
+no_importo:
+emit "BLOCCO:importo VPAY al venditore insufficiente"
+if sempre == 1 jump fine
+no_memo:
+emit "BLOCCO:memo dell'annuncio mancante"
+if sempre == 1 jump fine
+no_annuncio:
+emit "BLOCCO:annuncio non piu' attivo"
+fine:

@@ -1,0 +1,31 @@
+# Regole zNFT v1 (certificazione) · ZDOS1.3 · eseguite dal server prima della revisione e del mint (devnet)
+# I valori arrivano dal namespace znft/ (host regole zNFT, sola lettura). Esito: emit OK oppure BLOCCO:<motivo>
+storage.read "znft/opera/hash_ok"
+storage.read "znft/opera/persone_ritratte"
+storage.read "znft/opera/consensi_validi"
+storage.read "znft/artista/maggiorenne_dichiarato"
+storage.read "znft/artista/diritti_dichiarati"
+storage.read "znft/opera/segnalazioni_aperte"
+let sempre = 1
+if hash_ok != 1 jump no_hash
+if maggiorenne_dichiarato != 1 jump no_eta
+if diritti_dichiarati != 1 jump no_diritti
+if consensi_validi < persone_ritratte jump no_consenso
+if segnalazioni_aperte > 0 jump segnalata
+emit "OK"
+if sempre == 1 jump fine
+no_hash:
+emit "BLOCCO:hash SHA-256 mancante o non valido"
+if sempre == 1 jump fine
+no_eta:
+emit "BLOCCO:manca la dichiarazione 18+ dell'artista"
+if sempre == 1 jump fine
+no_diritti:
+emit "BLOCCO:manca la dichiarazione sui diritti dell'opera"
+if sempre == 1 jump fine
+no_consenso:
+emit "BLOCCO:mancano consensi firmati dei modelli"
+if sempre == 1 jump fine
+segnalata:
+emit "BLOCCO:opera con segnalazioni aperte"
+fine:

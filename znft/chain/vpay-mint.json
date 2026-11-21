@@ -1,0 +1,15 @@
+{
+  "cluster": "devnet",
+  "mint": "ESFG2VFX6ptALeruvT4mN7LN4DewoCrAXW9YfkaZLAKk",
+  "decimals": 6,
+  "program": "Token-2022",
+  "name": "Velvet Pay (TEST devnet)",
+  "symbol": "VPAY",
+  "mint_authority": "DEtsa9NEL3CTajhdAaVQvn4j4o6NcxEyg5vLfsbEWpNg",
+  "freeze_authority": null,
+  "treasury_ata": "5A3dywDEYxgffeW3v6X2X5EM3SKd3UFmZcNU7qLf4hEu",
+  "initial_supply": "100000000",
+  "create_signature": "28MpA2zmwGwB95w7VeGR7sxMEFN5Bm3gBc45Dz8X3zzEFGPEGbU5R3xSNb5ykcJsxLWpaAGCQP6fddqLaAqYKLuR",
+  "mint_signature": "9bTJNCePV3u55LkXbZ89Pgy3kT5aFNichdoC3sfyxVGVAxy94SNjg57JaLsXSqWXd6vb4h4jm68ooVsZVN4sjPB",
+  "created": "2026-11-21T15:28:40.969Z"
+}

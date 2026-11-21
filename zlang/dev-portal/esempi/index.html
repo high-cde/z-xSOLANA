@@ -59,7 +59,89 @@ emit Saldi del wallet collegato su Solana mainnet
 storage.read &quot;chain/solana/mainnet/sol/@wallet&quot;
 storage.read &quot;chain/solana/mainnet/balance/@wallet/35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4&quot;
 storage.read &quot;chain/solana/mainnet/balance/@wallet/2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump&quot;
-emit Fine lettura</code></pre><div class="row"><a class="btn primary sm" href="/ide/?esempio=saldi-wallet">Apri nell’IDE</a></div><p class="note">Con il toolchain Rust le righe <code>storage.read</code>, <code>if</code>, etichette e <code>wait</code> compaiono come <code>UNKNOWN_OPCODE</code>: è il comportamento reale della VM di oggi.</p>
+emit Fine lettura</code></pre><div class="row"><a class="btn primary sm" href="/ide/?esempio=saldi-wallet">Apri nell’IDE</a></div><h2 id="znft-regole">zNFT · regole di certificazione</h2><p>Il programma che la galleria zNFT esegue prima della revisione: hash, dichiarazioni 18+, consensi, segnalazioni. Namespace <code>znft/</code>.</p><p class="tiny muted">zlangc v2.5: 837 byte di bytecode ZLB2, 29 istruzioni.</p><pre data-copy><code># Regole zNFT v1 (certificazione) · ZDOS1.3 · eseguite dal server prima della revisione e del mint (devnet)
+# I valori arrivano dal namespace znft/ (host regole zNFT, sola lettura). Esito: emit OK oppure BLOCCO:&lt;motivo&gt;
+storage.read &quot;znft/opera/hash_ok&quot;
+storage.read &quot;znft/opera/persone_ritratte&quot;
+storage.read &quot;znft/opera/consensi_validi&quot;
+storage.read &quot;znft/artista/maggiorenne_dichiarato&quot;
+storage.read &quot;znft/artista/diritti_dichiarati&quot;
+storage.read &quot;znft/opera/segnalazioni_aperte&quot;
+let sempre = 1
+if hash_ok != 1 jump no_hash
+if maggiorenne_dichiarato != 1 jump no_eta
+if diritti_dichiarati != 1 jump no_diritti
+if consensi_validi &lt; persone_ritratte jump no_consenso
+if segnalazioni_aperte &gt; 0 jump segnalata
+emit &quot;OK&quot;
+if sempre == 1 jump fine
+no_hash:
+emit &quot;BLOCCO:hash SHA-256 mancante o non valido&quot;
+if sempre == 1 jump fine
+no_eta:
+emit &quot;BLOCCO:manca la dichiarazione 18+ dell&#x27;artista&quot;
+if sempre == 1 jump fine
+no_diritti:
+emit &quot;BLOCCO:manca la dichiarazione sui diritti dell&#x27;opera&quot;
+if sempre == 1 jump fine
+no_consenso:
+emit &quot;BLOCCO:mancano consensi firmati dei modelli&quot;
+if sempre == 1 jump fine
+segnalata:
+emit &quot;BLOCCO:opera con segnalazioni aperte&quot;
+fine:</code></pre><div class="row"><a class="btn primary sm" href="/ide/?esempio=znft-regole">Apri nell’IDE</a></div><h2 id="znft-vendita">zNFT · messa in vendita</h2><p>Controlla possesso on-chain e prezzo prima di pubblicare un annuncio in Velvet Pay (devnet).</p><p class="tiny muted">zlangc v2.5: 672 byte di bytecode ZLB2, 24 istruzioni.</p><pre data-copy><code># Regole zNFT v1 (messa in vendita) · eseguite dal server prima di pubblicare un annuncio (devnet)
+storage.read &quot;znft/vendita/opera_certificata&quot;
+storage.read &quot;znft/vendita/proprietario_onchain&quot;
+storage.read &quot;znft/vendita/prezzo_vpay&quot;
+storage.read &quot;znft/vendita/segnalazioni_aperte&quot;
+let sempre = 1
+if opera_certificata != 1 jump no_cert
+if proprietario_onchain != 1 jump no_owner
+if prezzo_vpay &lt; 1 jump no_prezzo
+if prezzo_vpay &gt; 10000000 jump no_prezzo
+if segnalazioni_aperte &gt; 0 jump segnalata
+emit &quot;OK&quot;
+if sempre == 1 jump fine
+no_cert:
+emit &quot;BLOCCO:opera non certificata&quot;
+if sempre == 1 jump fine
+no_owner:
+emit &quot;BLOCCO:il wallet non possiede l&#x27;opera on-chain&quot;
+if sempre == 1 jump fine
+no_prezzo:
+emit &quot;BLOCCO:prezzo fuori intervallo (1-10.000.000 VPAY)&quot;
+if sempre == 1 jump fine
+segnalata:
+emit &quot;BLOCCO:opera con segnalazioni aperte&quot;
+fine:</code></pre><div class="row"><a class="btn primary sm" href="/ide/?esempio=znft-vendita">Apri nell’IDE</a></div><h2 id="znft-acquisto">zNFT · acquisto</h2><p>Pagamento VPAY verificato on-chain prima della consegna del certificato.</p><p class="tiny muted">zlangc v2.5: 759 byte di bytecode ZLB2, 28 istruzioni.</p><pre data-copy><code># Regole zNFT v1 (acquisto) · eseguite dal server dopo il pagamento, prima del trasferimento (devnet)
+storage.read &quot;znft/acquisto/tx_confermata&quot;
+storage.read &quot;znft/acquisto/acquirente_firmatario&quot;
+storage.read &quot;znft/acquisto/importo_ok&quot;
+storage.read &quot;znft/acquisto/memo_ok&quot;
+storage.read &quot;znft/acquisto/annuncio_attivo&quot;
+let sempre = 1
+if tx_confermata != 1 jump no_tx
+if acquirente_firmatario != 1 jump no_firma
+if importo_ok != 1 jump no_importo
+if memo_ok != 1 jump no_memo
+if annuncio_attivo != 1 jump no_annuncio
+emit &quot;OK&quot;
+if sempre == 1 jump fine
+no_tx:
+emit &quot;BLOCCO:transazione non confermata o fallita&quot;
+if sempre == 1 jump fine
+no_firma:
+emit &quot;BLOCCO:la transazione non e&#x27; firmata dall&#x27;acquirente&quot;
+if sempre == 1 jump fine
+no_importo:
+emit &quot;BLOCCO:importo VPAY al venditore insufficiente&quot;
+if sempre == 1 jump fine
+no_memo:
+emit &quot;BLOCCO:memo dell&#x27;annuncio mancante&quot;
+if sempre == 1 jump fine
+no_annuncio:
+emit &quot;BLOCCO:annuncio non piu&#x27; attivo&quot;
+fine:</code></pre><div class="row"><a class="btn primary sm" href="/ide/?esempio=znft-acquisto">Apri nell’IDE</a></div><p class="note">Con il toolchain Rust le righe <code>storage.read</code>, <code>if</code>, etichette e <code>wait</code> compaiono come <code>UNKNOWN_OPCODE</code>: è il comportamento reale della VM di oggi.</p>
 </main>
 <footer>
   <p>Portale sviluppatori Zlang · <a href="https://x-zdos.it/">x-zdos.it</a> · <a href="/ide/">Zlang IDE</a> · <a href="https://github.com/high-cde/z-xSOLANA/tree/main/zlang" rel="noopener">Sorgenti su GitHub</a></p>

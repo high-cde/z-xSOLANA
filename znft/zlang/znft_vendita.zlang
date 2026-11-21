@@ -1,0 +1,25 @@
+# Regole zNFT v1 (messa in vendita) · eseguite dal server prima di pubblicare un annuncio (devnet)
+storage.read "znft/vendita/opera_certificata"
+storage.read "znft/vendita/proprietario_onchain"
+storage.read "znft/vendita/prezzo_vpay"
+storage.read "znft/vendita/segnalazioni_aperte"
+let sempre = 1
+if opera_certificata != 1 jump no_cert
+if proprietario_onchain != 1 jump no_owner
+if prezzo_vpay < 1 jump no_prezzo
+if prezzo_vpay > 10000000 jump no_prezzo
+if segnalazioni_aperte > 0 jump segnalata
+emit "OK"
+if sempre == 1 jump fine
+no_cert:
+emit "BLOCCO:opera non certificata"
+if sempre == 1 jump fine
+no_owner:
+emit "BLOCCO:il wallet non possiede l'opera on-chain"
+if sempre == 1 jump fine
+no_prezzo:
+emit "BLOCCO:prezzo fuori intervallo (1-10.000.000 VPAY)"
+if sempre == 1 jump fine
+segnalata:
+emit "BLOCCO:opera con segnalazioni aperte"
+fine:
