@@ -12,13 +12,19 @@
 <link rel="preload" href="/assets/fonts/SpaceGrotesk-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts/fonts.css">
 <link rel="stylesheet" href="/dev/assets/dev.css?v=3">
+<link rel="stylesheet" href="/assets/hub/site-nav.css?v=20261121nav3">
 </head>
 <body>
 <a class="skip" href="#main">Vai al contenuto</a>
-<header class="top">
-  <a class="brand" href="/dev/"><img src="/dev/assets/zdev.svg" alt="" width="24" height="24"><span>Zlang <b>Dev</b></span></a>
-  <nav class="menu" aria-label="Sezioni del portale"><a href="/dev/">Portale</a><a href="/dev/linguaggio/">Linguaggio</a><a href="/dev/esempi/">Esempi</a><a href="/dev/monete/">Monete</a><a href="/dev/api/" aria-current="page">API</a></nav>
-  <a class="btn primary sm" href="/ide/">Apri l’IDE</a>
+<header class="top zdos-top" id="zdosTop">
+  <button type="button" class="zdos-menu-btn" id="zdosMenuBtn" aria-label="Apri il menu" aria-haspopup="true" aria-expanded="false" aria-controls="zdosMenu">
+    <img src="/assets/hub/zdos-pixel.svg" width="36" height="36" alt="">
+  </button>
+  <a class="zdos-wordmark" href="https://x-zdos.it/" aria-label="ZDOS, home">ZDOS</a>
+  <span class="zdos-place">Dev</span>
+  <div class="session" id="sessionbox">
+    <button type="button" class="btn primary sm zdos-wallet" id="connectBtn">Phantom</button>
+  </div>
 </header>
 <main id="main">
 <section class="hero"><h1>API pubbliche</h1>
@@ -64,5 +70,7 @@
   <p>© 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza proprietaria ZSEL</p>
 </footer>
 <script src="/dev/assets/dev.js?v=3"></script>
+<script src="/assets/hub/hub.js?v=20261121nav" defer></script>
+<script src="/assets/hub/site-nav.js?v=20261121nav" defer></script>
 </body>
 </html>

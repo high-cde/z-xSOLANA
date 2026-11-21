@@ -60,3 +60,10 @@ table{width:100%;border-collapse:collapse;font-size:13.5px}th,td{text-align:left
  body{background:#fff;color:#000}.app,.bottom,.demo-banner,.fx,.modal,.toast{display:none!important}.print-only{display:block!important}
  .pdoc{font:12px/1.4 Arial,sans-serif;color:#000;padding:10mm}.pdoc table td,.pdoc table th{border-bottom:1px solid #ccc;color:#000}.pdoc .wm{border:2px solid #c00;color:#c00;padding:6px 10px;font-weight:700;text-align:center;margin-bottom:10px}
 }
+
+/* Compact ZDOS site header on the same row as i controlli xCLOUD */
+.top.zdos-top{top:0;margin:0 -14px;padding:8px 14px;gap:8px}
+.top.zdos-top .crumb{flex:1 1 auto;min-width:0}
+@media(max-width:800px){
+  .top.zdos-top{top:0;position:sticky}
+}

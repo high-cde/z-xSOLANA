@@ -12,17 +12,21 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="vendor/codemirror/codemirror.css">
-<link rel="stylesheet" href="assets/ide.css?v=2">
+<link rel="stylesheet" href="assets/ide.css?v=2nav">
+<link rel="stylesheet" href="/assets/hub/site-nav.css?v=20261121nav3">
 </head>
 <body>
-<header class="top">
-  <a class="brand" href="https://x-zdos.it/" title="Torna a x-zdos.it"><img src="assets/zide.svg" alt="" width="26" height="26"><span>Zlang <b>IDE</b></span></a>
+<header class="top zdos-top" id="zdosTop">
+  <button type="button" class="zdos-menu-btn" id="zdosMenuBtn" aria-label="Apri il menu" aria-haspopup="true" aria-expanded="false" aria-controls="zdosMenu">
+    <img src="/assets/hub/zdos-pixel.svg" width="36" height="36" alt="">
+  </button>
+  <a class="zdos-wordmark" href="https://x-zdos.it/" aria-label="ZDOS, home">ZDOS</a>
+  <span class="zdos-place">IDE</span>
   <span class="pill" id="netPill" title="Rete Solana per Deploy &amp; Run">Devnet</span>
-  <span class="pill ghost" id="wasmPill" title="Stato compilatore WASM">WASM…</span>
+  <span class="pill ghost hide-sm" id="wasmPill" title="Stato compilatore WASM">WASM…</span>
   <span class="grow"></span>
-  <a class="pill ghost" href="/dev/" title="Portale sviluppatori: guida Zlang, esempi, monete, API"><span class="hide-sm">Portale </span>dev</a>
-  <a class="pill ghost hide-sm" href="https://swap.x-zdos.it/zroute/" target="_blank" rel="noopener" title="Swap con controlli K.I.R.A.">zRoute ↗</a>
-  <button class="btn primary sm" id="topConnect" type="button">Collega Phantom</button>
+
+  <button class="btn primary sm zdos-wallet" id="topConnect" type="button">Phantom</button>
 </header>
 
 <div class="app" id="app" data-view="editor">
@@ -194,5 +198,6 @@
 <script src="assets/kira.js"></script>
 <script src="assets/zhost.js?v=2"></script>
 <script src="assets/ide.js?v=3"></script>
+<script src="/assets/hub/site-nav.js?v=20261121nav" defer></script>
 </body>
 </html>

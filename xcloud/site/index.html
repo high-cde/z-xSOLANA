@@ -12,7 +12,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="app.css?v=1">
+<link rel="stylesheet" href="app.css?v=1nav">
+<link rel="stylesheet" href="/assets/hub/site-nav.css?v=20261121nav3">
 </head>
 <body>
 <div class="fx" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div></div>
@@ -28,11 +29,16 @@
     </div>
   </aside>
   <div class="main">
-    <header class="top">
-      <button class="iconbtn only-m" id="menuBtn" aria-label="Menu">☰</button>
-      <div class="crumb"><span class="muted">Azienda</span> <select id="tenantSel" aria-label="Azienda attiva"></select></div>
-      <span class="net" id="net" title="Stato rete">●</span>
-    </header>
+    <header class="top zdos-top" id="zdosTop">
+  <button type="button" class="zdos-menu-btn" id="zdosMenuBtn" aria-label="Apri il menu" aria-haspopup="true" aria-expanded="false" aria-controls="zdosMenu">
+    <img src="/assets/hub/zdos-pixel.svg" width="36" height="36" alt="">
+  </button>
+  <a class="zdos-wordmark" href="https://x-zdos.it/" aria-label="ZDOS, home">ZDOS</a>
+  <button class="iconbtn only-m" id="menuBtn" aria-label="Menu moduli">☰</button>
+  <div class="crumb"><span class="muted">Azienda</span> <select id="tenantSel" aria-label="Azienda attiva"></select></div>
+
+  <span class="net" id="net" title="Stato rete">●</span>
+</header>
     <main id="view" tabindex="-1"></main>
   </div>
 </div>
@@ -41,5 +47,6 @@
 <div class="toast hidden" id="toast" role="status"></div>
 <div id="print" class="print-only"></div>
 <script src="app.js?v=1"></script>
+<script src="/assets/hub/site-nav.js?v=20261121nav" defer></script>
 </body>
 </html>
