@@ -1,0 +1,10 @@
+[Unit]
+Description=Fondo merito VELVET · ogni lunedì 00:10 ora di Roma
+
+[Timer]
+OnCalendar=Mon *-*-* 00:10:00 Europe/Rome
+Persistent=true
+Unit=zcomm-payout.service
+
+[Install]
+WantedBy=timers.target

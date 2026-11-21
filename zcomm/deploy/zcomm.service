@@ -1,0 +1,26 @@
+[Unit]
+Description=zcomm · bus eventi firmato ZDOS-OurVelvet e miner merito VELVET (API solo 127.0.0.1:4192, nessuna chiave del fondo)
+After=network-online.target velvet-radar.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/zcomm
+Environment=NODE_ENV=production
+Environment=ZCOMM_PORT=4192
+Environment=SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
+ExecStart=/usr/bin/node /opt/zcomm/server.mjs
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/zcomm /etc/zcomm /var/lib/velvet-radar /var/lib/znft /opt/zquest/data
+InaccessiblePaths=/etc/zdos-agi-wallets
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+
+[Install]
+WantedBy=multi-user.target

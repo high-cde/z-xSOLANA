@@ -1,6 +1,6 @@
 """Comandi ecosistema per @RedVelvetOfficial_bot, stesso Dispatcher di app.api.bot.
 
-/radar /badge [ID] /dev /token /velvetstar /stato /aiuto: solo letture da API pubbliche
+/radar /badge [ID] /dev /token /velvetstar /merito [ID] /stato /aiuto: solo letture da API pubbliche
 (velvet.x-zdos.it, x-zdos.it) e RPC Solana/Polygon. Niente prezzi, niente rendimenti,
 nessun messaggio non richiesto: il bot risponde solo a chi scrive il comando.
 Stessi contenuti dei comandi Discord (z-xSOLANA discord-bot/src/ecosystem.js).
@@ -34,10 +34,12 @@ LOCAL = {
     "radar": "http://127.0.0.1:8763/api",
     "badge": "http://127.0.0.1:8899/api/nft/badge-v2",
     "stars": "http://127.0.0.1:4188/api/stars",
+    "merito": "http://127.0.0.1:4192/merito/api",
 }
 URL_RADAR = SITE + "/radar/"
 URL_BADGE = SITE + "/badge/"
 URL_STAR = SITE + "/velvet-star/"
+URL_MERITO = SITE + "/merito/"
 URL_DEV = "https://x-zdos.it/dev/"
 URL_IDE = "https://x-zdos.it/ide/"
 SOL_RPC = ["https://api.mainnet-beta.solana.com", "https://solana-rpc.publicnode.com"]
@@ -66,6 +68,7 @@ COMMANDS = [
     ("badge", "Badge OurVelvet, o il tuo: /badge OV-XXXX-VELVET"),
     ("velvetstar", "Velvet Star, vetrina creator (opt-in)"),
     ("token", "$DSN e VELVET: dati on-chain, niente prezzi"),
+    ("merito", "Miner merito VELVET, o i tuoi punti: /merito OV-XXXX-VELVET"),
     ("dev", "Portale sviluppatori Zlang"),
     ("stato", "Stato dei servizi ZDOS"),
     ("rubina", "Parla con Rubina (IA)"),
@@ -84,6 +87,7 @@ AIUTO = (
     "/badge — badge e ruoli; <code>/badge OV-XXXX-VELVET</code> per il tuo\n"
     "/velvetstar — vetrina Velvet Star\n"
     "/token — $DSN e VELVET, dati on-chain (niente prezzi)\n"
+    "/merito — miner merito VELVET; <code>/merito OV-XXXX-VELVET</code> per i tuoi punti\n"
     "/dev — portale sviluppatori Zlang\n"
     "/stato — stato dei servizi\n"
     "/hub — Mini App · /rubina /zara — le AI dichiarate\n"
@@ -240,6 +244,65 @@ async def text_velvetstar() -> str:
             f"<a href=\"{URL_STAR}\">Apri Velvet Star</a>")
 
 
+def _it(n, d: int = 0) -> str:
+    try:
+        v = float(n)
+    except (TypeError, ValueError):
+        return "n/d"
+    s = f"{v:,.{d}f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    return s[:-3] if d == 2 and s.endswith(",00") else s
+
+
+async def text_merito(arg: str | None) -> str:
+    """Solo lettura dal servizio zcomm locale. Nessun pagamento parte da qui."""
+    key = (arg or "").strip().upper()
+    async with aiohttp.ClientSession(timeout=TIMEOUT) as s:
+        if key:
+            if not OV_ID.match(key):
+                return "ID non valido: il formato è <code>OV-XXXX-VELVET</code>."
+            try:
+                async with s.get(f"{LOCAL['merito']}/profile/{key}", headers=UA) as r:
+                    if r.status == 404:
+                        return f"Nessun profilo Radar con ID <code>{esc(key)}</code>."
+                    if r.status != 200:
+                        raise RuntimeError(str(r.status))
+                    p = await r.json(content_type=None)
+            except Exception:
+                return "Il servizio merito non risponde ora, riprova tra poco."
+            u = p.get("user") or {}
+            m = p.get("multipliers") or {}
+            inv = p.get("invites") or {}
+            premio = (f"stima {_it(p.get('estimate'))} VELVET, definitivo alla chiusura della settimana"
+                      if p.get("eligible") else esc(p.get("reason") or "—"))
+            return (f"⛏ <b>Merito · {esc(key)}</b>\n"
+                    f"Ruolo: {esc(u.get('roleLabel'))} · {'verificato' if u.get('verified') else 'da verificare'}\n"
+                    f"Punti settimana {esc(p.get('week'))}: <b>{_it(p.get('weekPoints'), 2)}</b> (base {_it(p.get('weekBase'))}, x{str(m.get('total')).replace('.', ',')})\n"
+                    f"Inviti rimasti: {_it(inv.get('left')) + ' su ' + _it(inv.get('limit')) if inv else 'n/d'}\n"
+                    f"Premio: {premio}\n\n"
+                    f"<a href=\"{URL_MERITO}\">Apri il miner</a>\n<i>Premio per contributo, con tetto · non è un rendimento</i>")
+        try:
+            d = await get_json(s, LOCAL["merito"] + "/summary")
+        except Exception:
+            return "Il servizio merito non risponde ora, riprova tra poco."
+    w = d.get("week") or {}
+    f = d.get("fund") or {}
+    pr = d.get("profiles") or {}
+    em = d.get("emissions") or {}
+    stato = "attivi · chiusura ogni lunedì 00:10 (Roma)" if em.get("live") else "fermi: " + esc(em.get("stop") or "")
+    return ("⛏ <b>Miner merito VELVET</b>\n"
+            "Punti per contributi reali: inviti accolti, verifiche, opere zNFT certificate, quest. "
+            "Mistress/Master verificati x1,5; attivi x2; bonus holder a scaglioni con tetto, mai proporzionale al saldo. "
+            "Detenere da solo non dà punti.\n\n"
+            f"<b>Premi:</b> {stato}\n"
+            f"<b>Fondo (on-chain):</b> {_it(f.get('velvet')) if f.get('velvet') is not None else 'n/d'} VELVET\n"
+            f"<b>Settimana {esc(w.get('id', ''))}:</b> pool {_it(w.get('pool'))} · max {_it(w.get('perProfileMax'))} a profilo\n"
+            f"<b>Profili:</b> {_it(pr.get('total'))} Radar · {_it(pr.get('verified'))} verificati · {_it(pr.get('dominantActive'))} Mistress/Master attivi\n"
+            f"<b>Idonei questa settimana:</b> {_it(w.get('eligible'))}\n\n"
+            f"I tuoi punti: <code>/merito OV-XXXX-VELVET</code>\n"
+            f"<a href=\"{URL_MERITO}\">Apri il miner</a> · <a href=\"{URL_MERITO}#registro\">Registro pagamenti</a>\n"
+            "<i>Premio per contributo, con tetto · non è un rendimento</i>")
+
+
 def text_dev() -> str:
     return ("🧩 <b>Portale sviluppatori Zlang</b>\n"
             "Guida rapida, documentazione del linguaggio, esempi che si aprono nell'IDE, API pubbliche e schede on-chain di $DSN e VELVET in sola lettura.\n\n"
@@ -287,6 +350,11 @@ async def cmd_token(message: types.Message) -> None:
 @dp.message(Command("velvetstar"))
 async def cmd_velvetstar(message: types.Message) -> None:
     await _send(message, await text_velvetstar())
+
+
+@dp.message(Command("merito"))
+async def cmd_merito(message: types.Message, command: CommandObject) -> None:
+    await _send(message, await text_merito(command.args))
 
 
 @dp.message(Command("stato"))

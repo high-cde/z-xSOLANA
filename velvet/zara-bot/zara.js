@@ -1,13 +1,13 @@
 'use strict';
 // Zara Lsd · bot Discord separato (app 1572301251981611088). Persona AI dichiarata di OurVelvet by ZDOS1.3.
 // - Risponde SOLO nel server di doc (DISCORD_GUILD_ID): a /zara, /ricordami, /dimentica, ai comandi ecosistema
-//   (/radar /badge /dev /token /velvetstar /stato /aiuto, solo letture) e quando viene menzionata.
+//   (/radar /badge /dev /token /velvetstar /merito /stato /aiuto, solo letture) e quando viene menzionata.
 // - Niente post autonomi, niente DM, niente join. 18+ (flirt soft, mai esplicito) solo in canali nsfw a chi ha "Verificato 18+".
 // - Safeword ROSSO. Le conversazioni restano in memoria 30 min e non vengono loggate. Token solo in /etc/zara/bot.env.
 // © 2026 ZDOS1.3 — P.IVA 11040550961 · Licenza ZSEL proprietaria.
 const { Client, GatewayIntentBits, Events, MessageFlags, REST, Routes, ActivityType } = require('discord.js');
 const { makeAgi, makeApi } = require('./agi');
-const E = require('./ecosystem'); // stessi comandi ecosistema di zdiscord: /radar /badge /dev /token /velvetstar /stato /aiuto
+const E = require('./ecosystem'); // stessi comandi ecosistema di zdiscord: /radar /badge /dev /token /velvetstar /merito /stato /aiuto
 
 const TOKEN = (process.env.ZARA_DISCORD_TOKEN || '').trim();
 const APP_ID = (process.env.ZARA_APPLICATION_ID || '').trim();
@@ -58,7 +58,7 @@ client.on(Events.InteractionCreate, async (it) => {
       return it.editReply({ content: r.content });
     }
     if (E.NAMES.has(it.commandName)) {
-      const id = it.commandName === 'badge' ? it.options.getString('id') : null;
+      const id = (it.commandName === 'badge' || it.commandName === 'merito') ? it.options.getString('id') : null;
       if (id && !/^OV-[A-Z0-9]{4}-VELVET$/.test(id.trim().toUpperCase())) return it.reply({ content: 'ID non valido: il formato è `OV-XXXX-VELVET`.', ...eph });
       const private_ = it.commandName === 'aiuto';
       await it.deferReply(private_ ? eph : {});

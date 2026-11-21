@@ -16,6 +16,7 @@ const C = require('./constants');
 const { makeSolana } = require('./solana');
 const { makeNonceStore } = require('./verify');
 const { dispatch } = require('./commands');
+const zcomm = require('./zcomm-client');
 const { makeServer } = require('./http');
 const { makeAdminServer, listenAdmin } = require('./admin');
 const path = require('path');
@@ -174,7 +175,7 @@ client.on(Events.GuildCreate, async (guild) => {
   try {
     const g = state.guild(guild.id);
     if (guild.id !== cfg.guildId) { // server ospite: registra solo i comandi per i visitatori (niente setup/ruoli del club)
-      const VISIT = new Set(['rubina', 'zara', 'eventi', 'condividi-evento', 'ricordami', 'dimentica', 'bozza-x', 'invita', 'kira', 'stato', 'token', 'quest', 'velvet', 'radar', 'badge', 'dev', 'velvetstar', 'aiuto']);
+      const VISIT = new Set(['rubina', 'zara', 'eventi', 'condividi-evento', 'ricordami', 'dimentica', 'bozza-x', 'invita', 'kira', 'stato', 'token', 'quest', 'velvet', 'radar', 'badge', 'dev', 'velvetstar', 'merito', 'aiuto']);
       await guild.commands.set(require('./commands').DEFS.filter((d) => VISIT.has(d.name))).catch((e) => console.error('comandi ospite', e.message));
     }
     if (g.agiIntroAt) return;
@@ -349,6 +350,7 @@ async function onVelvetCommand(it) {
     const g = state.guild(it.guild.id); g.links = g.links || {};
     g.links[it.user.id] = (g.links[it.user.id] || []).filter((x) => !(x.kind === kind && x.ref === r.json.ref)).concat([{ kind, ref: r.json.ref, role: role.name }]);
     state.save();
+    zcomm.publish({ key: 'zdiscord:link:' + it.guild.id + ':' + zcomm.dcId(it.user.id) + ':' + rk + ':' + Date.now(), type: 'discord_linked', source: 'zdiscord', actor: zcomm.dcId(it.user.id), data: { role: role.name } }).catch(() => {});
     return it.editReply('Collegato: ruolo **' + role.name + '**. Il token non viene salvato; se cancelli o nascondi il profilo sul Radar il ruolo viene tolto. Per scollegare: /radar-scollega.');
   }
   if (it.commandName === 'radar-scollega') {
@@ -356,6 +358,7 @@ async function onVelvetCommand(it) {
     const g = state.guild(it.guild.id); const links = (g.links && g.links[it.user.id]) || [];
     for (const l of links) { const role = it.guild.roles.cache.find((x) => x.name === l.role); if (role && member.roles.cache.has(role.id)) await member.roles.remove(role, 'scollegato dal Radar'); }
     if (g.links) delete g.links[it.user.id]; state.save();
+    if (links.length) zcomm.publish({ key: 'zdiscord:unlink:' + it.guild.id + ':' + zcomm.dcId(it.user.id) + ':' + Date.now(), type: 'discord_unlinked', source: 'zdiscord', actor: zcomm.dcId(it.user.id), data: { roles: links.length } }).catch(() => {});
     return it.reply({ content: links.length ? 'Scollegato: ruoli Radar tolti.' : 'Nessun collegamento Radar attivo.', ...eph });
   }
 }

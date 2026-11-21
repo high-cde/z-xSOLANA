@@ -43,7 +43,7 @@ const DEFS = [
     { type: 4, name: 'id', description: 'Numero del Fedele dato dal Radar', required: false, min_value: 1 },
   ] },
   { name: 'radar-scollega', description: 'Scollega il Radar della Carne e togli i ruoli collegati' },
-  ...E.DEFS.filter((d) => ['badge', 'dev', 'velvetstar', 'aiuto'].includes(d.name)),
+  ...E.DEFS.filter((d) => ['badge', 'dev', 'velvetstar', 'merito', 'aiuto'].includes(d.name)),
 ].map((d) => ({ ...d, dm_permission: false }));
 
 const ICON = { ok: '✅', info: 'ℹ️', warn: '⚠️', fail: '⛔', nd: '➖' };
@@ -163,6 +163,7 @@ async function dispatch(name, ctx, deps) {
     case 'badge': return E.badge(ctx.options.id);
     case 'dev': return E.dev();
     case 'velvetstar': return E.velvetstar();
+    case 'merito': return E.merito(ctx.options.id);
     case 'aiuto': return E.aiuto(AIUTO_EXTRA);
     case 'verifica': return verifica(ctx, deps);
     case 'quest': return quest();

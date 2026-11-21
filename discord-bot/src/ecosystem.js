@@ -1,5 +1,5 @@
 'use strict';
-// Comandi ecosistema comuni a zdiscord (z-xSOLANA) e Zara Lsd: /radar /badge /dev /token /velvetstar /stato /aiuto.
+// Comandi ecosistema comuni a zdiscord (z-xSOLANA) e Zara Lsd: /radar /badge /dev /token /velvetstar /merito /stato /aiuto.
 // Solo letture: API pubbliche di velvet.x-zdos.it e x-zdos.it, RPC Solana e Polygon. Nessun prezzo, nessun rendimento.
 // La logica restituisce embed JSON semplici, così si testa senza token e senza Discord.
 // © 2026 ZDOS1.3 · Licenza ZSEL proprietaria.
@@ -17,6 +17,9 @@ const URLS = {
   starApi: SITE + '/ai-directory/api/stars',
   dev: 'https://x-zdos.it/dev/',
   ide: 'https://x-zdos.it/ide/',
+  merito: SITE + '/merito/',
+  // Il bot gira sullo stesso server del servizio zcomm: legge in locale, con fallback pubblico.
+  meritoApi: [process.env.MERITO_API_URL || 'http://127.0.0.1:4192/merito/api', SITE + '/merito/api'],
 };
 const SOL_RPC = [process.env.SOLANA_RPC_URL, 'https://api.mainnet-beta.solana.com', 'https://solana-rpc.publicnode.com'].filter(Boolean);
 const POLY_RPC = [process.env.POLYGON_RPC_URL, 'https://polygon-bor-rpc.publicnode.com', 'https://polygon.drpc.org'].filter(Boolean);
@@ -167,6 +170,54 @@ async function velvetstar() {
   }] };
 }
 
+async function meritoGet(path) {
+  let last;
+  for (const base of URLS.meritoApi) {
+    try { return await getJson(base + path, {}, 8000); } catch (e) { last = e; if (e.status === 404 || e.status === 400) throw e; }
+  }
+  throw last;
+}
+const nfIt = (n, d = 0) => (n == null || Number.isNaN(Number(n)) ? 'n/d' : Number(n).toLocaleString('it-IT', { maximumFractionDigits: d }));
+
+// /merito: solo lettura. Nessun pagamento parte da qui e nessun messaggio viene inviato a nessuno.
+async function merito(id) {
+  id = String(id || '').trim().toUpperCase();
+  if (id) {
+    if (!OV_ID.test(id)) return { ephemeral: true, content: 'ID non valido: il formato è `OV-XXXX-VELVET`.' };
+    let p;
+    try { p = await meritoGet('/profile/' + encodeURIComponent(id)); }
+    catch (e) { return { ephemeral: true, content: e.status === 404 ? 'Nessun profilo Radar con ID `' + id + '`.' : 'Il servizio merito non risponde ora, riprova tra poco.' }; }
+    const m = p.multipliers || {};
+    return { embeds: [{
+      title: 'Merito · ' + id, url: URLS.merito, color: COL.violet,
+      fields: [
+        { name: 'Ruolo', value: p.user.roleLabel + (p.user.verified ? ' · verificato' : ' · da verificare'), inline: true },
+        { name: 'Punti settimana ' + p.week, value: nfIt(p.weekPoints, 2) + ' (base ' + nfIt(p.weekBase) + ', x' + String(m.total).replace('.', ',') + ')', inline: true },
+        { name: 'Inviti rimasti', value: p.invites ? nfIt(p.invites.left) + ' su ' + nfIt(p.invites.limit) : 'n/d', inline: true },
+        { name: 'Premio', value: p.eligible ? 'stima ' + nfIt(p.estimate) + ' VELVET, definitivo alla chiusura della settimana' : clip(p.reason || '—', 200) },
+      ],
+      footer: { text: 'Premio per contributo, con tetto · non è un rendimento' }, timestamp: new Date().toISOString(),
+    }] };
+  }
+  let d;
+  try { d = await meritoGet('/summary'); } catch (_) { return { ephemeral: true, content: 'Il servizio merito non risponde ora, riprova tra poco.' }; }
+  const w = d.week || {}; const f = d.fund || {};
+  return { embeds: [{
+    title: 'Miner merito VELVET', url: URLS.merito, color: d.emissions.live ? COL.green : COL.warn,
+    description: 'Punti per contributi reali: inviti accolti, verifiche, opere zNFT certificate, quest. Mistress/Master verificati x1,5; attivi x2; bonus holder a scaglioni con tetto (+10%/+20%), mai proporzionale al saldo. Detenere da solo non dà punti.',
+    fields: [
+      { name: 'Premi', value: d.emissions.live ? 'attivi · chiusura ogni lunedì 00:10 (Roma)' : 'fermi: ' + clip(d.emissions.stop || '', 150), inline: true },
+      { name: 'Fondo (on-chain)', value: f.velvet != null ? nfIt(f.velvet) + ' VELVET' : 'n/d', inline: true },
+      { name: 'Settimana ' + (w.id || ''), value: 'pool ' + nfIt(w.pool) + ' · max ' + nfIt(w.perProfileMax) + ' a profilo', inline: true },
+      { name: 'Profili', value: nfIt(d.profiles.total) + ' Radar · ' + nfIt(d.profiles.verified) + ' verificati', inline: true },
+      { name: 'Mistress/Master attivi', value: nfIt(d.profiles.dominantActive), inline: true },
+      { name: 'Idonei questa settimana', value: nfIt(w.eligible), inline: true },
+      { name: 'Il tuo', value: '`/merito id:OV-XXXX-VELVET` · [Apri il miner](' + URLS.merito + ') · [Registro pagamenti](' + URLS.merito + '#registro)' },
+    ],
+    footer: { text: 'Premio per contributo, con tetto · non è un rendimento · ZDOS1.3' }, timestamp: new Date().toISOString(),
+  }] };
+}
+
 function dev() {
   return { embeds: [{
     title: 'Portale sviluppatori Zlang', url: URLS.dev, color: COL.green,
@@ -201,6 +252,7 @@ function aiuto(extraLines = []) {
     '`/dev` · portale sviluppatori Zlang',
     '`/token` · $DSN e VELVET, dati on-chain (niente prezzi)',
     '`/velvetstar` · vetrina Velvet Star',
+    '`/merito` · miner merito VELVET; `/merito id:OV-XXXX-VELVET` per i tuoi punti',
     '`/stato` · stato dei servizi',
     '`/aiuto` · questo elenco',
     ...extraLines,
@@ -222,6 +274,9 @@ const DEFS = [
   { name: 'dev', description: 'Portale sviluppatori Zlang (x-zdos.it/dev)' },
   { name: 'token', description: '$DSN e VELVET: dati on-chain reali, niente prezzi' },
   { name: 'velvetstar', description: 'Velvet Star: la vetrina dei creator OurVelvet (opt-in)' },
+  { name: 'merito', description: 'Miner merito VELVET: punti, fondo e premi (o i tuoi punti per ID)', options: [
+    { type: 3, name: 'id', description: 'Il tuo ID, es. OV-XXXX-VELVET', required: false, min_length: 14, max_length: 14 },
+  ] },
   { name: 'stato', description: "Stato dei servizi dell'ecosistema ZDOS" },
   { name: 'aiuto', description: 'Elenco dei comandi' },
 ];
@@ -233,10 +288,11 @@ async function handle(name, opts = {}, deps = {}) {
     case 'dev': return dev();
     case 'token': return token();
     case 'velvetstar': return velvetstar();
+    case 'merito': return merito(opts.id);
     case 'stato': return stato(deps.fetchStatus, deps.extraStatus ? await deps.extraStatus() : []);
     case 'aiuto': return aiuto(deps.aiutoExtra || []);
     default: return null;
   }
 }
 
-module.exports = { DEFS, NAMES: new Set(DEFS.map((d) => d.name)), HEALTH, URLS, handle, token, radar, badge, dev, velvetstar, stato, aiuto };
+module.exports = { DEFS, NAMES: new Set(DEFS.map((d) => d.name)), HEALTH, URLS, handle, token, radar, badge, dev, velvetstar, merito, stato, aiuto };

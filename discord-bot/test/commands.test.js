@@ -9,7 +9,7 @@ const C = require('../src/constants');
 
 test('definizioni comandi valide per Discord', () => {
   const names = cmd.DEFS.map((d) => d.name);
-  assert.deepStrictEqual(names, ['kira', 'radar', 'token', 'stato', 'verifica', 'quest', 'setup-server', 'rubina', 'zara', 'eventi', 'condividi-evento', 'ricordami', 'dimentica', 'bozza-x', 'invita', 'velvet', 'ingresso-18', 'curioso', 'radar-collega', 'radar-scollega', 'badge', 'dev', 'velvetstar', 'aiuto']);
+  assert.deepStrictEqual(names, ['kira', 'radar', 'token', 'stato', 'verifica', 'quest', 'setup-server', 'rubina', 'zara', 'eventi', 'condividi-evento', 'ricordami', 'dimentica', 'bozza-x', 'invita', 'velvet', 'ingresso-18', 'curioso', 'radar-collega', 'radar-scollega', 'badge', 'dev', 'velvetstar', 'merito', 'aiuto']);
   for (const d of cmd.DEFS) { assert.match(d.name, /^[a-z0-9-]{1,32}$/); assert.ok(d.description.length >= 1 && d.description.length <= 100); }
 });
 test('/kira con dati simulati', async () => {
@@ -55,4 +55,19 @@ test('/quest e link di invito con permessi minimi', async () => {
   assert.match(cmd.quest().embeds[0].url, /quest\.x-zdos\.it/);
   const u = inviteUrl('123456789012345678');
   assert.match(u, /scope=bot%20applications\.commands/); assert.match(u, /permissions=2251802229722160$/);
+});
+
+test('/merito: ID non valido risponde in privato senza chiamate di rete', async () => {
+  const E = require('../src/ecosystem');
+  const r = await E.merito('OV-123');
+  assert.equal(r.ephemeral, true);
+  assert.match(r.content, /OV-XXXX-VELVET/);
+});
+
+test('zcomm-client: firma HMAC verificabile e ID Discord pseudonimo', () => {
+  const Z = require('../src/zcomm-client');
+  const crypto = require('crypto');
+  const s = Z.sign('k', 1, '{}');
+  assert.equal(s, crypto.createHmac('sha256', 'k').update('1.{}').digest('hex'));
+  assert.match(Z.dcId('123'), /^dc-[0-9a-f]{24}$/);
 });

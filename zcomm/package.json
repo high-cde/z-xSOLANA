@@ -1,0 +1,14 @@
+{
+  "name": "zcomm-merito",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "zcomm: bus eventi firmato tra ZDOS e OurVelvet + miner merito VELVET. © 2026 ZDOS1.3",
+  "license": "UNLICENSED",
+  "engines": { "node": ">=22" },
+  "dependencies": {
+    "@solana/spl-token": "^0.4.15",
+    "@solana/web3.js": "^1.99.0",
+    "better-sqlite3": "^13.0.3"
+  }
+}

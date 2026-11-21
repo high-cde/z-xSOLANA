@@ -1,0 +1,16 @@
+[Unit]
+Description=Fondo merito VELVET · chiusura settimanale (dry-run, poi invio solo dal fondo)
+After=network-online.target zcomm.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/zcomm
+Environment=NODE_ENV=production
+Environment=SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
+ExecStart=/usr/bin/node /opt/zcomm/payout.mjs settle previous
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/zcomm /var/lib/velvet-radar /var/lib/znft /opt/zquest/data
