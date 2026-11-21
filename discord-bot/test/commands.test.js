@@ -9,7 +9,7 @@ const C = require('../src/constants');
 
 test('definizioni comandi valide per Discord', () => {
   const names = cmd.DEFS.map((d) => d.name);
-  assert.deepStrictEqual(names, ['kira', 'stato', 'token', 'radar', 'verifica', 'quest', 'setup-server', 'rubina', 'velvet', 'ingresso-18', 'curioso', 'radar-collega', 'radar-scollega']);
+  assert.deepStrictEqual(names, ['kira', 'stato', 'token', 'radar', 'verifica', 'quest', 'setup-server', 'rubina', 'zara', 'eventi', 'condividi-evento', 'ricordami', 'dimentica', 'bozza-x', 'invita', 'velvet', 'ingresso-18', 'curioso', 'radar-collega', 'radar-scollega']);
   for (const d of cmd.DEFS) { assert.match(d.name, /^[a-z0-9-]{1,32}$/); assert.ok(d.description.length >= 1 && d.description.length <= 100); }
 });
 test('/kira con dati simulati', async () => {

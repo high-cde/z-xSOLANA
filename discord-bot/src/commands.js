@@ -15,10 +15,25 @@ const DEFS = [
     { type: 1, name: 'anteprima', description: 'Mostra le modifiche senza applicarle', options: [{ type: 5, name: 'archivia_vecchie', description: 'Rinomina le categorie esistenti con 🗄️ (non sposta né cancella canali)', required: false }] },
     { type: 1, name: 'applica', description: 'Applica la struttura (idempotente, non cancella canali)', options: [{ type: 5, name: 'archivia_vecchie', description: 'Rinomina le categorie esistenti con 🗄️ (non sposta né cancella canali)', required: false }] },
   ] },
-  { name: 'rubina', description: 'Parla con Rubina (IA) · solo nei canali 18+ della 18+ ROOM', options: [
+  { name: 'rubina', description: 'Parla con Rubina (IA) · 18+ solo nei canali nsfw, altrove modalità pubblica', options: [
     { type: 3, name: 'messaggio', description: 'Il tuo messaggio (ROSSO la ferma subito)', required: false, max_length: 1000 },
     { type: 5, name: 'riprendi', description: 'Riprendi dopo una pausa ROSSO', required: false },
   ] },
+  { name: 'zara', description: 'Parla con Zara (IA), braccio destro di Rubina · 18+ solo nei canali nsfw', options: [
+    { type: 3, name: 'messaggio', description: 'Il tuo messaggio (ROSSO la ferma subito)', required: false, max_length: 1000 },
+    { type: 5, name: 'riprendi', description: 'Riprendi dopo una pausa ROSSO', required: false },
+  ] },
+  { name: 'eventi', description: 'Eventi e attività OurVelvet (visibile solo a te)' },
+  { name: 'condividi-evento', description: "Pubblica nel canale l'ultimo evento OurVelvet (admin)", default_member_permissions: '32' },
+  { name: 'ricordami', description: 'Fai ricordare a Rubina e Zara una nota su di te (max 3, 30 giorni)', options: [
+    { type: 3, name: 'nota', description: 'Es. mi chiamo Leo, amo la techno. Vuoto = mostra cosa ricordano', required: false, max_length: 200 },
+  ] },
+  { name: 'dimentica', description: 'Cancella tutto quello che Rubina e Zara ricordano di te' },
+  { name: 'bozza-x', description: 'Bozza di post per X scritta da Rubina o Zara (la pubblichi tu)', options: [
+    { type: 3, name: 'tema', description: 'Di cosa parla il post', required: true, max_length: 300 },
+    { type: 3, name: 'persona', description: 'Chi la scrive', required: false, choices: [{ name: 'Rubina', value: 'rubina' }, { name: 'Zara', value: 'zara' }] },
+  ] },
+  { name: 'invita', description: 'Link per invitare Rubina e Zara in un altro server Discord o gruppo Telegram' },
   { name: 'velvet', description: 'VelvetHub 18+: mini app, Radar della Carne, categorie e regole del club' },
   { name: 'ingresso-18', description: 'Accesso alla 18+ ROOM: dichiarazione di età e regole' },
   { name: 'curioso', description: 'Prendi o togli il ruolo Curioso (serve Verificato 18+)' },

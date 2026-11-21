@@ -8,6 +8,7 @@ const club = require('./club');
 const setup = require('./setup');
 const velvetLib = require('./velvet');
 const { makeRubina, httpPost } = require('./rubina');
+const agiLib = require('./agi');
 const { makeRelay } = require('./relay');
 const { makeState } = require('./state');
 const cfg = require('./config');
@@ -54,7 +55,8 @@ const deps = {
 };
 
 const state = makeState(cfg.stateDir);
-const rubina = makeRubina({ post: httpPost(cfg.ourvelvetUrl) });
+const rubina = makeRubina({ post: httpPost(cfg.ourvelvetUrl) }); // legacy (test)
+const agi = agiLib.makeAgi({ api: agiLib.makeApi(cfg.ourvelvetUrl) });
 const ovJson = async (path, opts = {}) => {
   const r = await fetch(cfg.ourvelvetUrl + path, { ...opts, headers: { 'content-type': 'application/json', ...(opts.headers || {}) }, signal: AbortSignal.timeout(15000) });
   let j = null; try { j = await r.json(); } catch (_) { /* */ }
@@ -167,6 +169,23 @@ client.once(Events.ClientReady, (c) => {
   setInterval(() => quarantineSweep().catch(() => {}), 10 * 60000);
 });
 
+// Presentazione una sola volta quando un admin aggiunge il bot a un server. Nessun altro messaggio non richiesto.
+client.on(Events.GuildCreate, async (guild) => {
+  try {
+    const g = state.guild(guild.id);
+    if (guild.id !== cfg.guildId) { // server ospite: registra solo i comandi per i visitatori (niente setup/ruoli del club)
+      const VISIT = new Set(['rubina', 'zara', 'eventi', 'condividi-evento', 'ricordami', 'dimentica', 'bozza-x', 'invita', 'kira', 'stato', 'token', 'quest', 'velvet']);
+      await guild.commands.set(require('./commands').DEFS.filter((d) => VISIT.has(d.name))).catch((e) => console.error('comandi ospite', e.message));
+    }
+    if (g.agiIntroAt) return;
+    await guild.channels.fetch().catch(() => {});
+    const ch = agiLib.introChannel(guild, guild.members.me, ChannelType, PermissionFlagsBits);
+    g.agiIntroAt = Date.now(); state.save();
+    if (ch) await ch.send({ content: agiLib.INTRO, allowedMentions: { parse: [] } });
+    console.log('nuovo server', guild.id, 'presentazione', ch ? 'inviata' : 'nessun canale scrivibile');
+  } catch (e) { console.error('presentazione', e.message); }
+});
+
 function gateModal() {
   return new ModalBuilder().setCustomId('v18:modal').setTitle('Ingresso 18+ ROOM').addComponents(
     new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('birth').setLabel('Data di nascita (GG/MM/AAAA) · non salvata').setStyle(TextInputStyle.Short).setMinLength(8).setMaxLength(10).setRequired(true)),
@@ -261,16 +280,49 @@ async function onVelvetCommand(it) {
     return it.editReply({ embeds: [{ title: '/setup-server · applicato', color: r.errors.length ? 0xffc93c : 0x14f195,
       description: ('Modifiche: ' + r.done + '/' + r.planned + '\n' + r.msgs.join('\n') + (r.errors.length ? '\n\n**Errori**\n' + r.errors.join('\n') : '') + (r.warnings.length ? '\n\n**Avvisi**\n' + r.warnings.join('\n') : '') + '\n\nRilanciare il comando è sicuro: applica solo quello che manca.').slice(0, 4000) }] });
   }
-  if (it.commandName === 'rubina') {
-    const member = it.guild ? await it.guild.members.fetch(it.user.id) : null;
-    const allowed = !!(member && velvetLib.isAdultChannel(it.channel) && hasRole(member, 'v18'));
+  if (it.commandName === 'rubina' || it.commandName === 'zara') {
+    // Club (flirt soft, mai esplicito): nel server con il Velvet Club servono 18+ ROOM + Verificato 18+;
+    // negli altri server basta un canale nsfw. Altrove modalità pubblica.
+    const persona = it.commandName;
+    const member = await it.guild.members.fetch(it.user.id);
+    const home = it.guild.roles.cache.some((r) => r.name === velvetLib.roleName('v18'));
+    const clubMode = home ? (velvetLib.isAdultChannel(it.channel) && hasRole(member, 'v18')) : !!(it.channel && it.channel.nsfw);
     const text = it.options.getString('messaggio'); const resume = it.options.getBoolean('riprendi');
-    const quick = !allowed || !text || /\brosso\b/i.test(text || '');
-    if (quick) { const r = await rubina.talk({ userId: it.user.id, text, allowed, resume }); return it.reply({ content: r.content, ...eph }); }
+    const args = { persona, userId: it.user.id, text, mode: clubMode ? 'club' : 'public', resume };
+    if (!text || /\brosso\b/i.test(text)) { const r = await agi.talk(args); return it.reply({ content: r.content, ...eph }); }
     await it.deferReply();
-    const r = await rubina.talk({ userId: it.user.id, text, allowed, resume });
+    const r = await agi.talk(args);
     if (r.ephemeral) { await it.deleteReply().catch(() => {}); return it.followUp({ content: r.content, ...eph }); }
     return it.editReply({ content: r.content, allowedMentions: { parse: [] } });
+  }
+  if (it.commandName === 'eventi' || it.commandName === 'condividi-evento') {
+    const share = it.commandName === 'condividi-evento';
+    const r = await ovJson('/api/events/feed?after=0&limit=50');
+    const evs = ((r.json && r.json.events) || []).slice(-5).reverse();
+    if (share && !evs.length) return it.reply({ content: 'Nessun evento pubblicato da condividere per ora.', ...eph });
+    return it.reply({ embeds: [agiLib.eventsEmbed(share ? evs.slice(0, 1) : evs)], allowedMentions: { parse: [] }, ...(share ? {} : eph) });
+  }
+  if (it.commandName === 'ricordami' || it.commandName === 'dimentica') {
+    await it.deferReply(eph);
+    const api = agiLib.makeApi(cfg.ourvelvetUrl);
+    const note = it.commandName === 'ricordami' ? it.options.getString('nota') : null;
+    const op = it.commandName === 'dimentica' ? 'forget' : (note ? 'add' : 'get');
+    const r = await api('/memory', { platform: 'discord', user_id: String(it.user.id), op, note: note || undefined }, 15000).catch(() => ({ status: 0 }));
+    if (r.status !== 200) return it.editReply((r.json && r.json.detail) || 'Memoria non disponibile ora.');
+    if (op === 'forget') return it.editReply('Cancellato: ' + (r.json.deleted || 0) + ' nota/e. Rubina e Zara non ricordano più niente di te.');
+    const notes = r.json.notes || [];
+    return it.editReply((op === 'add' ? 'Fatto. ' : '') + 'Cosa ricordano Rubina e Zara di te (max 3 note, 30 giorni): ' + (notes.length ? notes.join('; ') : 'niente') + '.\nPer cancellare: /dimentica');
+  }
+  if (it.commandName === 'bozza-x') {
+    await it.deferReply(eph);
+    const api = agiLib.makeApi(cfg.ourvelvetUrl);
+    const r = await api('/xdraft', { persona: it.options.getString('persona') || 'rubina', topic: it.options.getString('tema') }).catch(() => ({ status: 0 }));
+    if (r.status !== 200 || !r.json) return it.editReply((r.json && r.json.detail) || 'Bozza non disponibile ora.');
+    const row = new ActionRowBuilder().addComponents(new ButtonBuilder().setLabel('Apri la bozza su X').setStyle(ButtonStyle.Link).setURL(r.json.intent.slice(0, 512)));
+    return it.editReply({ content: '**Bozza per X** (la pubblichi tu, il bot non pubblica):\n\n' + r.json.text, components: [row] });
+  }
+  if (it.commandName === 'invita') {
+    return it.reply({ content: 'Per portare Rubina e Zara in un altro server o gruppo (serve essere admin lì):\n• Discord: ' + agiLib.INVITE_BOT + '\n• Telegram: ' + agiLib.TG_INVITE + '\nServer ufficiale: ' + agiLib.SERVER, ...eph });
   }
   if (it.commandName === 'curioso') {
     const member = await it.guild.members.fetch(it.user.id);
@@ -307,7 +359,7 @@ async function onVelvetCommand(it) {
     return it.reply({ content: links.length ? 'Scollegato: ruoli Radar tolti.' : 'Nessun collegamento Radar attivo.', ...eph });
   }
 }
-const VELVET_CMDS = new Set(['setup-server', 'rubina', 'ingresso-18', 'curioso', 'radar-collega', 'radar-scollega']);
+const VELVET_CMDS = new Set(['setup-server', 'rubina', 'zara', 'eventi', 'condividi-evento', 'ricordami', 'dimentica', 'bozza-x', 'invita', 'ingresso-18', 'curioso', 'radar-collega', 'radar-scollega']);
 
 client.on(Events.InteractionCreate, async (it) => {
   try {
