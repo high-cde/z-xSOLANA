@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="it" data-brand="OurVelvet">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Creator · OurVelvet — profili, feed e AI per creator 18+</title>
+<meta name="description" content="Il posto di OurVelvet per creator adulti e creator AI: profili, feed, tag, assistenti AI, Dom-Coin e VELVET. Solo 18+, solo consenso, safeword ROSSO.">
+<meta name="theme-color" content="#070410">
+<meta property="og:title" content="Creator · OurVelvet">
+<meta property="og:description" content="Profili, feed e AI per creator 18+. Consenso prima di tutto.">
+<link rel="canonical" href="https://ourvelvet.online/creator-radar/">
+<link rel="icon" href="assets/logo-lsd.png" type="image/png">
+<link rel="stylesheet" href="creator.css?v=1">
+<script src="zdos-ga.js?v=1" defer></script>
+<script src="/firma/theme.js"></script>
+</head>
+<body>
+<canvas id="magic" aria-hidden="true"></canvas>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<!-- Conferma 18+ (memorizzata solo sul dispositivo) -->
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateT" hidden>
+  <div class="gate-card glass">
+    <div class="seal">18+</div>
+    <h2 id="gateT">Spazio per adulti</h2>
+    <p>Questa sezione è per persone maggiorenni. Qui tutto è consensuale: puoi dire stop in qualsiasi momento, e la parola di sicurezza è <b>ROSSO</b>.</p>
+    <div class="gate-actions">
+      <button class="btn primary" id="gateOk" type="button">Ho 18 anni o più, entro</button>
+      <a class="btn ghost" href="/">Esco</a>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="side" aria-label="Navigazione">
+    <a class="logo" href="#esplora" data-nav="esplora"><span class="logo-mark">✦</span><span>OurVelvet<small>Creator</small></span></a>
+    <nav class="menu">
+      <a href="#esplora" data-nav="esplora"><b>◈</b><span>Esplora</span></a>
+      <a href="#crea" data-nav="crea"><b>✎</b><span>Crea</span></a>
+      <a href="#feed" data-nav="feed"><b>❖</b><span>Feed</span></a>
+      <a href="#ai" data-nav="ai"><b>✧</b><span>AI</span></a>
+      <a href="#monete" data-nav="monete"><b>◉</b><span>Dom-Coin &amp; VELVET</span></a>
+      <a href="#profilo" data-nav="profilo"><b>☺</b><span>Il mio profilo</span></a>
+    </nav>
+    <div class="side-links">
+      <p>Collegamenti</p>
+      <a href="/creator/">Studio generazione</a>
+      <a href="/merito/">Merito</a>
+      <a href="/badge/">Badge</a>
+      <a href="/znft/">zNFT</a>
+      <a href="/velvet-star/">VELVET Star</a>
+      <a href="/pay/">Pay</a>
+      <a href="/verifica/">Verifica firma</a>
+      <a href="/creator-radar/gioco/">Gioco Radar</a>
+    </div>
+    <div class="safe-mini">18+ · consenso · safeword <b>ROSSO</b></div>
+  </aside>
+
+  <main class="main">
+    <header class="top glass">
+      <div class="top-l"><span class="pill">18+</span><span class="top-t" id="topTitle">Esplora</span></div>
+      <div class="top-r">
+        <span id="meChip" class="chip-me" hidden></span>
+        <a class="btn primary sm" href="#profilo" data-nav="profilo" id="topLogin">Accedi con OurVelvet</a>
+      </div>
+    </header>
+
+    <!-- ESPLORA -->
+    <section class="view" id="v-esplora" data-view="esplora">
+      <div class="hero">
+        <div class="hero-txt reveal">
+          <p class="eyebrow">Creator · Profili · Feed · AI</p>
+          <h1><span class="shimmer">Dove i creator</span><br>prendono vita</h1>
+          <p class="lead">Profili, feed e assistenti AI per creator adulti e creator AI. Illustrazioni cartoon e stilizzate, niente di esplicito, consenso sempre. Dom-Coin e VELVET collegati, il badge «wallet verificato» con la tua firma OurVelvet.</p>
+          <div class="hero-cta">
+            <a class="btn primary" href="#profilo" data-nav="profilo">Accedi con OurVelvet</a>
+            <a class="btn ghost" href="#crea" data-nav="crea">Crea un personaggio</a>
+          </div>
+          <ul class="hero-facts">
+            <li><b>18+</b> solo maggiorenni</li>
+            <li><b>ROSSO</b> safeword</li>
+            <li><b>0</b> chiavi custodite</li>
+          </ul>
+        </div>
+        <div class="orb-wrap reveal" aria-hidden="true">
+          <div class="orb"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="core"><img src="assets/logo-lsd.png" alt="" width="120" height="120"></div></div>
+        </div>
+      </div>
+
+      <div class="bar glass reveal">
+        <div class="search"><span aria-hidden="true">⌕</span><input id="q" type="search" placeholder="Cerca creator, tag, stile…" autocomplete="off" aria-label="Cerca"></div>
+        <div class="chips" id="cats" role="tablist" aria-label="Categorie"></div>
+      </div>
+
+      <div class="demo-note reveal">Anteprima: i profili qui sotto sono <b>personaggi di esempio</b>, non persone reali e non iscritti. Compariranno i creator veri quando si registrano e firmano con OurVelvet.</div>
+      <div class="grid" id="grid" aria-live="polite"></div>
+      <p class="empty" id="empty" hidden>Nessun risultato. Prova un altro tag.</p>
+    </section>
+
+    <!-- CREA -->
+    <section class="view" id="v-crea" data-view="crea" hidden>
+      <h2 class="vt">Crea un personaggio</h2>
+      <p class="lead sm">Scegli uno stile, descrivi il personaggio e salva la scheda sul tuo dispositivo. Per generare le immagini apri lo Studio.</p>
+      <div class="crea">
+        <div class="glass pad">
+          <h3>1 · Stile</h3>
+          <div class="models" id="models"></div>
+          <h3>2 · Descrizione</h3>
+          <div class="prompt">
+            <textarea id="prompt" maxlength="400" rows="4" placeholder="Es. Narratrice di storie gotiche, voce calda, ironica, adulta. Abito di velluto, candele, atmosfera da teatro."></textarea>
+            <div class="prompt-bar"><span id="pcount">0/400</span><button class="btn primary" id="mk" type="button">Crea scheda</button></div>
+          </div>
+          <h3>3 · Tag</h3>
+          <div class="chips tagpick" id="tagpick"></div>
+          <p class="guard" id="guard" role="status" aria-live="polite"></p>
+        </div>
+        <div class="glass pad">
+          <h3>La tua scheda</h3>
+          <div id="preview" class="preview"><p class="muted">La scheda comparirà qui.</p></div>
+          <div class="row">
+            <a class="btn ghost" id="toStudio" href="/creator/">Apri lo Studio</a>
+            <button class="btn ghost" id="cp" type="button">Copia descrizione</button>
+          </div>
+          <h3 class="mt">Bozze sul dispositivo</h3>
+          <div id="drafts" class="drafts"><p class="muted">Nessuna bozza.</p></div>
+          <p class="fine">Le bozze restano nel tuo browser e non vengono inviate a nessuno. Lo Studio applica le sue regole: solo adulti, nessun minore, nessun contenuto non consensuale.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEED -->
+    <section class="view" id="v-feed" data-view="feed" hidden>
+      <h2 class="vt">Feed</h2>
+      <div class="demo-note">Feed di <b>esempio</b>: post scritti da noi per mostrare il formato. La pubblicazione per tutti si apre con la moderazione.</div>
+      <div class="feed-cols">
+        <div>
+          <div class="glass pad composer">
+            <textarea id="postTxt" rows="3" maxlength="280" placeholder="Scrivi una nota per il tuo profilo (bozza sul dispositivo)…"></textarea>
+            <div class="prompt-bar"><span id="pc2">0/280</span><button class="btn primary sm" id="postBtn" type="button">Salva bozza</button></div>
+            <p class="guard" id="postGuard" role="status"></p>
+          </div>
+          <div id="posts"></div>
+        </div>
+        <aside class="glass pad trend">
+          <h3>Tag del momento</h3>
+          <div class="chips" id="trend"></div>
+          <h3 class="mt">Regole in breve</h3>
+          <ul class="rules">
+            <li>Solo adulti, solo consenso.</li>
+            <li>Nessun contenuto esplicito e nessuna nudità in questa pagina.</li>
+            <li>Nessun personaggio dall'aspetto minorenne.</li>
+            <li>Niente promesse di guadagno.</li>
+            <li>Safeword <b>ROSSO</b>: stop, sempre.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- AI -->
+    <section class="view" id="v-ai" data-view="ai" hidden>
+      <h2 class="vt">AI: compagni e assistenti</h2>
+      <p class="lead sm">Personaggi AI di OurVelvet e strumenti per i creator. Lo stato qui sotto arriva dal servizio in tempo reale.</p>
+      <div class="status-line glass"><span class="dot" id="aiDot"></span><span id="aiTxt">Controllo il servizio…</span></div>
+      <div class="grid g2" id="aiCards"></div>
+      <div class="glass pad mt2">
+        <h3>Assistente tag</h3>
+        <p class="muted">Incolla la bio o il testo di un post: ti suggerisco i tag giusti (calcolati nel tuo browser).</p>
+        <textarea id="tagIn" rows="3" placeholder="Es. Racconto storie gotiche a lume di candela, musica e illustrazione cartoon…"></textarea>
+        <div class="chips mt" id="tagOut"></div>
+      </div>
+      <div class="row mt2">
+        <a class="btn primary" href="/creator/">Apri lo Studio</a>
+        <a class="btn ghost" href="/ai-studio/">AI Studio</a>
+        <a class="btn ghost" href="/magazine/">Magazine (Zara)</a>
+      </div>
+    </section>
+
+    <!-- MONETE -->
+    <section class="view" id="v-monete" data-view="monete" hidden>
+      <h2 class="vt">Dom-Coin &amp; VELVET</h2>
+      <div class="coins">
+        <article class="glass pad coin-card">
+          <div class="coin3d" aria-hidden="true"><img src="assets/logo-lsd.png" alt="" width="112" height="112"></div>
+          <h3>Dom-Coin <span class="tick">L$D</span></h3>
+          <p>Moneta usata nel gioco e nello Studio OurVelvet.</p>
+          <dl class="kv">
+            <dt>Valore dichiarato</dt><dd>0,0064 € per L$D</dd>
+            <dt>Che cos'è</dt><dd>Un valore <b>dichiarato da noi</b>, <b>non un prezzo di mercato</b>. Non c'è un mercato liquido verificato.</dd>
+            <dt>Supply</dt><dd id="lsdSupply">200.000.000</dd>
+            <dt>Decimali</dt><dd id="lsdDec">6</dd>
+            <dt>Autorità</dt><dd>Mint e freeze authority sono ancora attive, in mano al wallet emittente (verificabile on-chain).</dd>
+          </dl>
+          <div class="addr"><code id="lsdMint">FSwCz9qgcvfWGEU8QU3h4fQpyQ8TB2KLHYC9bmoMxDgP</code><button class="btn ghost sm" data-copy="FSwCz9qgcvfWGEU8QU3h4fQpyQ8TB2KLHYC9bmoMxDgP" type="button">Copia</button></div>
+          <div class="row"><a class="btn primary sm" href="/pay/dom-coin/">Pagina Dom-Coin</a></div>
+        </article>
+        <article class="glass pad coin-card v">
+          <div class="coin3d velvet" aria-hidden="true"><span>V</span></div>
+          <h3>VELVET</h3>
+          <p>Il token della community OurVelvet. Non è un investimento e non promette rendimenti.</p>
+          <dl class="kv">
+            <dt>Standard</dt><dd>Token-2022, 6 decimali</dd>
+            <dt>Premi</dt><dd>Solo dal fondo merito, per merito: nessun rendimento, nessuna promessa.</dd>
+          </dl>
+          <div class="addr"><code>2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump</code><button class="btn ghost sm" data-copy="2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump" type="button">Copia</button></div>
+          <div class="row"><a class="btn primary sm" href="/merito/">Merito</a><a class="btn ghost sm" href="/badge/">Badge</a></div>
+        </article>
+      </div>
+      <p class="fine mt2">Nessun consiglio finanziario, nessun obiettivo di prezzo, nessuna promessa di guadagno. Controlla sempre l'indirizzo del mint prima di qualsiasi operazione.</p>
+    </section>
+
+    <!-- PROFILO -->
+    <section class="view" id="v-profilo" data-view="profilo" hidden>
+      <h2 class="vt">Il mio profilo</h2>
+      <div class="prof">
+        <div class="glass pad" data-firma-box id="loginBox">
+          <h3>Accedi con OurVelvet</h3>
+          <p class="muted">Firmi un messaggio di testo con il tuo wallet Solana. Non è una transazione, non costa nulla e non muove fondi. Non custodiamo nessuna chiave.</p>
+          <div class="row"><button type="button" class="btn primary" data-zdos-firma>Accedi con OurVelvet</button></div>
+          <div data-firma-wallets class="wallets"></div>
+          <label class="check"><input type="checkbox" data-firma-pubblico> <span>Mostra il badge «wallet verificato» sul mio profilo (facoltativo).</span></label>
+          <p class="fm-status" data-firma-status role="status" aria-live="polite"></p>
+          <p class="fine"><a href="/verifica/">Verifica una firma</a> · <a href="/badge/">Come funziona il badge</a></p>
+        </div>
+        <div class="glass pad" id="meCard">
+          <h3>Stato</h3>
+          <div id="meOut"><p class="muted">Non sei connesso. Accedi per vedere il tuo indirizzo e il badge.</p></div>
+          <div class="row mt"><button class="btn ghost sm" id="logout" type="button" hidden>Esci</button></div>
+        </div>
+      </div>
+      <div class="glass pad mt2">
+        <h3>Scheda creator (bozza sul dispositivo)</h3>
+        <div class="form">
+          <label>Nome d'arte<input id="pfName" maxlength="40" type="text" placeholder="Es. Selene Vox"></label>
+          <label>Bio<textarea id="pfBio" maxlength="240" rows="3" placeholder="Chi sei, cosa crei. Solo adulti, solo consenso."></textarea></label>
+          <label>Tag<input id="pfTags" maxlength="80" type="text" placeholder="Es. Cartoon, Gotico, Narrativa"></label>
+        </div>
+        <div class="row"><button class="btn primary" id="pfSave" type="button">Salva bozza</button><span class="fine" id="pfMsg"></span></div>
+        <p class="fine">La pubblicazione del profilo per tutti arriva con la moderazione: per ora la scheda resta sul tuo dispositivo.</p>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p>© 2026 ZDOS1.3 · P.IVA 11040550961 · Contenuti per adulti (18+), consensuali. Safeword ROSSO.</p>
+      <p>Illustrazioni stilizzate originali. I nomi di wallet e servizi di terzi compaiono solo come testo, senza affiliazione.</p>
+    </footer>
+  </main>
+</div>
+
+<nav class="tabbar" aria-label="Navigazione mobile">
+  <a href="#esplora" data-nav="esplora"><b>◈</b><span>Esplora</span></a>
+  <a href="#crea" data-nav="crea"><b>✎</b><span>Crea</span></a>
+  <a href="#feed" data-nav="feed"><b>❖</b><span>Feed</span></a>
+  <a href="#ai" data-nav="ai"><b>✧</b><span>AI</span></a>
+  <a href="#monete" data-nav="monete"><b>◉</b><span>Monete</span></a>
+  <a href="#profilo" data-nav="profilo"><b>☺</b><span>Profilo</span></a>
+</nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="/firma/firma.js?v=1"></script>
+<script src="/firma/badge.js?v=1"></script>
+<script src="creator.js?v=2"></script>
+</body>
+</html>
