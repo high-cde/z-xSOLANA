@@ -62,7 +62,7 @@
   var CATS = ["Tutti", "Cartoon", "Anime-style", "Cyber", "Gotico", "Fantasy", "Burlesque", "Roleplay", "Narrativa", "Musica", "Arte", "AI"];
   var AI_FALLBACK = [
     { id: "rubina", n: "Rubina Mistress", r: "Sovereign Protocol", g: "crown", a: 335, c: 275 },
-    { id: "zara", n: "Zara AGI", r: "Scene & Club AI", g: "star", a: 275, c: 190 },
+    { id: "zara", n: "Velvet AGI", r: "Scene & Club AI", g: "star", a: 275, c: 190 },
     { id: "kali", n: "Kali", r: "Cyber-Velvet Node", g: "bolt", a: 190, c: 330 }
   ];
   var AIDESC = { rubina: "Compagna narrativa: imposta la scena, il tono e i limiti prima di iniziare.", zara: "Assistente di scene e serate: idee, copioni e atmosfere per i tuoi contenuti.", kali: "Nodo cyber-velvet: strumenti per prompt, tag e coerenza dei personaggi." };
