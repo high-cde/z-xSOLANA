@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="it" class="t-zx">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Revoca mint authority L$D · ZDOS</title>
+<meta name="description" content="Pagina di auto-firma: revoca definitiva della mint authority di Dom-Coin (L$D) dal wallet che la detiene. Una sola istruzione, firmata nel tuo wallet.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#07040f">
+<link rel="stylesheet" href="/firma/firma.css?v=1">
+<link rel="stylesheet" href="/lsd-revoca/lsd-revoca.css?v=1">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://x-zdos.it/lsd-revoca/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ZDOS × Velvet">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="Revoca mint authority L$D · ZDOS">
+<meta property="og:description" content="Revoca della mint authority di Dom-Coin (L$D): eseguita il 28/11/2026, supply fissa a 200 milioni.">
+<meta property="og:url" content="https://x-zdos.it/lsd-revoca/">
+<meta property="og:image" content="https://x-zdos.it/ecosistema/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<div class="fm-wrap">
+  <header class="fm-top">
+    <a class="fm-brand" href="/">ZDOS</a>
+    <nav aria-label="Pagina"><a href="#stato">Stato</a><a href="#firma">Firma</a><a href="#dettagli">Dettagli</a></nav>
+  </header>
+
+  <h1>Revoca mint authority · L$D <span class="fm-chip">eseguita 28/11/2026</span></h1>
+  <p class="fm-lead">La mint authority di Dom-Coin (L$D) è stata revocata il 28/11/2026: la supply è fissa a 200.000.000 L$D e nessuno può coniarne altri. La pagina resta come verifica pubblica e legge lo stato direttamente dalla rete; se la revoca risulta eseguita non c’è niente da firmare. Il sito non firma e non invia nulla.</p>
+
+  <section class="fm-card rv-warn" aria-labelledby="hW">
+    <h2 id="hW">Come funziona la revoca (irreversibile)</h2>
+    <ul class="fm-list">
+      <li>Dopo la revoca <b>nessuno potrà più coniare L$D</b>, nemmeno chi la firma. Non esiste un modo per annullarla.</li>
+      <li>La supply resta fissa a <b>200.000.000 L$D</b>.</li>
+      <li>Viene revocata <b>solo</b> la mint authority. L’update authority dei metadati (Metaplex) <b>non viene toccata</b> e la transazione non contiene altre istruzioni.</li>
+      <li>Costo: la sola commissione di rete (circa 0,000005 SOL).</li>
+      <li>Funziona solo con il wallet <span class="rv-mono">A4JY5VGS1oGSqMxW6a7EtwTg7q6wjG3uxVpNaHPyG9PJ</span>: qualsiasi altro wallet viene rifiutato.</li>
+    </ul>
+  </section>
+
+  <section class="fm-card" id="stato" aria-labelledby="hS">
+    <h2 id="hS">Stato attuale (lettura dalla rete)</h2>
+    <dl class="rv-dl">
+      <dt>Mint</dt><dd class="rv-mono">FSwCz9qgcvfWGEU8QU3h4fQpyQ8TB2KLHYC9bmoMxDgP</dd>
+      <dt>Mint authority</dt><dd id="stAuth">lettura…</dd>
+      <dt>Supply</dt><dd id="stSupply">lettura…</dd>
+    </dl>
+    <p class="fm-small"><a href="https://solscan.io/token/FSwCz9qgcvfWGEU8QU3h4fQpyQ8TB2KLHYC9bmoMxDgP" target="_blank" rel="noopener noreferrer">Vedi il token su Solscan ↗</a></p>
+  </section>
+
+  <section class="fm-card" id="firma" aria-labelledby="hF">
+    <h2 id="hF">1 · Collega il wallet</h2>
+    <p class="fm-small">Serve Phantom (o un wallet Solana compatibile) aperto nel suo browser. Collegare il wallet non muove nulla.</p>
+    <div id="walletList" class="fm-row"></div>
+    <p class="fm-status" id="connStatus" role="status" aria-live="polite"></p>
+
+    <h2 class="fm-mt">2 · Conferma e firma</h2>
+    <label class="fm-check"><input type="checkbox" id="chk"> <span>Ho capito: la revoca è <b>irreversibile</b>, la supply resta fissa a 200M e non potrò più coniare L$D.</span></label>
+    <div class="fm-row fm-mt"><button type="button" class="fm-btn" id="go" disabled>Firma e invia la revoca</button></div>
+    <p class="fm-status" id="status" role="status" aria-live="polite"></p>
+    <div id="done" hidden>
+      <p><span class="fm-chip">✓ transazione inviata</span></p>
+      <dl class="rv-dl"><dt>Firma</dt><dd class="rv-mono" id="sig"></dd><dt>Solscan</dt><dd><a id="scan" target="_blank" rel="noopener noreferrer">apri ↗</a></dd><dt>Mint authority ora</dt><dd id="after">verifica…</dd></dl>
+    </div>
+  </section>
+
+  <section class="fm-card" id="dettagli" aria-labelledby="hD">
+    <h2 id="hD">Cosa viene firmato, per controllare da solo</h2>
+    <p class="fm-small">Prima dell’invio la pagina rilegge i byte della transazione e li simula sulla rete (senza inviarla). Il wallet mostrerà a sua volta la simulazione.</p>
+    <pre id="detail">La transazione viene costruita al momento della firma.</pre>
+    <ul class="fm-list">
+      <li>Programma: Token (classico) <span class="rv-mono">TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</span></li>
+      <li>Istruzione: SetAuthority (codice 6), tipo MintTokens (0), nuovo titolare: nessuno</li>
+      <li>Conti: il mint (scrittura) e A4JY5…G9PJ (firmatario). Nessun altro conto.</li>
+    </ul>
+  </section>
+
+  <p class="fm-foot">ZDOS1.3 · P.IVA 11040550961 · Nessuna chiave transita dal sito. Informazione tecnica, non è un consiglio di investimento.</p>
+</div>
+<script src="/lsd-revoca/lsd-revoca.js?v=1"></script>
+<script src="/lsd-revoca/lsd-revoca-ui.js?v=1"></script>
+</body>
+</html>

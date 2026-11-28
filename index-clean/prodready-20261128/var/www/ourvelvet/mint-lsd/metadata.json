@@ -1,0 +1,21 @@
+{
+  "name": "Dom-Coin",
+  "symbol": "L$D",
+  "description": "Dom-Coin (L$D): token di utilità dell’ecosistema ZDOS e OurVelvet. Supply fissa di 200.000.000 L$D, mint e freeze authority revocate.",
+  "image": "https://ourvelvet.online/mint-lsd/logo-lsd.png",
+  "external_url": "https://ourvelvet.online",
+  "attributes": [
+    {
+      "trait_type": "Ecosystem",
+      "value": "ZDOS / OurVelvet"
+    },
+    {
+      "trait_type": "Supply",
+      "value": "200000000"
+    },
+    {
+      "trait_type": "Decimals",
+      "value": "6"
+    }
+  ]
+}

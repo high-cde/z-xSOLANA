@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="it" class="t-zx">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>L$D → Fondo merito · firma da A4JY5 · ZDOS</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#07040f">
+<link rel="stylesheet" href="/firma/firma.css?v=1">
+<link rel="stylesheet" href="/lsd-trasparenza/lsdt.css?v=1">
+<meta name="description" content="Trasferimento diretto di L$D dal wallet A4JY5 al fondo merito: opzione secondaria. Firma solo dal wallet del titolare.">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://x-zdos.it/lsd-trasparenza/merito/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ZDOS × Velvet">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="L$D → Fondo merito · ZDOS">
+<meta property="og:description" content="Trasferimento diretto di L$D dal wallet A4JY5 al fondo merito: opzione secondaria. Firma solo dal wallet del titolare.">
+<meta property="og:url" content="https://x-zdos.it/lsd-trasparenza/merito/">
+<meta property="og:image" content="https://x-zdos.it/ecosistema/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<div class="fm-wrap">
+  <header class="fm-top"><a class="fm-brand" href="/">ZDOS</a><nav aria-label="Pagina"><a href="/lsd-trasparenza/">Trasparenza</a><a href="/lsd-trasparenza/vesting/">Vesting</a><a href="#firma">Firma</a></nav></header>
+  <h1>L$D → Fondo merito</h1>
+  <p class="fm-lead">Trasferisce L$D dal wallet A4JY5 al fondo merito di ZDOS, che li paga agli utenti reali (Pool Party / zcomm) solo quando i pagamenti vengono riattivati. <span class="lt-tag prop">piano ZDOS1.3 · opzione secondaria</span></p>
+
+  <section class="fm-card lt-honest">
+    <h2>Da sapere prima</h2>
+    <ul class="fm-list">
+      <li><b>Già eseguito:</b> il 28/11/2026 alle 16:14 (ora di Roma) sono stati trasferiti <b>20.000.000 L$D</b> al fondo merito (<a href="https://solscan.io/tx/63eWNLRCfHKkbm2NpZcREWDDfv2UdHDmavuCkvoSyYDiDqwJEnbrbtd51s5AXchJVZE97upzAgCYknnVjHLvLZQh" target="_blank" rel="noopener noreferrer">tx ↗</a>). <b>Non ripetere questo trasferimento</b> per la stessa quota: la pagina serve solo per eventuali quote future.</li>
+      <li>Il fondo merito <b>è un wallet di progetto</b>: finché i token restano lì sono <b>insider</b> e sono dichiarati come tali su <a href="/lsd-trasparenza/">/lsd-trasparenza/</a>. La concentrazione in K.I.R.A. scende solo quando il fondo li paga davvero a utenti verificati.</li>
+      <li>Via di default del piano ZDOS1.3 per le quote future: <a href="/lsd-trasparenza/vesting/?preset=merito">vesting Jupiter Lock</a> a 26 settimane, non cancellabile. Così i token sono visibilmente bloccati e nel wallet operativo arriva solo la rata settimanale. Il trasferimento diretto resta come opzione secondaria.</li>
+      <li>Destinazione fissa, da allowlist dichiarata: <span class="lt-mono">GEntwhyRQASi5n9uWSqYhMRtePGoogDpsbuoZBwCECDd</span>. Il conto L$D del fondo viene creato nella stessa transazione se manca.</li>
+      <li>La pagina non muove niente da sola. Firma solo A4JY5, dal tuo Phantom. Nessuna chiave passa dal sito.</li>
+    </ul>
+  </section>
+
+  <section class="fm-card">
+    <h2>1 · Importo</h2>
+    <div class="lt-form">
+      <div><label class="fm-l" for="amt">L$D da trasferire (importo da indicare: i 20.000.000 del piano sono già stati trasferiti)</label><input type="text" id="amt" inputmode="decimal" value="" placeholder="es. 1000000"></div>
+      <div><label class="fm-l">Destinazione (fissa)</label><input type="text" value="Fondo merito · GEntw…CECDd" disabled></div>
+    </div>
+    <div class="fm-row fm-mt"><button type="button" class="fm-btn fm-ghost" id="sim">Simula (non invia nulla)</button></div>
+    <p class="fm-status" id="simStatus" role="status" aria-live="polite"></p>
+    <div class="lt-sum" id="summary" hidden></div>
+  </section>
+
+  <section class="fm-card" id="firma">
+    <h2>2 · Collega A4JY5</h2>
+    <div id="walletList" class="fm-row"></div>
+    <p class="fm-status" id="connStatus" role="status" aria-live="polite"></p>
+    <h2 class="fm-mt">3 · Conferma e firma</h2>
+    <label class="fm-check"><input type="checkbox" id="chk"> <span>Ho letto il riepilogo simulato e so che i 20.000.000 L$D del piano sono già stati trasferiti il 28/11/2026. Trasferisco una quota ulteriore al fondo merito (wallet di progetto, resta insider finché non paga utenti reali). Il trasferimento non si annulla.</span></label>
+    <div class="fm-row fm-mt"><button type="button" class="fm-btn" id="go" disabled>Firma e invia</button></div>
+    <p class="fm-status" id="status" role="status" aria-live="polite"></p>
+    <div id="done" hidden><dl class="lt-dl"><dt>Firma</dt><dd class="lt-mono" id="sig"></dd><dt>Solscan</dt><dd><a id="scan" target="_blank" rel="noopener noreferrer">apri ↗</a></dd><dt>Saldo fondo ora</dt><dd id="after">verifica…</dd></dl></div>
+  </section>
+
+  <section class="fm-card"><h2>Cosa viene firmato</h2><pre id="detail" class="lt-sum">La transazione viene costruita alla simulazione.</pre>
+    <ul class="fm-list"><li>Istruzione 1: Associated Token Account <b>CreateIdempotent</b> (conto L$D del fondo; pagato da A4JY5, rent ≈ 0,0015 SOL solo se manca).</li><li>Istruzione 2: SPL Token <b>TransferChecked</b> da A4JY5 al conto del fondo, 6 decimali.</li><li>Nessun'altra istruzione, nessun altro destinatario.</li></ul></section>
+  <p class="fm-foot">ZDOS1.3 · P.IVA 11040550961 · Nessuna chiave transita dal sito. Informazione tecnica, non è un consiglio di investimento.</p>
+</div>
+<script src="/lsd-trasparenza/lsdt-lib.js?v=3"></script>
+<script src="/lsd-trasparenza/lsdt-common.js?v=1"></script>
+<script src="/lsd-trasparenza/merito/merito.js?v=1"></script>
+</body>
+</html>

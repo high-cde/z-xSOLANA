@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="it" class="t-zx">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>L$D · vesting bloccato Jupiter Lock · firma da A4JY5 · ZDOS</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#07040f">
+<link rel="stylesheet" href="/firma/firma.css?v=1">
+<link rel="stylesheet" href="/lsd-trasparenza/lsdt.css?v=1">
+<meta name="description" content="Vesting non cancellabile su Jupiter Lock: tesoreria 90M L$D con cliff 12 mesi e 24 rate mensili. Firma solo dal wallet del titolare.">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://x-zdos.it/lsd-trasparenza/vesting/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ZDOS × Velvet">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="L$D · vesting Jupiter Lock · ZDOS">
+<meta property="og:description" content="Vesting non cancellabile su Jupiter Lock: tesoreria 90M L$D con cliff 12 mesi e 24 rate mensili. Firma solo dal wallet del titolare.">
+<meta property="og:url" content="https://x-zdos.it/lsd-trasparenza/vesting/">
+<meta property="og:image" content="https://x-zdos.it/ecosistema/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<div class="fm-wrap">
+  <header class="fm-top"><a class="fm-brand" href="/">ZDOS</a><nav aria-label="Pagina"><a href="/lsd-trasparenza/">Trasparenza</a><a href="/lsd-trasparenza/merito/">Fondo merito</a><a href="#firma">Firma</a></nav></header>
+  <h1>L$D · vesting bloccato on-chain</h1>
+  <p class="fm-lead">Blocca una quota di L$D in un contratto di vesting <b>Jupiter Lock</b> (programma open source, verificato da OtterSec e Sec3, gratuito, senza registrazione). I token escono da A4JY5 e si sbloccano solo secondo il calendario. <span class="lt-tag prop">piano ZDOS1.3</span></p>
+
+  <section class="fm-card lt-warnbox">
+    <h2>Non cancellabile, e si vede</h2>
+    <ul class="fm-list">
+      <li><b>cancel_mode = 0</b>: nessuno può annullare il vesting, né il creatore né il destinatario. Neanche doc potrà riprendere i token prima del calendario.</li>
+      <li><b>update_recipient_mode = 0</b>: il destinatario non si può cambiare.</li>
+      <li>Il destinatario resta un wallet di progetto dichiarato: i token restano <b>insider, ma bloccati</b>. Su /lsd-trasparenza/ sono contati come “insider bloccati”, separati dagli insider liberi.</li>
+      <li>Costi (letti dalla rete alla simulazione): conto escrow ≈ 0,0022 SOL + conto token escrow ≈ 0,0015 SOL di rent + commissione 0,00001 SOL (2 firme). Nessuna fee del programma.</li>
+      <li>La transazione ha due firmatari: A4JY5 (tu, in Phantom) e una chiave “base” usa e getta generata nel tuo browser solo per dare un indirizzo unico all’escrow. Non controlla nulla dopo la creazione e non lascia la pagina.</li>
+    </ul>
+  </section>
+
+  <section class="fm-card">
+    <h2>1 · Parametri</h2>
+    <div class="lt-form">
+      <div><label class="fm-l" for="preset">Quota</label><select id="preset"><option value="treasury">Treasury (piano ZDOS1.3: 90M, cliff 12 mesi + 24 rate mensili da 3,75M)</option><option value="merito">Fondo merito (piano ZDOS1.3: 20M, 26 settimane — già trasferiti, vedi avviso)</option></select></div>
+      <div><label class="fm-l" for="rec">Destinatario (allowlist dichiarata)</label><select id="rec"><option value="A4JY5VGS1oGSqMxW6a7EtwTg7q6wjG3uxVpNaHPyG9PJ">A4JY5 · fondatore/dev (insider)</option><option value="GEntwhyRQASi5n9uWSqYhMRtePGoogDpsbuoZBwCECDd">GEntw · fondo merito (progetto)</option></select></div>
+      <div><label class="fm-l" for="amt">L$D da bloccare</label><input type="text" id="amt" inputmode="decimal" value="90000000"></div>
+      <div><label class="fm-l" for="freq">Rata</label><select id="freq"><option value="month">mensile (30,44 giorni)</option><option value="week">settimanale</option></select></div>
+      <div><label class="fm-l" for="cliff">Cliff (nella stessa unità della rata)</label><input type="text" id="cliff" inputmode="numeric" value="12"></div>
+      <div><label class="fm-l" for="periods">Numero di rate dopo il cliff</label><input type="text" id="periods" inputmode="numeric" value="24"></div>
+    </div>
+    <p class="fm-small lt-bad" id="meritWarn" hidden><b>Attenzione:</b> i 20.000.000 L$D del fondo merito sono già stati trasferiti il 28/11/2026 alle 16:14 con un trasferimento diretto (<a href="https://solscan.io/tx/63eWNLRCfHKkbm2NpZcREWDDfv2UdHDmavuCkvoSyYDiDqwJEnbrbtd51s5AXchJVZE97upzAgCYknnVjHLvLZQh" target="_blank" rel="noopener noreferrer">tx ↗</a>). Questo preset serve solo per una quota ulteriore: non firmarlo per i 20M già inviati.</p>
+    <p class="fm-small">Inizio: un minuto dopo la simulazione. Al cliff non si sblocca nulla (salvo pochi micro-L$D di arrotondamento); poi una rata uguale per periodo.</p>
+    <div class="fm-row fm-mt"><button type="button" class="fm-btn fm-ghost" id="sim">Simula (non invia nulla)</button></div>
+    <p class="fm-status" id="simStatus" role="status" aria-live="polite"></p>
+    <div class="lt-sum" id="summary" hidden></div>
+  </section>
+
+  <section class="fm-card" id="firma">
+    <h2>2 · Collega A4JY5</h2>
+    <div id="walletList" class="fm-row"></div>
+    <p class="fm-status" id="connStatus" role="status" aria-live="polite"></p>
+    <h2 class="fm-mt">3 · Conferma e firma</h2>
+    <label class="fm-check"><input type="checkbox" id="chk"> <span>Ho letto il riepilogo simulato. Il vesting è <b>non cancellabile</b>: i token restano bloccati fino alle date indicate, anche per me.</span></label>
+    <div class="fm-row fm-mt"><button type="button" class="fm-btn" id="go" disabled>Firma e crea il vesting</button></div>
+    <p class="fm-status" id="status" role="status" aria-live="polite"></p>
+    <div id="done" hidden><dl class="lt-dl"><dt>Firma</dt><dd class="lt-mono" id="sig"></dd><dt>Solscan</dt><dd><a id="scan" target="_blank" rel="noopener noreferrer">apri ↗</a></dd><dt>Escrow</dt><dd class="lt-mono" id="esc"></dd><dt>Jupiter Lock</dt><dd><a id="jl" target="_blank" rel="noopener noreferrer">vedi su lock.jup.ag ↗</a></dd></dl></div>
+  </section>
+
+  <section class="fm-card"><h2>Cosa viene firmato</h2><pre id="detail" class="lt-sum">La transazione viene costruita alla simulazione.</pre>
+    <ul class="fm-list"><li>Istruzione 1: Associated Token Account <b>CreateIdempotent</b> (conto L$D dell’escrow).</li><li>Istruzione 2: Jupiter Lock <b>create_vesting_escrow</b> (programma <span class="lt-mono">LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn</span>) con cancel_mode 0 e update_recipient_mode 0.</li></ul></section>
+  <p class="fm-foot">ZDOS1.3 · P.IVA 11040550961 · Nessuna chiave transita dal sito. Informazione tecnica, non è un consiglio di investimento.</p>
+</div>
+<script src="/lsd-trasparenza/lsdt-lib.js?v=3"></script>
+<script src="/lsd-trasparenza/lsdt-common.js?v=1"></script>
+<script src="/lsd-trasparenza/vesting/vesting.js?v=2"></script>
+</body>
+</html>

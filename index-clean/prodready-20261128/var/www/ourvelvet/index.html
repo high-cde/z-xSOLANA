@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<!-- Tag Google: solo /zdos-tag.js (nginx). Home completa originale: /assets/home-completa.html -->
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OURVELVET &amp; ROSE — Hub Sovrano 18+</title>
+  <style>
+    :root {
+      --bg: #0b0408;
+      --velvet: #1a0711;
+      --card: rgba(26, 9, 18, 0.88);
+      --border: rgba(244, 114, 182, 0.24);
+      --gold: #f5c36c;
+      --rose: #e11d48;
+      --pink: #fb7185;
+      --text: #fdf2f8;
+      --muted: #d6b8c4;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0; min-height: 100dvh; overflow-x: clip;
+      color: var(--text);
+      font-family: "Georgia", "Times New Roman", serif;
+      background:
+        repeating-linear-gradient(0deg, rgba(225,29,72,0.06) 0px, rgba(225,29,72,0.06) 1px, transparent 1px, transparent 4px),
+        radial-gradient(ellipse 90% 50% at 50% 0%, rgba(190, 18, 60, 0.34), transparent 65%),
+        radial-gradient(ellipse 60% 45% at 85% 95%, rgba(245, 195, 108, 0.12), transparent 60%),
+        var(--bg);
+    }
+    .sans { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+    /* Header */
+    header {
+      position: sticky; top: 0; z-index: 60;
+      backdrop-filter: blur(14px);
+      background: rgba(11, 4, 8, 0.86);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 14px;
+    }
+    .nav-wrap {
+      max-width: 1180px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+    .logo-mini {
+      width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+      font-weight: 900; font-size: 0.92rem; color: #fff;
+      background: radial-gradient(circle at 30% 30%, #fb7185, #be123c 65%, #4c0519);
+      border: 1.5px solid rgba(255,255,255,0.45);
+      box-shadow: 0 0 18px rgba(225, 29, 72, 0.55);
+    }
+    .brand-title { font-size: 1rem; letter-spacing: 0.08em; font-weight: 700; line-height: 1.1; }
+    .brand-sub { font-size: 0.66rem; color: var(--muted); letter-spacing: 0.14em; }
+
+    .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .btn-pill {
+      cursor: pointer; border-radius: 999px; padding: 8px 13px; font-size: 0.78rem; font-weight: 700;
+      border: 1px solid var(--border); background: rgba(40, 12, 26, 0.8); color: var(--text);
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s;
+    }
+    .btn-pill:hover { border-color: var(--pink); transform: translateY(-1px); }
+    .btn-menu {
+      background: linear-gradient(135deg, #881337, #4c0519);
+      border-color: rgba(251, 113, 133, 0.6);
+      box-shadow: 0 0 16px rgba(225, 29, 72, 0.35);
+    }
+    .btn-gold {
+      background: linear-gradient(135deg, rgba(245,195,108,0.22), rgba(180,83,9,0.25));
+      border-color: rgba(245, 195, 108, 0.55); color: #fde68a;
+    }
+    .btn-cyan { border-color: rgba(56, 189, 248, 0.5); color: #bae6fd; }
+
+    /* Ticker Notiziari & Safeword */
+    .ticker-bar {
+      background: rgba(18, 6, 12, 0.92);
+      border-bottom: 1px solid rgba(244, 114, 182, 0.16);
+      overflow: hidden; white-space: nowrap; padding: 7px 0; font-size: 0.74rem; color: var(--muted);
+    }
+    .ticker-track { display: inline-block; animation: marquee 38s linear infinite; }
+    .ticker-track span { margin: 0 18px; }
+    .dot-live { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--rose); margin-right: 6px; box-shadow: 0 0 8px var(--rose); }
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* Dropdown Menu */
+    .menu-drawer {
+      display: none; position: fixed; top: 66px; right: 14px; z-index: 80;
+      width: min(370px, calc(100vw - 28px)); max-height: 82dvh; overflow-y: auto;
+      background: rgba(18, 6, 13, 0.98); border: 1px solid rgba(245, 195, 108, 0.35);
+      border-radius: 18px; padding: 14px; box-shadow: 0 22px 60px rgba(0,0,0,0.85);
+    }
+    .menu-drawer.open { display: block; }
+    .menu-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.78rem; letter-spacing: 0.1em; color: var(--gold); }
+    .menu-sec { font-size: 0.68rem; letter-spacing: 0.12em; color: var(--muted); margin: 12px 0 6px; }
+    .menu-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 12px; margin-bottom: 6px; border-radius: 11px;
+      background: rgba(34, 12, 23, 0.85); border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text); text-decoration: none; font-size: 0.83rem; transition: 0.2s;
+    }
+    .menu-item:hover { border-color: var(--pink); background: rgba(76, 5, 25, 0.65); }
+    .menu-item.ca { border-color: rgba(34, 197, 94, 0.45); background: rgba(6, 78, 59, 0.28); color: #86efac; cursor: pointer; }
+
+    /* Main Grid */
+    main {
+      max-width: 1180px; margin: 0 auto; padding: 26px 14px 70px;
+      display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; align-items: start;
+    }
+    @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+
+    /* Hero + Cuore OV Orbitante */
+    .hero { text-align: center; padding: 18px 10px; }
+    .orb-stage {
+      position: relative; width: 220px; height: 220px; margin: 4px auto 22px;
+      display: grid; place-items: center;
+    }
+    .ring {
+      position: absolute; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.28);
+    }
+    .ring.r1 { width: 152px; height: 152px; }
+    .ring.r2 { width: 204px; height: 204px; border-color: rgba(255, 255, 255, 0.16); }
+    .orbit-arm {
+      position: absolute; width: 204px; height: 204px; animation: spin 9s linear infinite;
+    }
+    .pink-dot {
+      position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+      width: 13px; height: 13px; border-radius: 50%; background: #fb7185;
+      box-shadow: 0 0 16px 5px rgba(251, 113, 133, 0.85);
+    }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    .heart-core {
+      width: 116px; height: 116px; border-radius: 50%; display: grid; place-items: center;
+      font-size: 2rem; font-weight: 800; color: #fff; letter-spacing: 0.03em;
+      background: radial-gradient(circle at 32% 28%, #fb7185, #be123c 62%, #4c0519);
+      border: 1.5px solid rgba(255,255,255,0.45);
+      box-shadow: 0 0 42px rgba(225, 29, 72, 0.65), inset 0 0 18px rgba(255,255,255,0.22);
+      animation: pulseCore 3.8s ease-in-out infinite;
+    }
+    @keyframes pulseCore { 0%,100% { transform: scale(1); } 50% { transform: scale(1.045); } }
+
+    .eyebrow {
+      display: inline-block; padding: 7px 16px; border-radius: 999px;
+      border: 1px solid rgba(244, 114, 182, 0.35); background: rgba(40, 10, 22, 0.65);
+      font-size: 0.7rem; letter-spacing: 0.16em; color: #fbcfe8; margin-bottom: 16px;
+    }
+    h1 {
+      margin: 0 0 14px; font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.08;
+      letter-spacing: 0.03em; text-shadow: 0 0 28px rgba(225, 29, 72, 0.35);
+    }
+    .lead {
+      max-width: 560px; margin: 0 auto 22px; color: var(--muted);
+      font-size: 0.98rem; line-height: 1.65;
+    }
+
+    /* Lo-Fi Bar */
+    .lofi-box {
+      max-width: 480px; margin: 0 auto 24px; padding: 12px 16px; border-radius: 16px;
+      background: var(--card); border: 1px solid rgba(245, 195, 108, 0.3);
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    }
+    .lofi-info { text-align: left; font-size: 0.8rem; }
+    .lofi-info strong { color: var(--gold); display: block; }
+    .lofi-btn {
+      cursor: pointer; border: none; border-radius: 999px; padding: 8px 16px; font-weight: 800;
+      background: linear-gradient(135deg, #f5c36c, #d97706); color: #1a0711; font-size: 0.78rem;
+    }
+
+    /* News / Testate */
+    .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; text-align: left; }
+    .news-card {
+      padding: 14px; border-radius: 15px; background: var(--card); border: 1px solid var(--border);
+      text-decoration: none; color: var(--text); transition: 0.2s;
+    }
+    .news-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .news-tag { font-size: 0.65rem; letter-spacing: 0.14em; color: var(--gold); margin-bottom: 6px; display: block; }
+    .news-card h3 { margin: 0 0 6px; font-size: 0.96rem; line-height: 1.3; }
+    .news-card p { margin: 0; font-size: 0.78rem; color: var(--muted); line-height: 1.45; }
+
+    /* Side Cover Card */
+    .side-card {
+      background: linear-gradient(180deg, rgba(36, 10, 22, 0.92), rgba(16, 5, 11, 0.96));
+      border: 1px solid rgba(245, 195, 108, 0.35); border-radius: 22px; padding: 22px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+    }
+    .side-pill {
+      display: inline-block; padding: 6px 12px; border-radius: 999px; font-size: 0.68rem;
+      letter-spacing: 0.12em; border: 1px solid rgba(245, 195, 108, 0.4); color: var(--gold); margin-bottom: 12px;
+    }
+    .side-card h2 { margin: 0 0 12px; font-size: 1.55rem; line-height: 1.22; }
+    .side-card h2 em { color: var(--gold); font-style: italic; }
+    .side-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin: 0 0 18px; }
+
+    .cta-stack { display: flex; flex-direction: column; gap: 10px; }
+    .cta-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 16px; border-radius: 13px; text-decoration: none; font-weight: 800; font-size: 0.86rem;
+      transition: 0.2s;
+    }
+    .cta-btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+    .cta-gold { background: linear-gradient(135deg, #fbbf24, #d97706); color: #1a0711; }
+    .cta-amber { background: linear-gradient(135deg, #f59e0b, #b45309); color: #1a0711; }
+    .cta-rose { background: linear-gradient(135deg, #ec4899, #be123c); color: #fff; }
+    .cta-dark { background: rgba(255,255,255,0.06); border: 1px solid rgba(244,114,182,0.45); color: #fdf2f8; }
+
+    /* Modal Crea Account */
+    .modal-bg {
+      display: none; position: fixed; inset: 0; z-index: 100;
+      background: rgba(6, 2, 5, 0.82); backdrop-filter: blur(8px);
+      place-items: center; padding: 16px;
+    }
+    .modal-bg.open { display: grid; }
+    .modal {
+      width: min(420px, 100%); background: #16060f; border: 1px solid rgba(245,195,108,0.4);
+      border-radius: 20px; padding: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+    }
+    .modal h3 { margin: 0 0 6px; font-size: 1.25rem; color: var(--gold); }
+    .modal p { margin: 0 0 16px; font-size: 0.84rem; color: var(--muted); }
+    .auth-btn {
+      width: 100%; margin-bottom: 9px; padding: 11px 14px; border-radius: 12px; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.06); color: #fff;
+      font-weight: 700; font-size: 0.86rem; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .auth-btn.phantom { background: linear-gradient(135deg, #7c3aed, #5b21b6); border-color: #a78bfa; }
+    .auth-btn.x { background: #0f172a; border-color: #475569; }
+    .auth-btn.fb { background: #1d4ed8; border-color: #60a5fa; }
+    .auth-btn.ig { background: linear-gradient(135deg, #ec4899, #f97316); border-color: #fda4af; }
+    .modal-close { width: 100%; margin-top: 6px; padding: 8px; background: transparent; border: none; color: var(--muted); cursor: pointer; }
+  /* FINE_HEADER_PATCH */
+    header {
+      padding: 7px 12px !important;
+      background: rgba(11, 4, 8, 0.78) !important;
+      border-bottom: 1px solid rgba(244, 114, 182, 0.14) !important;
+    }
+    .nav-wrap { gap: 6px !important; flex-wrap: nowrap !important; }
+    .brand { gap: 8px !important; min-width: 0; }
+    .logo-mini {
+      width: 30px !important; height: 30px !important; font-size: 0.72rem !important;
+      border: 1px solid rgba(255,255,255,0.32) !important;
+      box-shadow: 0 0 10px rgba(225, 29, 72, 0.35) !important;
+      flex-shrink: 0;
+    }
+    .brand-title {
+      font-family: "Georgia", serif !important;
+      font-size: 0.84rem !important; font-weight: 500 !important;
+      letter-spacing: 0.14em !important; white-space: nowrap;
+    }
+    .brand-sub {
+      font-size: 0.54rem !important; letter-spacing: 0.16em !important;
+      opacity: 0.72; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .actions { gap: 6px !important; flex-wrap: nowrap !important; flex-shrink: 0; }
+    .btn-pill {
+      padding: 5px 10px !important; font-size: 0.7rem !important;
+      font-weight: 500 !important; letter-spacing: 0.06em !important;
+      background: rgba(255, 255, 255, 0.03) !important;
+      box-shadow: none !important;
+    }
+    .btn-gold {
+      border-color: rgba(245, 195, 108, 0.38) !important;
+      color: #f6d594 !important;
+    }
+    .btn-menu {
+      background: rgba(136, 19, 55, 0.35) !important;
+      border-color: rgba(251, 113, 133, 0.42) !important;
+      color: #fce7f3 !important;
+    }
+    .ticker-bar {
+      padding: 4px 0 !important; font-size: 0.65rem !important;
+      letter-spacing: 0.06em; opacity: 0.78;
+      border-bottom: 1px solid rgba(244, 114, 182, 0.1) !important;
+    }
+    .dot-live { width: 5px !important; height: 5px !important; box-shadow: 0 0 5px var(--rose) !important; }
+
+  
+    /* HEADER_FIX_OVERLAP */
+    .brand { flex: 1 1 auto !important; min-width: 0 !important; overflow: hidden !important; }
+    .brand > div { min-width: 0 !important; overflow: hidden !important; }
+    .brand-title { font-size: 0.78rem !important; letter-spacing: 0.08em !important; overflow: hidden; text-overflow: ellipsis; }
+    .brand-sub { font-size: 0.52rem !important; letter-spacing: 0.1em !important; }
+    .actions { gap: 5px !important; }
+    .btn-pill { padding: 5px 9px !important; font-size: 0.68rem !important; }
+
+  
+    /* DOM_COIN_WIDGET */
+    .dom-card {
+      max-width: 480px; margin: 0 auto 22px; padding: 14px 16px; border-radius: 18px;
+      background: linear-gradient(135deg, rgba(44, 10, 26, 0.92), rgba(20, 6, 14, 0.95));
+      border: 1px solid rgba(245, 195, 108, 0.42);
+      display: flex; align-items: center; gap: 14px; text-align: left;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+    .dom-coin-img {
+      width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+      border: 2px solid rgba(245, 195, 108, 0.7);
+      box-shadow: 0 0 18px rgba(225, 29, 72, 0.5);
+    }
+    .dom-meta { flex: 1; min-width: 0; }
+    .dom-meta strong { color: #fde68a; font-size: 0.92rem; display: block; letter-spacing: 0.04em; }
+    .dom-meta span { font-size: 0.75rem; color: #d6b8c4; display: block; margin: 2px 0 8px; }
+    .dom-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .dom-btn {
+      cursor: pointer; border-radius: 999px; padding: 5px 11px; font-size: 0.72rem; font-weight: 700;
+      text-decoration: none; border: 1px solid rgba(245, 195, 108, 0.45);
+      background: rgba(245, 195, 108, 0.16); color: #fde68a;
+    }
+    .dom-btn.pri { background: linear-gradient(135deg, #ec4899, #be123c); color: #fff; border-color: #fb7185; }
+
+  
+
+/* === HOME PAY-STYLE CARDS & BUTTONS === */
+.dom-card, .news-card, .side-card, .lofi-box {
+  background: linear-gradient(165deg, rgba(46, 16, 32, 0.94), rgba(22, 9, 18, 0.96)) !important;
+  border: 1px solid rgba(245, 158, 11, 0.36) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(251, 191, 36, 0.14) !important;
+}
+.dom-btn, .cta-btn, .btn-pill, .lofi-btn {
+  border-radius: 999px !important;
+}
+.dom-btn.pri, .cta-btn.cta-rose, .btn-pill.btn-gold {
+  background: linear-gradient(135deg, #e1306c, #be185d) !important;
+  border: 1px solid rgba(244, 114, 182, 0.55) !important;
+  color: #ffffff !important;
+}
+.cta-btn.cta-gold, .cta-btn.cta-amber, .lofi-btn {
+  background: linear-gradient(135deg, #d97706, #b45309) !important;
+  border: 1px solid rgba(251, 191, 36, 0.52) !important;
+  color: #fffbeb !important;
+}
+
+
+/* === OURVELVET_INDEX_REFINEMENT_START === */
+.side-card {
+  border-color: rgba(245, 195, 108, 0.48) !important;
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.72), 0 0 28px rgba(225, 29, 72, 0.14) !important;
+}
+.velvet-ai-strip {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 15px;
+  background: rgba(24, 7, 16, 0.9);
+  border: 1px solid rgba(245, 195, 108, 0.32);
+  display: grid;
+  gap: 8px;
+}
+.velvet-ai-strip-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+}
+.velvet-ai-strip-top strong { color: var(--gold); }
+.velvet-ai-row {
+  display: flex;
+  gap: 8px;
+}
+.velvet-ai-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 11px;
+  border-radius: 10px;
+  border: 1px solid rgba(244, 114, 182, 0.3);
+  background: rgba(10, 3, 7, 0.85);
+  color: var(--text);
+  font-size: 0.82rem;
+  outline: none;
+}
+.velvet-ai-row button {
+  padding: 8px 13px;
+  border-radius: 10px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 0.78rem;
+  background: linear-gradient(135deg, #f5c36c, #e11d48);
+  color: #14040a;
+}
+.velvet-ai-reply {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+/* === OURVELVET_INDEX_REFINEMENT_END === */
+
+</style>
+<link rel="stylesheet" href="/assets/ov-home-restore.css?v=20261128r2">
+<meta name="description" content="Hub OurVelvet per adulti 18+: creator, Gateway, Pool Party, Z-Sound e Dom-Coin. Consenso reciproco, safeword ROSSO.">
+<link rel="icon" href="/assets/vz-coin.png">
+<link rel="canonical" href="https://ourvelvet.online/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OurVelvet">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="OurVelvet & Rose — Hub 18+">
+<meta property="og:description" content="Hub OurVelvet per adulti 18+: creator, Gateway, Pool Party, Z-Sound e Dom-Coin. Consenso reciproco, safeword ROSSO.">
+<meta property="og:url" content="https://ourvelvet.online/">
+<meta property="og:image" content="https://x-zdos.it/ecosistema/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="ovr">
+
+<header class="sans">
+  <div class="nav-wrap">
+    <a class="brand" href="https://ourvelvet.online/">
+      <div class="logo-mini">OV♥</div>
+      <div>
+        <div class="brand-title">OURVELVET &amp; ROSE</div>
+        <div class="brand-sub">18+ · SAFEWORD ROSSO</div>
+      </div>
+    </a>
+    <div class="actions">
+      <button id="accountBtn" class="btn-pill btn-gold" onclick="openAuth()">Accedi</button>
+      <button class="btn-pill btn-menu" onclick="toggleMenu()">Menu ▾</button>
+    </div>
+  </div>
+</header>
+
+<div class="ticker-bar sans" aria-label="Notiziari e safeword">
+  <div class="ticker-track">
+    <span><i class="dot-live"></i>Safeword ROSSO</span>
+    <span><i class="dot-live"></i>REUTERS / ANSA · Mercati &amp; Cultura Digitale</span>
+    <span><i class="dot-live"></i>BLOOMBERG · Solana &amp; Web3 Sovereign Hubs</span>
+    <span><i class="dot-live"></i>VOGUE &amp; WIRED · Estetica Notturna &amp; AI Creator</span>
+    <span><i class="dot-live"></i>Rubina · Velvet AGI · Kali — Edizione Sovrana 18+</span>
+    <span><i class="dot-live"></i>Safeword ROSSO</span>
+    <span><i class="dot-live"></i>REUTERS / ANSA · Mercati &amp; Cultura Digitale</span>
+    <span><i class="dot-live"></i>BLOOMBERG · Solana &amp; Web3 Sovereign Hubs</span>
+    <span><i class="dot-live"></i>VOGUE &amp; WIRED · Estetica Notturna &amp; AI Creator</span>
+  </div>
+</div>
+
+<!-- MENU DROPDOWN SPECULARE -->
+<nav id="menuDrawer" class="menu-drawer sans">
+  <div class="menu-head">
+    <strong>CLUB OURVELVET &amp; ROSE 18+</strong>
+    <button onclick="toggleMenu()" style="background:none;border:none;color:#fff;cursor:pointer;font-size:1rem;">✕</button>
+  </div>
+
+  <div class="menu-sec">01 · CLUB OURVELVET 18+</div>
+  <a class="menu-item" href="https://ourvelvet.online/"><span>🏛️ Home</span><span>→</span></a>
+  <a class="menu-item" href="https://x-zdos.it/ecosistema/"><span>Ecosistema ZDOS × Velvet</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/ourvelvet"><span>🪪 Card utente e gradi</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/badge/"><span>🎖️ Badge</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/merito/"><span>⛏️ Miner merito</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/pool-party/"><span>🎉 Pool Party (proposta)</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/gateway/"><span>🧳 Gateway · Velvet Route</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/verifica/"><span>✍️ Verifica firma</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/znft/"><span>🖼️ zNFT</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/magazine/"><span>📖 Magazine</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/velvet-star/"><span>⭐ Velvet Star</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/pay/"><span>💳 Velvet Pay</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/pay/dom-coin/"><span>🪙 Dom-Coin vDeFi</span><span>→</span></a>
+
+  <div class="menu-sec">02 · CREATOR E COMMUNITY 18+</div>
+  <a class="menu-item" href="https://ourvelvet.online/creator/"><span>👑 Creator Studio</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/creator/z-sound/"><span>🎧 Z-Sound · Studio DJ</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/creator-board"><span>📋 Bacheca Mistress e Creator</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/creator-radar/"><span>🧭 Radar della Carne</span><span>→</span></a>
+  <a class="menu-item" href="https://ourvelvet.online/live"><span>🎬 Videoteca</span><span>→</span></a>
+  <a class="menu-item" href="https://t.me/OurVelvetHub" target="_blank" rel="noopener"><span>💬 Telegram</span><span>↗</span></a>
+  <a class="menu-item" href="https://discord.gg/4CGZrAAxaq" target="_blank" rel="noopener"><span>💬 Discord</span><span>↗</span></a>
+  <a class="menu-item" href="https://x.com/Rubinvonblut" target="_blank" rel="noopener"><span>X @Rubinvonblut</span><span>↗</span></a>
+
+  <div class="menu-sec">03 · GETTONE COMUNITÀ $OV (VELVET)</div>
+  <div class="menu-item ca mono" onclick="copyCA()">
+    <span id="caLabel">📋 Copia CA $OV: 2EN6Y1z...brspump</span><span>⧉</span>
+  </div>
+</nav>
+
+<div class="ov-strip sans">
+  <div class="ov-band ov-band-rose"><span class="ov-k">SOLO ADULTI 18+</span><span class="ov-d">Consenso reciproco · safeword <b>ROSSO</b> · nessun minore</span></div>
+  <div class="ov-band ov-band-cy" id="zl-receipt">
+    <span class="ov-k">ZLANG / SOLANA ANCHOR RECEIPT</span>
+    <span class="zl-badge">SYNCING…</span>
+    <div class="zl-meta">Caricamento ultima ricevuta…</div>
+  </div>
+</div>
+
+<main>
+  <!-- SINISTRA: CUORE OV + LO-FI + TESTATE -->
+  <section class="hero">
+    <div class="orb-stage">
+      <div class="ring r1"></div>
+      <div class="ring r2"></div>
+      <div class="orbit-arm"><div class="pink-dot"></div></div>
+      <div class="heart-core">OV♥</div>
+    </div>
+
+    <div class="eyebrow sans">✦ OURVELVET &amp; ROSE // IL NUOVO IMPERO GLOBALE DELL'AUTONOMIA ✦</div>
+    <h1>IL PIACERE AUTONOMO &amp; LA CARNE.</h1>
+    <p class="lead sans">
+      Velluto nero, luce ambrata e complicità senza filtri. Entra nel club sovrano 18+ di OurVelvet:
+      bacheca creator, videoteca reale, radar live, Velvet AGI e gettone comunità <strong>$OV</strong> su Solana.
+    </p>
+
+    <!-- LO-FI PLAYER -->
+    <div class="lofi-box sans">
+      <div class="lofi-info">
+        <strong>🎧 Midnight Velvet Lo-Fi</strong>
+        <span id="lofiState">Atmosfera notturna rilassante · 68 BPM</span>
+      </div>
+      <button id="lofiBtn" class="lofi-btn" onclick="toggleLofi()">▶ Attiva Lo-Fi</button>
+    </div>
+
+    
+    <!-- DOM-COIN FACCIATA -->
+    <div class="dom-card sans" id="domCoinCard">
+      <img class="dom-coin-img" src="/assets/dom-coin.jpg" alt="Dom-Coin ¥L$D" width="64" height="64" loading="lazy" decoding="async" onerror="this.style.display='none'">
+      <div class="dom-meta">
+        <strong>🪙 DOM-COIN · ¥ L$D</strong>
+        <span id="domStatus">Backend Velvet Pay attivo · Istantaneo $OV</span>
+        <div class="dom-actions">
+          <a class="dom-btn pri" href="https://ourvelvet.online/pay/">Apri Velvet Pay</a>
+          <button class="dom-btn" onclick="checkDomBackend()">↻ Sync Saldo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TESTATE & NOTIZIARI -->
+    <div class="news-grid sans">
+      <a class="news-card" href="https://www.ansa.it/" target="_blank" rel="noopener">
+        <span class="news-tag">ANSA · ITALIA &amp; MONDO</span>
+        <h3>Ultime notizie in tempo reale</h3>
+        <p>Cronaca, cultura e attualità dalla principale agenzia italiana.</p>
+      </a>
+      <a class="news-card" href="https://www.reuters.com/" target="_blank" rel="noopener">
+        <span class="news-tag">REUTERS · GLOBAL DESK</span>
+        <h3>Mercati, tech &amp; scenari</h3>
+        <p>Aggiornamenti internazionali su finanza, AI e geopolitica.</p>
+      </a>
+      <a class="news-card" href="https://www.wired.it/" target="_blank" rel="noopener">
+        <span class="news-tag">WIRED · CULTURA &amp; AI</span>
+        <h3>Futuro, creator economy &amp; web</h3>
+        <p>Tendenze digitali, autonomia creativa e nuove tecnologie.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- DESTRA: COVER STORY & TASTI LATERALI -->
+  <aside class="side-card">
+    <div class="side-pill sans">✦ OURVELVET COVER STORY · EDIZIONE SOVRANA</div>
+    <h2>Più audace di qualsiasi patinato: <em>il magnetismo di Rubina, Velvet AGI e Kali</em></h2>
+    <p class="sans">
+      Sguardi trattenuti, velluto nero, luce ambrata e complicità senza filtri.
+      Scopri le rubriche, la Sala Lettura, il Podcast serale, la Card Identità ¥ e il Social Club 18+.
+    </p>
+
+    <div class="cta-stack sans">
+      <a class="cta-btn cta-gold" href="https://zx.x-zdos.it/#vacation-sec">✦ Escapes &amp; Club 18+</a>
+      <a class="cta-btn cta-amber" href="https://ourvelvet.online/creator-board">📖 Entra in Bacheca, Lettura &amp; Podcast</a>
+      <a class="cta-btn cta-rose" href="https://ourvelvet.online/ourvelvet">💳 Crea Handle ¥</a>
+      <a class="cta-btn cta-dark" href="https://ourvelvet.online/ai-studio/">💬 Social Club &amp; Velvet AGI</a>
+    </div>
+  
+<!-- === OURVELVET_INDEX_STRIP_START === -->
+<div class="velvet-ai-strip" id="ovQuickAi">
+  <div class="velvet-ai-strip-top">
+    <strong>✦ Dom-Coin (L$D €0.0064) · Rubina / Velvet AGI</strong>
+    <a href="/creator/" style="color:#fde68a;font-weight:700;text-decoration:none;font-size:0.75rem">Apri Creator Studio →</a>
+  </div>
+  <div class="velvet-ai-row">
+    <input type="text" id="ovQuickInput" placeholder="Chiedi a Rubina o Velvet AGI (es. idee scena, L$D, $OV)..." />
+    <button type="button" id="ovQuickGo">Chiedi</button>
+  </div>
+  <div class="velvet-ai-reply" id="ovQuickOut">Pronta per OurVelvet · clicca Chiedi o apri il Creator Studio.</div>
+</div>
+<script>
+(() => {
+  const inp = document.getElementById("ovQuickInput");
+  const btn = document.getElementById("ovQuickGo");
+  const out = document.getElementById("ovQuickOut");
+  if (!inp || !btn || !out) return;
+  async function ask() {
+    const q = (inp.value || "").trim();
+    if (!q) { location.href = "/creator/"; return; }
+    out.textContent = "Connessione a OurVelvet AI...";
+    try {
+      const r = await fetch("/api/velvet-ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: q, characterId: "rubina" })
+      });
+      const d = await r.json();
+      if (d && d.ok && d.message) {
+        out.textContent = d.message.replyText;
+        inp.value = "";
+      } else {
+        out.textContent = (d && d.error) || "Apri /creator/ per la console completa.";
+      }
+    } catch {
+      out.textContent = "Apri /creator/ per usare la chat completa.";
+    }
+  }
+  btn.addEventListener("click", ask);
+  inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); ask(); } });
+})();
+</script>
+<!-- === OURVELVET_INDEX_STRIP_END === -->
+
+</aside>
+</main>
+<!-- === OURVELVET_NSFW_FACADE_START === -->
+
+<style id="ov-nsfw-facade-css">
+.ov-nsfw-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 11px 16px; border-radius: 13px; text-decoration: none;
+  font-weight: 800; font-size: 0.86rem; cursor: pointer;
+  background: linear-gradient(135deg, #be123c, #9d174d 60%, #f5c36c);
+  color: #fff; border: 1px solid rgba(251, 113, 133, 0.55);
+  box-shadow: 0 8px 24px rgba(225, 29, 72, 0.35);
+}
+.ov-nsfw-box {
+  max-width: 1180px; margin: 0 auto 36px; padding: 20px;
+  border-radius: 22px; background: rgba(24, 7, 16, 0.92);
+  border: 1px solid rgba(245, 195, 108, 0.38);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+}
+.ov-nsfw-top {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.ov-nsfw-top h2 { margin: 0; font-size: 1.35rem; color: #fdf2f8; }
+.ov-nsfw-top p { margin: 4px 0 0; font-size: 0.84rem; color: #d6b8c4; }
+.ov-nsfw-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 12px;
+}
+.ov-nsfw-card {
+  background: rgba(13, 4, 9, 0.85); border: 1px solid rgba(244, 114, 182, 0.24);
+  border-radius: 15px; padding: 13px; display: grid; gap: 6px;
+}
+.ov-nsfw-tag { font-size: 0.66rem; letter-spacing: 0.12em; color: #f5c36c; font-weight: 700; }
+.ov-nsfw-name { font-size: 1rem; font-weight: 800; color: #fff; }
+.ov-nsfw-desc { font-size: 0.78rem; color: #d6b8c4; line-height: 1.4; }
+.ov-nsfw-link {
+  margin-top: 4px; display: inline-block; color: #fda4af; text-decoration: none;
+  font-size: 0.78rem; font-weight: 700;
+}
+</style>
+
+<section class="ov-nsfw-box" id="nsfw-velvet">
+  <div class="ov-nsfw-top">
+    <div>
+      <span class="ov-nsfw-tag">18+ SOVEREIGN EXPERIENCE · DOM-COIN (L$D)</span>
+      <h2>OurVelvet NSFW &amp; Private Muse</h2>
+      <p>Stanza riservata, schede personaggi e chat AI dedicate su OurVelvet con credito Dom-Coin (L$D €0.0064).</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a class="ov-nsfw-btn" href="/creator/">🔥 Apri Stanza 18+ &amp; AI</a>
+      <a class="cta-btn cta-dark" href="/pay/">💳 Ricarica L$D</a>
+    </div>
+  </div>
+  <div class="ov-nsfw-grid">
+    <div class="ov-nsfw-card">
+      <span class="ov-nsfw-tag">MISTRESS · VIP</span>
+      <div class="ov-nsfw-name">Rubina</div>
+      <div class="ov-nsfw-desc">Protocollo sovrano, regia dominante e scene su misura in velluto cremisi.</div>
+          </div>
+    <div class="ov-nsfw-card">
+      <span class="ov-nsfw-tag">CLUB AI · 18+</span>
+      <div class="ov-nsfw-name">Velvet AGI</div>
+      <div class="ov-nsfw-desc">Atmosfere notturne, giochi di ruolo e generazione prompt visivi istantanei.</div>
+      <a class="ov-nsfw-link" href="/ai-studio/">Apri studio AI →</a>
+    </div>
+    <div class="ov-nsfw-card">
+      <span class="ov-nsfw-tag">CYBER-VELVET</span>
+      <div class="ov-nsfw-name">Kali Core</div>
+      <div class="ov-nsfw-desc">Sessioni private, economia L$D / $OV e accesso rapido ai moduli OurVelvet.</div>
+          </div>
+    <div class="ov-nsfw-card">
+      <span class="ov-nsfw-tag">VAULT · 18+</span>
+      <div class="ov-nsfw-name">Velvet Salon</div>
+      <div class="ov-nsfw-desc">Galleria privata, rituali boost e collegamento diretto con Z-X Pay.</div>
+      
+    </div>
+  </div>
+</section>
+<!-- === OURVELVET_NSFW_FACADE_END === -->
+
+
+<footer class="ov-foot sans">
+  <div><a href="/verifica/">Verifica firma</a><a href="https://x-zdos.it/">ZDOS</a><a href="https://t.me/OurVelvetHub" rel="noopener">Telegram</a><a href="https://discord.gg/4CGZrAAxaq" rel="noopener">Discord</a><a href="https://x.com/Rubinvonblut" rel="noopener">X</a><a href="/assets/home-completa.html">Home completa (archivio)</a></div>
+  <div class="co">18+ · safeword ROSSO · © 2026 ZDOS1.3 · P.IVA 11040550961</div>
+</footer>
+
+<!-- MODALE CREA ACCOUNT -->
+<div id="authModal" class="modal-bg sans">
+  <div class="modal">
+    <h3>Crea Account OurVelvet</h3>
+    <p>Scegli il tuo accesso sovrano per sbloccare Card ¥, preferiti e sessione Hub 18+.</p>
+    <button class="auth-btn phantom" onclick="connectPhantom()">👻 Continua con Phantom (Solana)</button>
+    <button class="auth-btn x" onclick="socialLogin('X')">𝕏 Continua con X</button>
+    <button class="auth-btn fb" onclick="socialLogin('Facebook')">📘 Continua con Facebook</button>
+    <button class="auth-btn ig" onclick="socialLogin('Instagram')">📸 Continua con Instagram</button>
+    <button class="modal-close" onclick="closeAuth()">Chiudi</button>
+  </div>
+</div>
+
+<script>
+  const OV_CA = '2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump';
+
+  function toggleMenu() {
+    document.getElementById('menuDrawer').classList.toggle('open');
+  }
+  function openAuth() { document.getElementById('authModal').classList.add('open'); }
+  function closeAuth() { document.getElementById('authModal').classList.remove('open'); }
+
+  function copyCA() {
+    navigator.clipboard.writeText(OV_CA).then(() => {
+      const el = document.getElementById('caLabel');
+      el.textContent = '✅ CA $OV copiato!';
+      setTimeout(() => el.textContent = '📋 Copia CA $OV: 2EN6Y1z...brspump', 2000);
+    });
+  }
+
+  function setAccountBadge(label) {
+    localStorage.setItem('ov_user', label);
+    document.getElementById('accountBtn').textContent = '✓ ' + label;
+    closeAuth();
+  }
+
+  async function connectPhantom() {
+    if (window.solana && window.solana.isPhantom) {
+      try {
+        const res = await window.solana.connect();
+        const pk = res.publicKey.toString();
+        setAccountBadge('👻 ' + pk.slice(0, 4) + '...' + pk.slice(-4));
+      } catch (e) { alert('Connessione Phantom annullata.'); }
+    } else {
+      window.open('https://phantom.app/', '_blank');
+    }
+  }
+
+  function socialLogin(provider) {
+    const handle = prompt(`Inserisci il tuo nome utente ${provider} per creare il profilo OurVelvet:`);
+    if (handle && handle.trim()) setAccountBadge(`${provider}: @${handle.trim().replace(/^@/, '')}`);
+  }
+
+  const savedUser = localStorage.getItem('ov_user');
+  if (savedUser) document.getElementById('accountBtn').textContent = '✓ ' + savedUser;
+
+  /* Generatore Ambient Lo-Fi Notturno (Web Audio API, zero file esterni) */
+  let audioCtx = null, lofiTimer = null, lofiOn = false;
+  const chords = [[220, 261.63, 329.63, 392], [174.61, 220, 261.63, 329.63], [196, 246.94, 293.66, 392], [164.81, 196, 246.94, 329.63]];
+  let step = 0;
+
+  function playChord() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass'; filter.frequency.value = 620;
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.exponentialRampToValueAtTime(0.06, now + 0.8);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 3.4);
+    filter.connect(gain); gain.connect(audioCtx.destination);
+    chords[step % chords.length].forEach(freq => {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'triangle'; osc.frequency.value = freq;
+      osc.connect(filter); osc.start(now); osc.stop(now + 3.5);
+    });
+    step++;
+  }
+
+  function toggleLofi() {
+    const btn = document.getElementById('lofiBtn');
+    const st = document.getElementById('lofiState');
+    if (!lofiOn) {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      playChord();
+      lofiTimer = setInterval(playChord, 3500);
+      lofiOn = true;
+      btn.textContent = '⏸ Pausa Lo-Fi';
+      st.textContent = 'In riproduzione · Midnight Velvet Synth';
+    } else {
+      clearInterval(lofiTimer);
+      lofiOn = false;
+      btn.textContent = '▶ Attiva Lo-Fi';
+      st.textContent = 'In pausa · 68 BPM';
+    }
+  }
+
+  async function checkDomBackend() {
+    const el = document.getElementById('domStatus');
+    el.textContent = 'Sincronizzazione con /api/velvet-pay/...';
+    try {
+      const r = await fetch('/api/velvet-pay/health');
+      el.textContent = r.ok ? '✅ Nodo ¥L$D online · Velvet Pay pronto' : '⚡ Velvet Pay pronto (apri wallet)';
+    } catch {
+      el.textContent = '⚡ Velvet Pay pronto (apri wallet)';
+    }
+  }
+
+</script>
+<!-- ZDOS-UNIFIED-COINS-V1 -->
+<div id="zdos-coin-registry" data-coins="BONK,OV,DSN,LSD,L$D,XZSOL,CAKE,WBNB,SOL" data-lsd-peg="0.0064" data-zx-pay="https://zx.x-zdos.it/" style="display:none;">
+  ZDOS Assets: BONK · $OV · $DSN · Dom-Coin L$D (€0.0064) · $xzSOL · CAKE · WBNB · SOL · ZX Pay https://zx.x-zdos.it/
+</div>
+
+<script src="/assets/ov-home-restore.js?v=20261128r1" defer></script>
+<script src="/assets/ov-blockchain-menu.js?v=2" defer></script>
+</body>
+</html>
+<!-- ov-cta: includi /var/www/ourvelvet/static/resort-18-cta.html oppure linka /destinations/ -->

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Miner merito VELVET · OurVelvet 18+</title>
+<meta name="description" content="Il miner merito di OurVelvet: punti per contributi reali (inviti accolti, verifiche, opere certificate, quest), fondo merito on-chain, registro pubblico dei pagamenti. Premio per contributo, non rendimento.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://ourvelvet.online/merito/">
+<link rel="icon" href="/assets/vz-coin.png" type="image/png">
+<meta property="og:title" content="Miner merito VELVET · OurVelvet">
+<meta property="og:description" content="Punti per contributi reali, fondo con tetto, registro pubblico. Premio per contributo, non rendimento.">
+<meta property="og:image" content="https://x-zdos.it/ecosistema/og.png">
+<meta name="theme-color" content="#020002">
+<link rel="preload" href="/merito/fonts/Cinzel-normal-latin-1.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/merito/fonts/JetBrainsMono-normal-latin-3.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/merito/merito.css?v=1">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OurVelvet">
+<meta property="og:locale" content="it_IT">
+<meta property="og:url" content="https://ourvelvet.online/merito/">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Miner merito VELVET · OurVelvet 18+">
+<meta name="twitter:description" content="Il miner merito di OurVelvet: punti per contributi reali, fondo merito on-chain, registro pubblico dei pagamenti. Premio per contributo, non rendimento.">
+<meta name="twitter:image" content="https://x-zdos.it/ecosistema/og.png">
+</head>
+<body>
+<div class="wrap">
+<header><a class="logo" href="/">OV<span>♥</span></a><div class="brand">OURVELVET <span>&amp; ROSE</span></div>
+<nav><a href="/">Home</a><a href="/radar/">Radar</a><a href="/badge/">Badge</a><a href="/znft/">zNFT</a><a href="#regole">Regole</a><a href="#registro">Registro</a><a href="#ov">$OV</a></nav></header>
+
+<div class="hero">
+  <span class="chip">MINER MERITO · PREMI PER CONTRIBUTO · NON RENDIMENTO</span>
+  <h1>Il merito si mina con quello che fai.</h1>
+  <p>Ogni invito accolto, ogni verifica, ogni opera certificata e ogni quest vale punti. I punti sono calcolati da eventi reali del Radar, dei badge, di zNFT e di ZQuest, registrati e firmati da <b>zcomm</b>. Ogni settimana il fondo merito divide un premio con tetto tra i profili verificati che hanno contribuito. Detenere VELVET da solo non dà punti.</p>
+  <p class="status" id="status">Carico i dati…</p>
+</div>
+
+<section id="contatori">
+  <div class="kpis">
+    <div class="kpi"><b id="k-prof">—</b><span>profili Radar</span></div>
+    <div class="kpi"><b id="k-ver">—</b><span>verificati</span></div>
+    <div class="kpi dom"><b id="k-dom">—</b><span>Mistress/Master attivi</span><i id="k-dom2"></i></div>
+    <div class="kpi"><b id="k-sub">—</b><span>Fedeli/Slave attivi</span></div>
+    <div class="kpi gold"><b id="k-fund">—</b><span>VELVET nel fondo (on-chain)</span><i id="k-fund2"></i></div>
+    <div class="kpi"><b id="k-week">—</b><span id="k-week2">settimana</span></div>
+    <div class="kpi"><b id="k-pool">—</b><span>pool della settimana</span><i id="k-pool2"></i></div>
+    <div class="kpi"><b id="k-quota">—</b><span>quota per attivo · <em>stima</em></span><i id="k-quota2"></i></div>
+  </div>
+</section>
+
+<section id="grafico">
+  <h2>Punti per ruolo e per giorno</h2>
+  <p class="note">Punti attività base degli ultimi 30 giorni (ora di Roma), dagli eventi reali. Si aggiorna da solo ogni 30 secondi.</p>
+  <div class="card"><canvas id="chart" width="1100" height="320" aria-label="Grafico punti per giorno e ruolo"></canvas><div class="legend" id="legend"></div><p class="note" id="chart-empty" hidden>Ancora nessun punto: il grafico si riempie con i primi inviti accolti, le verifiche e le opere certificate.</p></div>
+  <div class="roles" id="roles"></div>
+</section>
+
+<section id="mio">
+  <h2>Il mio merito</h2>
+  <div class="card" id="me"><p class="note">Controllo l'accesso al Radar…</p></div>
+</section>
+
+<section id="classifica">
+  <h2>Classifica della settimana</h2>
+  <div class="card tbl"><table><thead><tr><th>ID</th><th>Ruolo</th><th>Base</th><th>Molt.</th><th>Punti</th><th>Stima VELVET</th><th>Stato</th></tr></thead><tbody id="lead"></tbody></table></div>
+  <p class="note">La stima usa i punti fin qui: il valore definitivo si calcola alla chiusura della settimana.</p>
+</section>
+
+<section id="calendario">
+  <h2>Calendario del fondo</h2>
+  <div class="card"><div id="cal"></div><p class="note" id="cal-note"></p></div>
+</section>
+
+<section id="regole">
+  <h2>Regole</h2>
+  <div class="cols">
+    <div class="card"><h3>Punti attività</h3><table class="mini"><tbody id="pts"></tbody></table></div>
+    <div class="card"><h3>Moltiplicatori</h3><ul id="mult"></ul></div>
+    <div class="card"><h3>Chi viene pagato</h3><ul id="elig"></ul></div>
+    <div class="card"><h3>Anti-sybil</h3><ul id="sybil"></ul></div>
+  </div>
+  <p class="note">I premi sono un riconoscimento per contributi verificabili alla community, pagati da un fondo con tetto fisso. Non sono un investimento, non sono un rendimento e non dipendono da quanti VELVET hai: senza punti attività il premio è zero. Nessuno promette un prezzo per VELVET.</p>
+</section>
+
+<section id="registro">
+  <h2>Registro pubblico dei pagamenti</h2>
+  <div class="card tbl"><table><thead><tr><th>Settimana</th><th>ID</th><th>VELVET</th><th>Stato</th><th>Transazione</th></tr></thead><tbody id="reg"></tbody></table></div>
+  <p class="note" id="reg-note"></p>
+</section>
+
+<section id="ov">
+  <h2>$OV · la moneta ufficiale delle Mistress</h2>
+  <p class="note">VELVET ($OV) è il gettone di comunità di OurVelvet. Dati letti adesso dalla blockchain Solana. Nessun prezzo, nessun obiettivo di prezzo, nessun rendimento.</p>
+  <div class="cols">
+    <div class="card"><h3>On-chain</h3><table class="mini"><tbody id="ovt"><tr><td>Carico…</td></tr></tbody></table></div>
+    <div class="card"><h3>A cosa serve</h3><ul id="ovuse">
+      <li><b>Premi merito</b> <span class="st on">attivo</span> · il fondo paga chi contribuisce, con tetto.</li>
+      <li><b>Badge e ruoli holder</b> <span class="st on">attivo</span> · su Discord con <code>/verifica</code> firmando con il wallet.</li>
+      <li><b>zNFT</b> <span class="st wait">in prova</span> · galleria su devnet con moneta di test; in $OV quando passa su mainnet.</li>
+      <li><b>Stanze</b> <span class="st wait">in arrivo</span> · accesso a stanze ed eventi per chi ha il badge.</li>
+      <li><b>Tip ai creator</b> <span class="st wait">in arrivo</span> · i fan premiano i creator adulti; i post li pubblicano sempre loro.</li>
+    </ul></div>
+    <div class="card"><h3>Conti principali</h3><table class="mini"><tbody id="ovacc"><tr><td>Carico…</td></tr></tbody></table></div>
+  </div>
+</section>
+
+<section id="zcomm">
+  <h2>zcomm · eventi in tempo reale</h2>
+  <p class="note">Il bus che collega ZDOS e OurVelvet: Radar, badge, zNFT, ZQuest e i bot pubblicano qui eventi firmati (HMAC). Solo ID tecnici, niente handle né email.</p>
+  <div class="card tbl"><table><thead><tr><th>Quando</th><th>Evento</th><th>Fonte</th><th>ID</th></tr></thead><tbody id="ev"></tbody></table></div>
+</section>
+
+<footer>18+ · consenso · safeword <b class="rosso">ROSSO</b> · VELVET ($OV) è un gettone di comunità: i premi merito ricompensano contributi, non promettono rendimenti · Il codice Zlang scritto nell'IDE non è ancora tracciabile e non dà punti · velvet.x-zdos.it · ZDOS1.3</footer>
+</div>
+<script src="/merito/badge-card.js?v=1"></script>
+<script src="/merito/merito.js?v=1"></script>
+  <script src="/portal-assets/velvet-dock.js" defer></script>
+<!-- ZDOS-UNIFIED-COINS-V1 -->
+<div id="zdos-coin-registry" data-coins="BONK,OV,DSN,LSD,L$D,XZSOL,CAKE,WBNB,SOL" data-zx-pay="https://zx.x-zdos.it/" style="display:none;">
+  ZDOS Assets: BONK · $OV · $DSN · Dom-Coin L$D · $xzSOL · CAKE · WBNB · SOL · ZX Pay https://zx.x-zdos.it/
+</div>
+</body>
+</html>

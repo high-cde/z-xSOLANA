@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="it" class="t-zx">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aggiungi liquidità L$D · ZDOS</title>
+<meta name="description" content="Pagina di auto-firma: aggiungi liquidità Spot al pool Meteora DLMM L$D–SOL dal wallet A4JY5. Importi live, simulazione prima della firma.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#07040f">
+<link rel="stylesheet" href="/firma/firma.css?v=1">
+<link rel="stylesheet" href="/lsd-liquidita/lsd-liquidita.css?v=1">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://x-zdos.it/lsd-liquidita/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ZDOS × Velvet">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="Aggiungi liquidità L$D · ZDOS">
+<meta property="og:description" content="Liquidità Spot al pool Meteora DLMM L$D–SOL dal wallet A4JY5, con importi live e simulazione prima della firma.">
+<meta property="og:url" content="https://x-zdos.it/lsd-liquidita/">
+<meta property="og:image" content="https://x-zdos.it/ecosistema/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<div class="fm-wrap">
+  <header class="fm-top">
+    <a class="fm-brand" href="/">ZDOS</a>
+    <nav aria-label="Pagina"><a href="#posizione">Posizione</a><a href="#stato">Stato</a><a href="#costi">Costi</a><a href="#firma">Firma</a></nav>
+  </header>
+
+  <h1>Aggiungi liquidità · L$D–SOL</h1>
+  <p class="fm-lead">Pool Meteora DLMM di Dom-Coin, strategia <b>Spot</b> su un range largo attorno al prezzo attuale. Gli importi si calcolano dal pool e dai saldi live e si aggiornano da soli ogni 10 secondi. La transazione si costruisce nel tuo browser e la firmi tu in Phantom: il sito non firma e non invia nulla.</p>
+
+  <section class="fm-card rv-warn" aria-labelledby="hW">
+    <h2 id="hW">Prima di firmare</h2>
+    <ul class="fm-list">
+      <li><b>Perdita temporanea (impermanent loss):</b> se il prezzo di L$D si muove, la posizione si ribilancia e alla fine puoi ritrovarti con più L$D e meno SOL (o viceversa) rispetto a quanto depositato.</li>
+      <li><b>Liquidità sottile:</b> il pool oggi ha riserve molto piccole; pochi scambi possono spostare il prezzo e farlo uscire dal range. Fuori range la posizione non guadagna commissioni.</li>
+      <li><b>I fondi restano tuoi:</b> SOL e L$D finiscono nel pool come <b>tua posizione</b> (conto posizione di proprietà di A4JY5). Li puoi ritirare in qualsiasi momento da <a href="https://app.meteora.ag/dlmm/383iZ9nNfnnMtpM6oY7Gu4Nn87EtjwdPikkwctExjkze" target="_blank" rel="noopener noreferrer">app.meteora.ag ↗</a>.</li>
+      <li>Funziona solo con il wallet <span class="rv-mono">A4JY5VGS1oGSqMxW6a7EtwTg7q6wjG3uxVpNaHPyG9PJ</span>. Restano sempre almeno 0,05 SOL per le commissioni future.</li>
+      <li>Informazione tecnica, non è un consiglio di investimento.</li>
+    </ul>
+  </section>
+
+  <section class="fm-card" id="posizione" aria-labelledby="hP">
+    <h2 id="hP">La tua posizione attuale <span class="fm-chip">aperta il 28/11/2026</span></h2>
+    <dl class="rv-dl">
+      <dt>Posizione</dt><dd><a class="rv-mono" href="https://solscan.io/account/4Eg17LYZVuXZd6NPYW2AzeudhD3Yc3X78pm9gkN3U3fK" target="_blank" rel="noopener noreferrer">4Eg17…U3fK ↗</a></dd>
+      <dt>Pool</dt><dd><a href="https://app.meteora.ag/dlmm/383iZ9nNfnnMtpM6oY7Gu4Nn87EtjwdPikkwctExjkze" target="_blank" rel="noopener noreferrer">Meteora DLMM L$D–SOL ↗</a> · strategia Spot, range ±45%</dd>
+      <dt>Proprietà</dt><dd>Wallet A4JY5: la posizione è tua e si chiude o si ritira da Meteora quando vuoi. Il rent della posizione (circa 0,0715 SOL) torna indietro alla chiusura.</dd>
+    </dl>
+    <p class="fm-small">Un secondo deposito crea una nuova posizione separata e richiede altri SOL su A4JY5: non è necessario per il piano ZDOS1.3, serve solo se vuoi più liquidità.</p>
+  </section>
+
+  <section class="fm-card" id="stato" aria-labelledby="hS">
+    <h2 id="hS">Stato live <span class="fm-small">· aggiornato <span id="upd">…</span></span></h2>
+    <dl class="rv-dl">
+      <dt>Saldo SOL A4JY5</dt><dd id="bSol">lettura…</dd>
+      <dt>Saldo L$D A4JY5</dt><dd id="bLsd">lettura…</dd>
+      <dt>Prezzo attuale</dt><dd id="pPrice">…</dd>
+      <dt>Bin attivo</dt><dd id="pActive">…</dd>
+      <dt>Riserve del pool</dt><dd id="pRes">…</dd>
+    </dl>
+    <p class="fm-small"><a href="https://solscan.io/account/383iZ9nNfnnMtpM6oY7Gu4Nn87EtjwdPikkwctExjkze" target="_blank" rel="noopener noreferrer">Pool su Solscan ↗</a></p>
+  </section>
+
+  <section class="fm-card" id="costi" aria-labelledby="hC">
+    <h2 id="hC">Range e costi</h2>
+    <label class="fm-l" for="pct">Ampiezza del range attorno al prezzo</label>
+    <select id="pct" class="rv-in"><option value="37.5">±37,5% (più economico: 2 bin array invece di 3)</option><option value="40">±40%</option><option value="45" selected>±45% (consigliato)</option><option value="50">±50%</option></select>
+    <dl class="rv-dl">
+      <dt>Bin</dt><dd id="rBins">…</dd>
+      <dt>Prezzo min → max</dt><dd id="rPx">…</dd>
+      <dt>Posizioni</dt><dd id="rPos">…</dd>
+      <dt>Rent posizione</dt><dd id="cPos">…</dd>
+      <dt>Rent bin array</dt><dd id="cArr">…</dd>
+      <dt>wSOL temporaneo</dt><dd id="cWsol">…</dd>
+      <dt>Riserva fissa</dt><dd id="cRes">…</dd>
+    </dl>
+    <p class="fm-small">Il range ±37,5% resta dentro 2 bin array da 70 bin: evita il bin array in più (0,0714 SOL non rimborsabili) quando non esiste ancora, e il rent della posizione scende. Oggi i bin array di questa zona esistono già grazie al primo deposito, quindi su questo pool non c’è più nessun costo non rimborsabile in più.</p>
+    <p class="fm-small">Con bin step 80 (0,8% per bin) un range ±40–50% richiede 107–137 bin: più dei 70 di una posizione base. Si usa <b>una sola posizione estesa</b> (fino a 1400 bin) creata e riempita in <b>una sola transazione</b>, invece di più posizioni separate.</p>
+    <h2 class="fm-mt">SOL da avere su A4JY5 (prezzo live)</h2>
+    <div class="rv-tw"><table class="rv-t"><thead><tr><th>Deposito SOL</th><th>L$D abbinati</th><th>Saldo SOL necessario</th><th>Da caricare</th></tr></thead><tbody id="tbl"></tbody></table></div>
+    <p class="fm-small">Saldo necessario = deposito + rent posizione + rent bin array + wSOL temporaneo + commissioni + 0,05 SOL di riserva.</p>
+  </section>
+
+  <section class="fm-card" id="firma" aria-labelledby="hF">
+    <h2 id="hF">1 · Collega il wallet</h2>
+    <div id="walletList" class="fm-row"></div>
+    <p class="fm-status" id="connStatus" role="status" aria-live="polite"></p>
+
+    <h2 class="fm-mt">2 · Importi</h2>
+    <label class="fm-l" for="solIn">SOL da depositare</label>
+    <div class="fm-row"><input id="solIn" class="rv-in" type="text" inputmode="decimal" value="0" autocomplete="off"><button type="button" class="fm-btn fm-ghost" id="maxBtn">Massimo possibile</button></div>
+    <dl class="rv-dl">
+      <dt>Massimo possibile ora</dt><dd id="maxSol">…</dd>
+      <dt>L$D abbinati (Spot bilanciato)</dt><dd><span id="aLsd">…</span> <span class="fm-small" id="aVal"></span></dd>
+      <dt>Quota del pool</dt><dd id="aShare">…</dd>
+      <dt>SOL che resta dopo rent e commissioni</dt><dd id="aRemain">…</dd>
+    </dl>
+    <p class="fm-status" id="feas" role="status" aria-live="polite"></p>
+    <div class="fm-row"><button type="button" class="fm-btn" id="simBtn" disabled>Simula la transazione</button></div>
+
+    <div id="simBox" hidden>
+      <h2 class="fm-mt">3 · Riepilogo simulato</h2>
+      <dl class="rv-dl">
+        <dt>Deposito</dt><dd id="sDep"></dd>
+        <dt>Range</dt><dd id="sRange"></dd>
+        <dt>SOL rimanente</dt><dd id="sRemain"></dd>
+        <dt>Compute</dt><dd id="sUnits"></dd>
+        <dt>Transazione</dt><dd id="sSize"></dd>
+        <dt>Nuova posizione</dt><dd class="rv-mono" id="sPos"></dd>
+      </dl>
+      <label class="fm-check"><input type="checkbox" id="chk"> <span>Ho letto: rischio di perdita temporanea, liquidità sottile; i fondi restano nel pool come mia posizione, ritirabile da Meteora. Il rent del bin array nuovo non torna indietro.</span></label>
+      <div class="fm-row fm-mt"><button type="button" class="fm-btn" id="go" disabled>Firma e aggiungi liquidità</button></div>
+    </div>
+    <p class="fm-status" id="status" role="status" aria-live="polite"></p>
+    <div id="done" hidden>
+      <p><span class="fm-chip">✓ transazione inviata</span></p>
+      <dl class="rv-dl"><dt>Firma</dt><dd class="rv-mono" id="sig"></dd><dt>Solscan</dt><dd><a id="scan" target="_blank" rel="noopener noreferrer">apri ↗</a></dd>
+      <dt>Posizione</dt><dd><span class="rv-mono" id="posAddr"></span> · <a id="posScan" target="_blank" rel="noopener noreferrer">Solscan ↗</a></dd>
+      <dt>Riserve pool ora</dt><dd id="after">verifica…</dd></dl>
+    </div>
+    <pre id="detail" class="rv-pre"></pre>
+  </section>
+
+  <p class="fm-foot">ZDOS1.3 · P.IVA 11040550961 · Nessuna chiave transita dal sito: la chiave della posizione nasce nel tuo browser e resta in questa scheda. Informazione tecnica, non è un consiglio di investimento.</p>
+</div>
+<script src="/lsd-liquidita/lsd-liquidita.js?v=2"></script>
+</body>
+</html>

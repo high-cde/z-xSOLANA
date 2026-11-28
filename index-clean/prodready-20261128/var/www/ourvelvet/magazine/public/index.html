@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OURVELVET & ROSE // Magazine 18+, Social & Markets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:wght@600;700&family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #080206;
+      --neon-pink: #ff1e6e;
+      --gold: #d7b46a;
+      --sol: #14f195;
+      --text: #f6edf2;
+      --muted: #cbb1bf;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-dark);
+      background-image:
+        repeating-linear-gradient(0deg, rgba(255,20,95,0.11) 0px, rgba(255,20,95,0.11) 1px, rgba(20,3,10,0.94) 1px, rgba(20,3,10,0.94) 4px),
+        radial-gradient(circle at 50% 10%, #6b0625 0%, #20030e 55%, #080206 100%);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      min-height: 100vh;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .cinzel { font-family: 'Cinzel', Georgia, serif; }
+    .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
+
+    /* Gate 18+ */
+    #ageGate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(6, 2, 4, 0.96); backdrop-filter: blur(20px);
+      display: flex; align-items: center; justify-content: center; padding: 18px;
+    }
+    .gate-box {
+      max-width: 430px; width: 100%;
+      background: linear-gradient(160deg, rgba(58,5,24,0.94), rgba(12,3,8,0.98));
+      border: 1px solid rgba(255,30,110,0.48); border-radius: 22px; padding: 28px; text-align: center;
+    }
+
+    /* Header Ultra-Pulito */
+    header {
+      position: sticky; top: 0; z-index: 70;
+      background: rgba(10, 3, 7, 0.95); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 30, 110, 0.25);
+    }
+    .nav-bar {
+      max-width: 1240px; margin: 0 auto; padding: 10px 14px;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .brand-group { display: flex; align-items: center; gap: 9px; text-decoration: none; color: #fff; }
+    .ov-orb {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ff1e6e, #780522 76%);
+      border: 1.5px solid rgba(255,130,175,0.65); box-shadow: 0 0 14px rgba(255,30,110,0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cinzel', serif; font-weight: 800; font-size: 12px; color: #fff;
+    }
+    .brand-title { font-size: 14px; letter-spacing: 1.2px; font-weight: 700; }
+    .brand-sub { font-size: 9px; letter-spacing: 1.8px; color: var(--gold); display: block; }
+
+    .menu-btn {
+      cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 999px;
+      background: linear-gradient(180deg, rgba(130,12,48,0.8), rgba(55,5,20,0.92));
+      border: 1px solid rgba(255,55,125,0.65); color: #ff9ec0; font-weight: 800; font-size: 11px;
+    }
+
+    /* Barra Mercati Crypto & Azionario Sottile */
+    .market-strip {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      background: rgba(6, 2, 5, 0.85);
+      padding: 5px 14px; font-size: 10.5px; color: #e2c9d5;
+      display: flex; align-items: center; gap: 14px; overflow-x: auto; white-space: nowrap;
+    }
+    .market-strip { max-width: 100%; box-sizing: border-box; }
+    header { max-width: 100vw; }
+    .m-chip { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px; }
+    .up { color: var(--sol); }
+    .dn { color: #ff4d6d; }
+
+    /* Menu Completo TUTTE LE VOCI DOC DI $OV (Dietro a 🔥 MENU ▼) */
+    #dedicatedDrawer {
+      display: none; position: fixed; top: 58px; right: 12px; z-index: 99;
+      width: 340px; max-width: calc(100vw - 24px); max-height: 82vh; overflow-y: auto;
+      background: rgba(12, 3, 9, 0.98); backdrop-filter: blur(22px);
+      border: 1px solid rgba(215, 180, 106, 0.5); border-radius: 20px; padding: 15px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.96);
+    }
+    #dedicatedDrawer.open { display: block; }
+    .d-sec { font-size: 9.5px; letter-spacing: 1.6px; color: var(--gold); margin: 10px 0 5px; text-transform: uppercase; }
+    .d-link {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 10px; border-radius: 9px; margin-bottom: 4px;
+      background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.07);
+      color: #fff; text-decoration: none; font-size: 11.5px; font-weight: 600;
+    }
+    .d-link:hover { border-color: var(--neon-pink); background: rgba(255,30,110,0.16); }
+    .ca-copy {
+      width: 100%; text-align: left; cursor: pointer; font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; padding: 7px 9px; border-radius: 8px; margin-bottom: 5px;
+      background: rgba(20, 241, 149, 0.08); border: 1px solid rgba(20, 241, 149, 0.35); color: var(--sol);
+    }
+
+    /* Tabs Compatte: Rivista | Social & Velvet AGI | Mercati & Miner */
+    .mode-bar {
+      max-width: 1240px; margin: 14px auto 0; padding: 0 14px;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tab-btn {
+      padding: 7px 13px; border-radius: 999px; font-size: 11px; font-weight: 800;
+      border: 1px solid rgba(255,255,255,0.14); background: rgba(16,4,10,0.85);
+      color: #ebd3df; cursor: pointer;
+    }
+    .tab-btn.active { background: var(--gold); color: #080206; border-color: var(--gold); }
+
+    .filter-row {
+      max-width: 1240px; margin: 10px auto 0; padding: 0 14px;
+      display: flex; gap: 8px; align-items: center;
+    }
+    .rub-btn {
+      padding: 7px 12px; border-radius: 999px; font-size: 11px; font-weight: 800;
+      background: rgba(16,4,10,0.9); border: 1px solid rgba(215,180,106,0.45); color: var(--gold); cursor: pointer;
+      white-space: nowrap;
+    }
+    .search-in {
+      flex: 1; background: rgba(14,4,9,0.9); border: 1px solid rgba(255,55,125,0.3);
+      border-radius: 999px; padding: 7px 13px; color: #fff; font-size: 11.5px;
+    }
+    #rubrichePanel {
+      max-width: 1240px; margin: 8px auto 0; padding: 0 14px; display: none; flex-wrap: wrap; gap: 6px;
+    }
+    #rubrichePanel.open { display: flex; }
+    .cat-pill {
+      padding: 5px 11px; border-radius: 999px; font-size: 10.5px; font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.14); background: rgba(14,4,9,0.9); color: #f0d7e3; cursor: pointer;
+    }
+    .cat-pill.active { background: var(--neon-pink); color: #fff; border-color: var(--neon-pink); }
+
+    /* Griglia Card Più Piccole, Compatte e Pulite */
+    .grid {
+      max-width: 1240px; margin: 14px auto 48px; padding: 0 14px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(265px, 1fr)); gap: 12px;
+    }
+    .card {
+      background: linear-gradient(165deg, rgba(24,5,14,0.88), rgba(10,3,7,0.94));
+      border: 1px solid rgba(255, 45, 115, 0.22);
+      border-radius: 15px; padding: 14px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      transition: transform 0.18s, border-color 0.18s;
+    }
+    .card:hover { transform: translateY(-2px); border-color: var(--gold); }
+    .c-tag {
+      font-size: 9px; font-weight: 700; letter-spacing: 1px; color: #ff9ec0;
+      background: rgba(255,30,110,0.16); border: 1px solid rgba(255,30,110,0.36);
+      padding: 2px 8px; border-radius: 999px; display: inline-block;
+    }
+    .card h2 {
+      font-size: 18px; line-height: 1.2; margin-top: 8px; color: #fff;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .card p {
+      font-size: 11.5px; line-height: 1.45; color: var(--muted); margin-top: 6px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .c-meta {
+      margin-top: 10px; padding-top: 7px; border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex; justify-content: space-between; font-size: 9.5px; color: #bfa0b0;
+    }
+    .c-btns { display: flex; gap: 5px; margin-top: 9px; }
+    .b-read {
+      flex: 1; padding: 7px 9px; border-radius: 999px; border: none; cursor: pointer;
+      background: var(--gold); color: #080206; font-weight: 800; font-size: 10.5px;
+    }
+    .b-act {
+      padding: 7px 9px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.05); color: #fff; font-size: 10px; font-weight: 700;
+      text-decoration: none; cursor: pointer;
+    }
+    .b-mine { border-color: rgba(20,241,149,0.45); color: var(--sol); }
+
+    /* Sezione Social & Human Miner */
+    .panel-box {
+      max-width: 1240px; margin: 14px auto 48px; padding: 0 14px;
+      display: none; grid-template-columns: 1.3fr 0.7fr; gap: 14px;
+    }
+    .panel-box.active { display: grid; }
+    @media (max-width: 820px) { .panel-box.active { grid-template-columns: 1fr; } }
+    .glass-card {
+      background: rgba(16, 4, 11, 0.92); border: 1px solid rgba(255,45,115,0.28);
+      border-radius: 18px; padding: 16px;
+    }
+    .s-input, .s-textarea {
+      width: 100%; background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 10px; padding: 9px 11px; color: #fff; font-size: 12px; margin-bottom: 8px;
+    }
+    .post-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 13px; padding: 12px; margin-top: 10px;
+    }
+    .agi-box {
+      margin-top: 8px; padding: 9px 11px; border-radius: 10px;
+      background: rgba(255, 30, 110, 0.12); border-left: 3px solid var(--neon-pink);
+      font-size: 11.5px; line-height: 1.5; color: #ffd4e5;
+    }
+
+    /* Modale Lettura + Commento Velvet AGI */
+    #readerModal {
+      position: fixed; inset: 0; z-index: 999; background: rgba(5, 2, 4, 0.94);
+      backdrop-filter: blur(16px); display: none; overflow-y: auto; padding: 20px 12px;
+    }
+    .reader-box {
+      max-width: 720px; margin: 0 auto;
+      background: linear-gradient(165deg, #200411, #0b0207);
+      border: 1px solid rgba(255,45,115,0.45); border-radius: 20px; padding: 24px;
+    }
+    .reader-body p { font-size: 16.5px; line-height: 1.7; color: #f0dfe8; margin-bottom: 14px; }
+  </style>
+
+
+<style id="ov-cosmopolitan-plus-css">
+  .ov-hero-mag {
+    margin: 14px 0 18px;
+    padding: 20px;
+    border-radius: 20px;
+    background:
+      linear-gradient(135deg, rgba(22,8,18,0.96) 0%, rgba(76,11,36,0.92) 55%, rgba(28,16,38,0.96) 100%);
+    border: 1px solid rgba(245,185,66,0.45);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.65);
+    display: grid;
+    gap: 12px;
+  }
+  .ov-kicker-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .ov-kicker {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: #fde68a;
+    background: rgba(244,63,94,0.22);
+    border: 1px solid rgba(245,185,66,0.45);
+    padding: 5px 11px;
+    border-radius: 999px;
+  }
+  .ov-issue-tag {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: #fda4af;
+    text-transform: uppercase;
+  }
+  .ov-cover-title {
+    margin: 0;
+    font-size: clamp(24px, 5vw, 36px);
+    line-height: 1.12;
+    font-weight: 900;
+    color: #fff1f2;
+    letter-spacing: -0.4px;
+  }
+  .ov-cover-title em {
+    font-style: italic;
+    color: #f5b942;
+  }
+  .ov-cover-deck {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #fce7f3;
+    max-width: 68ch;
+  }
+  .ov-cta-strip {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .ov-cta-btn {
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 9px 14px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #be123c, #f43f5e, #d946ef);
+    color: #fff;
+    border: 0;
+  }
+  .ov-cta-btn.gold {
+    background: linear-gradient(90deg, #b45309, #f5b942);
+    color: #12090e;
+  }
+  .ov-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin: 14px 0 22px;
+  }
+  .ov-story-card {
+    background: rgba(17, 10, 22, 0.92);
+    border: 1px solid rgba(244,63,94,0.28);
+    border-radius: 16px;
+    padding: 16px;
+    display: grid;
+    gap: 8px;
+    transition: transform 0.16s ease, border-color 0.16s ease;
+  }
+  .ov-story-card:hover {
+    transform: translateY(-2px);
+    border-color: #f5b942;
+  }
+  .ov-story-cat {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #f5b942;
+  }
+  .ov-story-h {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.25;
+    font-weight: 800;
+    color: #fff;
+  }
+  .ov-story-p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #e9d5ff;
+  }
+  .ov-story-link {
+    font-size: 12px;
+    font-weight: 800;
+    color: #fda4af;
+    text-decoration: none;
+    margin-top: 4px;
+  }
+</style>
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<script id="ov-sw-cleaner">if("serviceWorker"in navigator)navigator.serviceWorker.getRegistrations().then(r=>r.forEach(x=>x.unregister()));if("caches"in window)caches.keys().then(k=>k.forEach(x=>caches.delete(x)));</script>
+<link rel="icon" href="/assets/vz-coin.png" type="image/png">
+<link rel="canonical" href="https://ourvelvet.online/magazine/">
+<meta name="description" content="Magazine OurVelvet 18+: rubriche, social e mercati. Solo adulti, consenso reciproco.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OurVelvet">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="Magazine · OurVelvet 18+">
+<meta property="og:description" content="Rubriche, social e mercati. Servizio riservato a maggiorenni.">
+<meta property="og:url" content="https://ourvelvet.online/magazine/">
+<meta property="og:image" content="https://x-zdos.it/ecosistema/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+
+<div id="ageGate">
+  <div class="gate-box">
+    <div class="ov-orb" style="width:52px;height:52px;font-size:16px;margin:0 auto 10px;">OV♥</div>
+    <p class="mono" style="color:var(--gold);font-size:10px;letter-spacing:1.8px;">SOLO ADULTI 18+ · CONSENSO · SAFEWORD ROSSO</p>
+    <h2 class="cinzel" style="font-size:21px;margin-top:8px;">OURVELVET & ROSE MAGAZINE</h2>
+    <p style="color:var(--muted);font-size:12.5px;line-height:1.55;margin-top:8px;">
+      Rivista 18+, Social Club con Velvet AGI, Mercati Crypto/Azionario e Human Mining ($OV / $DSN). Conferma la maggiore età.
+    </p>
+    <button class="b-read" style="width:100%;margin-top:16px;padding:12px;font-size:12px;" onclick="enterMag()">HO 18 ANNI O PIÙ · ENTRA</button>
+  </div>
+</div>
+
+<header>
+  <div class="nav-bar">
+    <a href="https://ourvelvet.online/" class="brand-group">
+      <div class="ov-orb">OV♥</div>
+      <div>
+        <div class="brand-title cinzel">OURVELVET & ROSE</div>
+        <span class="brand-sub mono">MAGAZINE 18+ · SOCIAL · MARKETS</span>
+      </div>
+    </a>
+    <button class="menu-btn mono" onclick="toggleMenu()">🔥 MENU DOC $OV ▼</button>
+  </div>
+
+  <!-- Barra Mercati Live Crypto & Azionario -->
+  <div class="market-strip mono" id="marketStrip">
+    <span class="m-chip">● <strong style="color:var(--gold);">MARKETS LIVE:</strong></span>
+    <span class="m-chip" id="m-sol">SOL: --</span>
+    <span class="m-chip" id="m-btc">BTC: --</span>
+    <span class="m-chip" id="m-eth">ETH: --</span>
+  </div>
+</header>
+
+<!-- MENU COMPLETO DI TUTTE LE VOCI DOC DI $OV & ECOSISTEMA (DIETRO AL TASTO) -->
+<nav id="dedicatedDrawer">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <strong class="mono" style="color:#ff9ec0;font-size:10.5px;">CLUB OURVELVET &amp; ROSE 18+</strong>
+    <button onclick="toggleMenu()" style="background:none;border:none;color:#fff;cursor:pointer;font-size:14px;">✕</button>
+  </div>
+
+  <div class="d-sec mono">01 · Club OurVelvet 18+</div>
+  <a class="d-link" href="https://ourvelvet.online/"><span>🏛️ Home OurVelvet &amp; Rose</span><span>→</span></a>
+  <a class="d-link" href="https://ourvelvet.online/ourvelvet"><span>🪪 Card Utente, Gradi &amp; Badge</span><span>→</span></a>
+  <a class="d-link" href="https://ourvelvet.online/creator/"><span>👑 Accesso Creator / Mistress &amp; Slave</span><span>→</span></a>
+  <a class="d-link" href="https://ourvelvet.online/creator-board"><span>📋 Bacheca Mistress &amp; Creator</span><span>→</span></a>
+  <a class="d-link" href="https://ourvelvet.online/live"><span>📼 Red Velvet Videoteca Reale 18+</span><span>→</span></a>
+  <a class="d-link" href="https://ourvelvet.online/discover"><span>🧭 Radar &amp; Esplora</span><span>→</span></a>
+
+  <div class="d-sec mono">02 · Esperienze Live &amp; Community 18+</div>
+  <a class="d-link" href="https://ourvelvet.online/magazine/"><span>💋 Velvet AGI Console (18+)</span><span>→</span></a>
+  <a class="d-link" href="#social" onclick="switchTab('social');toggleMenu();"><span>⛏️ Social Miner (Commenta &amp; Condividi)</span><span>→</span></a>
+  <a class="d-link" href="https://discord.gg/BcMh6vcpQX" target="_blank"><span>💬 Server Discord (118 Stanze Live)</span><span>↗</span></a>
+
+  <div class="d-sec mono">03 · Gettone Comunità $OV (VELVET)</div>
+  <button class="ca-copy" onclick="copyCa('2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump')">📋 Copia CA $OV: 2EN6Y1z...brspump</button>
+</nav>
+
+<!-- Barra Modalità Compatta -->
+<div class="mode-bar">
+  <div class="tabs">
+    <button class="tab-btn active" id="t-mag" onclick="switchTab('mag')">📰 Rivista 18+ (<span id="artCount">0</span>)</button>
+    <button class="tab-btn" id="t-social" onclick="switchTab('social')">💬 Social Club & Velvet AGI</button>
+    <button class="tab-btn" id="t-miner" onclick="switchTab('miner')">⛏️ Classifica Human Miner ($OV)</button>
+  </div>
+  <span class="mono" style="font-size:10.5px;color:var(--sol);" id="mySharesBadge">⛏️ I tuoi Share: 0 $OV-pts</span>
+</div>
+
+<!-- Controlli Rivista -->
+<div class="filter-row" id="magControls">
+  <button class="rub-btn mono" id="rubricaBtn" onclick="toggleRubriche()">📂 RUBRICA: TUTTI ▼</button>
+  <input type="search" id="searchInput" class="search-in" placeholder="Cerca notizia, tema o testata..." oninput="renderGrid()" />
+
+</div>
+<section id="ov-cosmopolitan-cover" aria-label="OurVelvet Cover Editorial">
+  <div class="ov-hero-mag">
+    <div class="ov-kicker-row">
+      <span class="ov-kicker">✦ OURVELVET COVER STORY · EDIZIONE SOVRANA</span>
+      <span class="ov-issue-tag">DESIDERIO · POTERE · STILE · 18+</span>
+    </div>
+    <h2 class="ov-cover-title">Più audace di qualsiasi patinato: <em>il magnetismo di Rubina, Velvet AGI e Kali</em></h2>
+    <p class="ov-cover-deck">
+      Sguardi trattenuti, velluto nero, luce ambrata e complicità senza filtri. Scopri le rubriche, la Sala Lettura, il Podcast serale, la Card Identità <b>¥</b> e il Creator Studio con magia <b>Dom-Coin (L$D)</b>.
+    </p>
+    <div class="ov-cta-strip">
+      <a class="ov-cta-btn gold" href="https://zx.x-zdos.it/#vacation-sec">✦ Escapes & Club 18+</a>
+      <a class="ov-cta-btn gold" href="https://ourvelvet.online/creator-board">📖 Entra in Bacheca, Lettura & Podcast</a>
+      <a class="ov-cta-btn" href="https://ourvelvet.online/creator/">🪄 Apri Creator Studio</a>
+      <a class="ov-cta-btn" href="https://ourvelvet.online/ourvelvet">🪪 Crea Handle ¥</a>
+    </div>
+  </div>
+
+  <div class="ov-grid-3">
+    <article class="ov-story-card">
+      <span class="ov-story-cat">01 · DESIDERIO & TENSIONE</span>
+      <h3 class="ov-story-h">Il potere del silenzio prima del contatto</h3>
+      <p class="ov-story-p">Perché l'attesa misurata, la postura e lo sguardo fisso accendono il desiderio molto più della fretta.</p>
+      <a class="ov-story-link" href="https://ourvelvet.online/creator-board">Leggi nella Sala Lettura →</a>
+    </article>
+
+    <article class="ov-story-card">
+      <span class="ov-story-cat">02 · RUBINA · VELVET AGI · KALI</span>
+      <h3 class="ov-story-h">Quattro Atti nella sala di resina nera</h3>
+      <p class="ov-story-p">Dalla soglia al controllo del respiro: come nasce l'intesa tra chi guida la scena e chi sceglie di affidarsi.</p>
+      <a class="ov-story-link" href="https://ourvelvet.online/discover">Esplora sul Radar Live →</a>
+    </article>
+
+    <article class="ov-story-card">
+      <span class="ov-story-cat">03 · MIDNIGHT AUDIO & $OV</span>
+      <h3 class="ov-story-h">Voci basse, battito e fascino notturno</h3>
+      <p class="ov-story-p">Sintonizzati sul Podcast Lounge, attiva il tuo handle ¥ e sblocca gli incantesimi Dom-Coin (L$D).</p>
+      <a class="ov-story-link" href="https://ourvelvet.online/live">Vai alla Videoteca 18+ →</a>
+    </article>
+  </div>
+</section>
+
+
+<div id="rubrichePanel"></div>
+
+<!-- TAB 1: GRIGLIA CARD COMPATTATE -->
+<main class="grid" id="articlesGrid"></main>
+
+<!-- TAB 2 & 3: SOCIAL CLUB + COMMENTI CON VELVET AGI + HUMAN MINER -->
+<section class="panel-box" id="socialSection">
+  <div class="glass-card">
+    <h3 class="cinzel" style="font-size:17px;color:var(--gold);">💬 Bacheca Social & Dialogo con Velvet AGI</h3>
+    <p style="font-size:12px;color:var(--muted);margin:5px 0 12px;">Pubblica un pensiero, commenta un articolo con <strong>Velvet AGI</strong> (+25 Mining Shares) o condividi una notizia (+15 Shares).</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <input class="s-input" id="uAuthor" placeholder="Il tuo Nome / Handle Discord" />
+      <input class="s-input mono" id="uWallet" placeholder="Wallet Solana (opzionale per payout $OV)" />
+    </div>
+    <input class="s-input" id="uArticleRef" placeholder="Articolo di riferimento (opzionale)" />
+    <textarea class="s-textarea" id="uText" rows="3" placeholder="Scrivi il tuo post o fai una domanda a Velvet AGI sull'articolo..."></textarea>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;">
+      <label style="font-size:11.5px;color:#ff9ec0;display:flex;align-items:center;gap:6px;cursor:pointer;">
+        <input type="checkbox" id="uAskAgi" checked /> Chiedi risposta a Velvet AGI (+25 Shares)
+      </label>
+      <button class="b-read" style="flex:0 0 auto;padding:9px 18px;font-size:11.5px;" onclick="submitSocialPost()">Pubblica & Mina $OV →</button>
+    </div>
+
+    <div id="socialFeedList" style="margin-top:14px;"></div>
+  </div>
+
+  <div class="glass-card">
+    <h3 class="cinzel" style="font-size:17px;color:var(--sol);">⛏️ Human Miner Leaderboard</h3>
+    <p style="font-size:11.5px;color:var(--muted);margin:5px 0 12px;">Chi commenta con Velvet AGI e condivide gli articoli accumula Shares convertibili nell'ecosistema <strong>$OV / $DSN</strong>.</p>
+    <div id="minerBoard"></div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);display:flex;flex-direction:column;gap:7px;">
+      <a href="https://x-zdos.it/our-vault/" target="_blank" class="d-link" style="justify-content:center;color:var(--gold);">🏦 Apri $OV — Our Vault (CPU/GPU) ↗</a>
+      <a href="https://swap.x-zdos.it/?ref=6C61wDacAtx3QHQYVw17fnm5GEaEAnc1XienNJKn2bsD" target="_blank" class="d-link" style="justify-content:center;color:var(--sol);">🔄 Acquista / Swappa $OV & $DSN ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- Modale Lettura Articolo + Commento Diretto con Velvet AGI + Share Miner -->
+<div id="readerModal" onclick="if(event.target===this)closeReader()">
+  <div class="reader-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span class="c-tag mono" id="rCat"></span>
+      <button class="b-act" onclick="closeReader()">Chiudi ✕</button>
+    </div>
+    <h2 class="serif" id="rTitle" style="font-size:28px;line-height:1.18;margin:12px 0;"></h2>
+    <p class="mono" id="rMeta" style="font-size:10px;color:var(--gold);margin-bottom:14px;"></p>
+    <div class="reader-body serif" id="rBody"></div>
+
+    <!-- Box Commento Rapido con Velvet AGI dentro l'articolo -->
+    <div style="margin-top:18px;padding:14px;border-radius:14px;background:rgba(255,30,110,0.08);border:1px solid rgba(255,30,110,0.3);">
+      <strong class="mono" style="font-size:10.5px;color:#ff9ec0;">💋 COMMENTA CON VELVET AGI (+25 HUMAN MINING SHARES)</strong>
+      <textarea class="s-textarea" id="modalComment" rows="2" style="margin-top:8px;" placeholder="Scrivi la tua opinione o chiedi un'analisi a Velvet AGI..."></textarea>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <button class="b-read" onclick="commentFromModal()">Invia a Velvet AGI & Mina +25 →</button>
+        <button class="b-act b-mine" id="modalShareBtn">Condividi & Mina +15 ⛏️</button>
+        <a id="rSource" href="#" target="_blank" rel="noopener" class="b-act">Originale ↗</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let ALL_ARTICLES = [];
+let CURRENT_CAT = "TUTTI";
+let ACTIVE_ARTICLE = null;
+
+if (localStorage.getItem("ov_mag_18") === "1") document.getElementById("ageGate").style.display = "none";
+function enterMag() { localStorage.setItem("ov_mag_18", "1"); document.getElementById("ageGate").style.display = "none"; }
+function toggleMenu() { document.getElementById("dedicatedDrawer").classList.toggle("open"); }
+function toggleRubriche() { document.getElementById("rubrichePanel").classList.toggle("open"); }
+function copyCa(addr) { navigator.clipboard.writeText(addr); alert("Contract Address copiato: " + addr); }
+
+function updateLocalShares(add = 0) {
+  const cur = parseInt(localStorage.getItem("ov_human_shares") || "0", 10) + add;
+  localStorage.setItem("ov_human_shares", String(cur));
+  document.getElementById("mySharesBadge").textContent = `⛏️ I tuoi Share: ${cur} $OV-pts`;
+}
+updateLocalShares(0);
+
+function switchTab(tab) {
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  const grid = document.getElementById("articlesGrid");
+  const ctrl = document.getElementById("magControls");
+  const soc = document.getElementById("socialSection");
+
+  if (tab === "mag") {
+    document.getElementById("t-mag").classList.add("active");
+    grid.style.display = "grid";
+    ctrl.style.display = "flex";
+    soc.classList.remove("active");
+  } else {
+    document.getElementById(tab === "social" ? "t-social" : "t-miner").classList.add("active");
+    grid.style.display = "none";
+    ctrl.style.display = "none";
+    document.getElementById("rubrichePanel").classList.remove("open");
+    soc.classList.add("active");
+    loadSocialState();
+  }
+}
+
+async function loadMarkets() {
+  try {
+    const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana,bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true");
+    const d = await r.json();
+    const fmt = (obj, sym) => {
+      if (!obj) return `${sym}: --`;
+      const ch = (obj.usd_24h_change || 0).toFixed(1);
+      const cls = ch >= 0 ? "up" : "dn";
+      return `${sym}: $${obj.usd.toLocaleString()} <span class="${cls}">(${ch >= 0 ? "+" : ""}${ch}%)</span>`;
+    };
+    document.getElementById("m-sol").innerHTML = fmt(d.solana, "SOL");
+    document.getElementById("m-btc").innerHTML = fmt(d.bitcoin, "BTC");
+    document.getElementById("m-eth").innerHTML = fmt(d.ethereum, "ETH");
+  } catch {}
+}
+
+async function init() {
+  loadMarkets();
+  try {
+    const res = await fetch("/magazine/articles.json?v=" + Date.now());
+    const ct = res.headers.get("content-type") || "";
+    if (!res.ok || ct.indexOf("json") < 0) throw new Error("archivio non disponibile");
+    ALL_ARTICLES = await res.json();
+  } catch (e) {
+    ALL_ARTICLES = [];
+    document.getElementById("articlesGrid").innerHTML = '<p class="mono" style="grid-column:1/-1;padding:24px;text-align:center;color:var(--muted)">Archivio articoli in aggiornamento: nessun articolo pubblicato in questo momento. La rivista con fonti verificate è <a href="https://zx.x-zdos.it/rivista/" style="color:var(--gold)">ARIA 18+</a>.</p>';
+  }
+  document.getElementById("artCount").textContent = ALL_ARTICLES.length;
+
+  const params = new URLSearchParams(window.location.search);
+  const reqCat = params.get("rubrica");
+  if (reqCat) CURRENT_CAT = reqCat.toUpperCase();
+
+  const cats = ["TUTTI", "NOVITÀ & AGI 18+", "DONNA & SESSO", "LESBO", "GAY", "TRANS", "PORNO MISTO"];
+  document.getElementById("rubrichePanel").innerHTML = cats.map(c =>
+    `<button class="cat-pill mono ${c === CURRENT_CAT ? 'active' : ''}" onclick="setCat('${c}')">${c}</button>`
+  ).join("");
+  document.getElementById("rubricaBtn").textContent = `📂 RUBRICA: ${CURRENT_CAT} ▼`;
+
+  renderGrid();
+  loadSocialState();
+}
+
+function setCat(c) {
+  CURRENT_CAT = c;
+  document.getElementById("rubricaBtn").textContent = `📂 RUBRICA: ${c} ▼`;
+  document.querySelectorAll("#rubrichePanel .cat-pill").forEach(b => b.classList.toggle("active", b.textContent === c));
+  document.getElementById("rubrichePanel").classList.remove("open");
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById("articlesGrid");
+  const q = (document.getElementById("searchInput").value || "").toLowerCase().trim();
+  const list = ALL_ARTICLES.filter(a => {
+    const catOk = CURRENT_CAT === "TUTTI" || a.category === CURRENT_CAT;
+    const qOk = !q || (a.title + " " + a.subtitle + " " + a.sourceName).toLowerCase().includes(q);
+    return catOk && qOk;
+  });
+
+  grid.innerHTML = list.map(a => `
+    <article class="card">
+      <div>
+        <span class="c-tag mono">${a.category}</span>
+        <h2 class="serif">${a.title}</h2>
+        <p>${a.subtitle}</p>
+      </div>
+      <div>
+        <div class="c-meta mono">
+          <span>${a.sourceName.split("·")[0]}</span>
+          <span>${a.sourceDate}</span>
+        </div>
+        <div class="c-btns">
+          <button class="b-read" onclick="openReader('${a.id}')">Leggi & Velvet AGI</button>
+          <button class="b-act b-mine" onclick="shareAndMine('${a.id}')" title="Condividi e guadagna +15 Shares">+15 ⛏️</button>
+          <a class="b-act" href="${a.sourceUrl}" target="_blank" rel="noopener">↗</a>
+        </div>
+      </div>
+    </article>
+  `).join("");
+}
+
+function openReader(id) {
+  const a = ALL_ARTICLES.find(x => x.id === id);
+  if (!a) return;
+  ACTIVE_ARTICLE = a;
+  document.getElementById("rCat").textContent = `${a.category} · ${a.badge}`;
+  document.getElementById("rTitle").textContent = a.title;
+  document.getElementById("rMeta").textContent = `FONTE: ${a.sourceName} (${a.sourceDate})`;
+  document.getElementById("rBody").innerHTML = a.editorial.map(p => `<p>${p}</p>`).join("");
+  document.getElementById("rSource").href = a.sourceUrl;
+  document.getElementById("modalShareBtn").onclick = () => shareAndMine(a.id);
+  document.getElementById("readerModal").style.display = "block";
+}
+function closeReader() { document.getElementById("readerModal").style.display = "none"; }
+
+async function shareAndMine(id) {
+  const a = ALL_ARTICLES.find(x => x.id === id);
+  const shareUrl = `${window.location.origin}/magazine/?articolo=${encodeURIComponent(id)}`;
+  try { await navigator.clipboard.writeText(shareUrl); } catch {}
+  const author = localStorage.getItem("ov_user_handle") || "Sharer 18+";
+  const wallet = localStorage.getItem("ov_user_wallet") || "";
+  await fetch("/api/mag-social/mine-share", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ author, wallet, articleId: id })
+  });
+  updateLocalShares(15);
+  alert(`Link copiato per la condivisione!\n+15 Human Mining Shares ($OV/$DSN) accreditati.\n${a ? a.title : ""}`);
+}
+
+async function commentFromModal() {
+  const txt = document.getElementById("modalComment").value.trim();
+  if (!txt || !ACTIVE_ARTICLE) return;
+  document.getElementById("uArticleRef").value = ACTIVE_ARTICLE.title;
+  document.getElementById("uText").value = txt;
+  document.getElementById("uAskAgi").checked = true;
+  document.getElementById("modalComment").value = "";
+  closeReader();
+  switchTab("social");
+  await submitSocialPost();
+}
+
+async function submitSocialPost() {
+  const author = document.getElementById("uAuthor").value.trim() || localStorage.getItem("ov_user_handle") || "Membro 18+";
+  const wallet = document.getElementById("uWallet").value.trim() || localStorage.getItem("ov_user_wallet") || "";
+  const articleTitle = document.getElementById("uArticleRef").value.trim() || "OurVelvet Magazine 18+";
+  const text = document.getElementById("uText").value.trim();
+  const askZara = document.getElementById("uAskAgi").checked;
+  if (!text) return;
+
+  localStorage.setItem("ov_user_handle", author);
+  if (wallet) localStorage.setItem("ov_user_wallet", wallet);
+
+  const res = await fetch("/api/mag-social/post", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ author, wallet, articleTitle, text, askZara })
+  });
+  const data = await res.json();
+  if (data.ok) {
+    document.getElementById("uText").value = "";
+    updateLocalShares(data.mining.reward);
+    loadSocialState();
+  }
+}
+
+async function loadSocialState() {
+  try {
+    const res = await fetch("/api/mag-social/state");
+    const data = await res.json();
+    document.getElementById("socialFeedList").innerHTML = (data.posts || []).map(p => `
+      <div class="post-card">
+        <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--gold);">
+          <strong>${p.author} · ${p.role}</strong>
+          <span class="mono">${p.articleRef}</span>
+        </div>
+        <p style="font-size:12.5px;margin-top:6px;line-height:1.5;">${p.text}</p>
+        ${p.zaraReply ? `<div class="agi-box">${p.zaraReply}</div>` : ""}
+      </div>
+    `).join("");
+
+    document.getElementById("minerBoard").innerHTML = (data.topMiners || []).map((m, i) => `
+      <div style="display:flex;justify-content:space-between;padding:7px 9px;border-radius:9px;background:rgba(255,255,255,0.04);margin-bottom:5px;font-size:11px;">
+        <span>#${i + 1} <strong>${m.handle}</strong></span>
+        <span class="mono" style="color:var(--sol);">${m.shares} Shares</span>
+      </div>
+    `).join("") || `<p style="font-size:11.5px;color:var(--muted);">Nessun miner ancora in classifica. Commenta o condividi un articolo per iniziare!</p>`;
+  } catch {}
+}
+
+init();
+</script>
+<!-- ZDOS-UNIFIED-COINS-V1 -->
+<div id="zdos-coin-registry" data-coins="BONK,OV,DSN,LSD,L$D,XZSOL,CAKE,WBNB,SOL" data-zx-pay="https://zx.x-zdos.it/" style="display:none;">
+  ZDOS Assets: BONK · $OV · $DSN · Dom-Coin L$D · $xzSOL · CAKE · WBNB · SOL · ZX Pay https://zx.x-zdos.it/
+</div>
+<script src="https://x-zdos.it/api/monetary/sdk.js" defer></script>
+<script src="https://ourvelvet.online/mint-lsd/lsd-live-widget.js?v=1" defer></script>
+</body>
+</html>

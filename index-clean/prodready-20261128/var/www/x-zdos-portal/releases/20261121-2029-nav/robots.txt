@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /zdesk/
+Disallow: /xcloud/
+Disallow: /discord/
+Disallow: /aesir/
+Disallow: /zcomm/
+Disallow: /lsd-revoca/
+Disallow: /lsd-liquidita/
+Disallow: /lsd-trasparenza/vesting/
+Disallow: /lsd-trasparenza/merito/
+
+Sitemap: https://x-zdos.it/sitemap.xml

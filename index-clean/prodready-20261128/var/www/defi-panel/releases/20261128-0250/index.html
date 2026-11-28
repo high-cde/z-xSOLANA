@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="it" data-brand="ZDOS">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ZDOS DeFi · Swap, Pool DLMM, Basket in un solo pannello</title>
+<meta name="description" content="Pannello DeFi ZDOS: swap tramite Jupiter, pool Meteora DLMM, basket delle monete ZDOS e posizioni. Dati reali, controlli K.I.R.A., firma solo nel tuo wallet.">
+<meta name="theme-color" content="#07020f">
+<link rel="canonical" href="https://x-zdos.it/defi/">
+<link rel="stylesheet" href="panel.css?v=2">
+<script src="/zdos-tag.js" defer></script>
+<script src="/firma/firma.js" defer></script>
+<script src="panel.js?v=1" defer></script>
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ZDOS">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="ZDOS DeFi · Swap, Pool DLMM, Basket in un solo pannello">
+<meta property="og:description" content="Pannello DeFi ZDOS: swap tramite Jupiter, pool Meteora DLMM, basket delle monete ZDOS e posizioni. Dati reali, controlli K.I.R.A., firma solo nel tuo wallet.">
+<meta property="og:url" content="https://x-zdos.it/defi/">
+<meta property="og:image" content="https://x-zdos.it/ecosistema/og-defi.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ZDOS DeFi · Swap, Pool DLMM, Basket in un solo pannello">
+<meta name="twitter:description" content="Pannello DeFi ZDOS: swap tramite Jupiter, pool Meteora DLMM, basket delle monete ZDOS e posizioni. Dati reali, controlli K.I.R.A., firma solo nel tuo wallet.">
+<meta name="twitter:image" content="https://x-zdos.it/ecosistema/og-defi.png">
+<link rel="icon" href="/favicon.ico">
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<header class="top">
+  <a class="brand" href="https://x-zdos.it/" aria-label="x-zdos.it"><span class="logo">z</span><span class="bt">ZDOS <b>DeFi</b></span></a>
+  <nav class="tabs" role="tablist" aria-label="Sezioni">
+    <button role="tab" data-tab="swap">Swap</button>
+    <button role="tab" data-tab="pool">Pool</button>
+    <button role="tab" data-tab="basket">Basket</button>
+    <button role="tab" data-tab="posizioni">Posizioni</button>
+    <button role="tab" data-tab="dev" class="dev-only">Dev</button>
+    <span class="ink" aria-hidden="true"></span>
+  </nav>
+  <div class="right">
+    <div class="mode" role="group" aria-label="Modalità">
+      <button data-mode="normale">Normale</button><button data-mode="dev">Dev</button>
+    </div>
+    <button id="wbtn" class="btn primary" type="button">Accedi con ZDOS</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Swap, liquidità e basket in un solo posto</h1>
+    <p>Dati reali da Meteora, Jupiter e DexScreener. Ogni transazione la firmi tu nel tuo wallet: il pannello non custodisce fondi e non vede le tue chiavi.</p>
+    <div class="eco" id="eco" aria-live="polite"><span class="sk">Filiera ZDOS in caricamento…</span></div>
+  </section>
+
+  <!-- SWAP -->
+  <section class="panel" data-panel="swap" role="tabpanel">
+    <div class="grid2">
+      <div class="card swapcard">
+        <h2>Swap <small>via Jupiter</small></h2>
+        <label class="fld"><span>Paghi</span>
+          <div class="row"><input id="s-amt" inputmode="decimal" autocomplete="off" placeholder="0,00" value="0.01"><select id="s-in"></select></div>
+          <small class="bal" id="s-bal-in"></small>
+        </label>
+        <button class="flip" id="s-flip" type="button" aria-label="Inverti">⇅</button>
+        <label class="fld"><span>Ricevi (stima)</span>
+          <div class="row"><output id="s-out">—</output><select id="s-outm"></select></div>
+          <small class="bal" id="s-bal-out"></small>
+        </label>
+        <div class="slip"><span>Slippage</span><button data-slip="50">0,5%</button><button data-slip="100" class="on">1%</button><button data-slip="300">3%</button></div>
+        <div id="s-quote" class="quote muted">Inserisci un importo per vedere la quotazione.</div>
+        <div id="s-kira" class="kira"></div>
+        <label class="ack hidden" id="s-ackw"><input type="checkbox" id="s-ack"> Ho letto gli avvisi K.I.R.A. e voglio procedere comunque</label>
+        <button class="btn primary wide" id="s-go" type="button" disabled>Connetti il wallet per lo swap</button>
+        <p class="fine">La transazione è costruita da Jupiter. Il wallet ti mostra cosa firmi prima di inviarla.</p>
+      </div>
+      <div class="card">
+        <h2>Percorso</h2>
+        <div id="s-route" class="route muted">Il percorso appare con la quotazione.</div>
+        <div class="dev-only">
+          <h3>Risposta grezza</h3>
+          <pre id="s-raw" class="raw">—</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POOL -->
+  <section class="panel" data-panel="pool" role="tabpanel" hidden>
+    <div class="card">
+      <h2>Pool DLMM <small>dati Meteora</small></h2>
+      <div class="tablewrap"><table class="pools">
+        <thead><tr><th>Coppia</th><th>Prezzo</th><th>Liquidità</th><th>Volume 24h</th><th>Fee 24h</th><th class="dev-only">Bin step</th><th class="dev-only">Base fee</th><th class="dev-only">Fee dinamica</th><th>Stato</th></tr></thead>
+        <tbody id="p-list"><tr><td colspan="9" class="muted">Caricamento…</td></tr></tbody>
+      </table></div>
+    </div>
+    <div class="grid2" id="p-detail" hidden>
+      <div class="card">
+        <h2 id="p-title">Pool</h2>
+        <div id="p-warn"></div>
+        <div class="bins" id="p-bins" aria-label="Distribuzione della liquidità per bin"></div>
+        <div class="legend"><span class="lx">token X</span><span class="ly">SOL</span><span class="la">bin attivo</span></div>
+        <dl class="kv" id="p-kv"></dl>
+        <div class="dev-only"><h3>Parametri</h3><pre id="p-raw" class="raw">—</pre></div>
+      </div>
+      <div class="card">
+        <h2>Aggiungi liquidità</h2>
+        <p class="fine">Apri una posizione tua nel pool. Puoi ritirarla quando vuoi da “Posizioni”. Nessun rendimento è garantito: con poca liquidità e volumi bassi le commissioni possono essere nulle e il prezzo può muoversi contro di te.</p>
+        <label class="fld"><span id="lp-xl">Token X</span><input id="lp-x" inputmode="decimal" value="0" autocomplete="off"></label>
+        <label class="fld"><span>SOL</span><input id="lp-y" inputmode="decimal" value="0" autocomplete="off"></label>
+        <div class="seg" id="lp-st"><button data-st="spot" class="on">Spot</button><button data-st="curve">Curve</button><button data-st="bidask">Bid-Ask</button></div>
+        <label class="fld"><span>Bin a sinistra del prezzo: <b id="lp-lv">10</b></span><input type="range" id="lp-l" min="0" max="34" value="10"></label>
+        <label class="fld"><span>Bin a destra del prezzo: <b id="lp-rv">10</b></span><input type="range" id="lp-r" min="0" max="34" value="10"></label>
+        <div id="lp-range" class="quote muted"></div>
+        <label class="ack" id="lp-ackw"><input type="checkbox" id="lp-ack"> Ho letto gli avvisi su questo pool</label>
+        <button class="btn primary wide" id="lp-go" type="button" disabled>Connetti il wallet</button>
+        <div id="lp-msg" class="msg"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BASKET -->
+  <section class="panel" data-panel="basket" role="tabpanel" hidden>
+    <div class="cards" id="b-cards"><div class="card muted">Caricamento…</div></div>
+    <div class="card">
+      <h2>Compositore basket <small>da SOL</small></h2>
+      <p class="fine">Scegli quanto SOL usare e come dividerlo. Ogni parte è uno swap separato che firmi tu. Le monete non instradabili ora sono escluse.</p>
+      <div class="row"><input id="c-amt" inputmode="decimal" value="0.02" autocomplete="off"><span class="unit">SOL</span><button class="btn" id="c-quote" type="button">Calcola</button></div>
+      <div id="c-legs" class="legs"></div>
+    </div>
+  </section>
+
+  <!-- POSIZIONI -->
+  <section class="panel" data-panel="posizioni" role="tabpanel" hidden>
+    <div class="card" id="w-card"><h2>Il tuo wallet</h2><p class="muted" id="w-empty">Accedi con il tuo wallet per vedere saldi e posizioni.</p><div id="w-bal" class="balgrid"></div></div>
+    <div class="card"><h2>Posizioni DLMM</h2><div id="w-pos" class="muted">—</div></div>
+  </section>
+
+  <!-- DEV -->
+  <section class="panel dev-only" data-panel="dev" role="tabpanel" hidden>
+    <div class="grid2">
+      <div class="card"><h2>API</h2><div id="d-api" class="apis"></div><pre id="d-out" class="raw">Premi “Prova” su un endpoint GET.</pre></div>
+      <div class="card"><h2>Log <small>aggiornato ogni 5 s</small></h2><div id="d-log" class="log"></div><h3>Upstream</h3><div id="d-up" class="log"></div><h3>Client</h3><div id="d-cl" class="log"></div></div>
+    </div>
+    <div class="card"><h2>Filiera ÆSIR</h2><div id="d-eco" class="raw">—</div><p class="fine">Pannello completo per lo staff: <a href="/aesir/">/aesir/</a>.</p></div>
+  </section>
+</main>
+
+<div class="modal" id="wm" hidden role="dialog" aria-modal="true" aria-labelledby="wm-t">
+  <div class="sheet">
+    <h2 id="wm-t">Accedi con ZDOS</h2>
+    <p class="fine">Firmi un messaggio di accesso (non una transazione) verificabile su <a href="/verifica/">/verifica/</a>. Nessuna chiave lascia il wallet.</p>
+    <label class="ack"><input type="checkbox" id="wm-firma" checked> Accedi con firma ZDOS (consigliato)</label>
+    <div id="wm-list" class="wlist"></div>
+    <div id="wm-st" class="msg"></div>
+    <button class="btn wide" id="wm-x" type="button">Chiudi</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<footer class="foot">
+  <p>ZDOS1.3 · P.IVA 11040550961 · Non è consulenza finanziaria. I token sono volatili e puoi perdere l’intero importo. Il pannello non custodisce fondi, non crea token e non promette rendimenti.</p>
+  <p>Fonti: Meteora DLMM API, Jupiter, DexScreener, RPC Solana. <a href="/verifica/">Verifica una firma</a> · <a href="https://swap.x-zdos.it/zroute/">zRoute classico</a> · <a href="https://basket.x-zdos.it/">zBASKET classico</a> · <a href="/zpool/">Z-Pool</a></p>
+</footer>
+</body>
+</html>
