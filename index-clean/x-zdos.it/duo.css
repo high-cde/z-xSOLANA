@@ -1,17 +1,21 @@
 /* ZDOS × OV♥ · due robottini che si incontrano · SVG + CSS (solo transform/opacity) · © 2026 ZDOS1.3 */
-.duo{display:block;width:100%;max-width:440px;margin:20px auto 4px;padding:0;border:1px solid rgba(245,195,108,.26);border-radius:20px;overflow:hidden;cursor:pointer;color:inherit;font:inherit;
- background:radial-gradient(ellipse 70% 60% at 50% 105%,rgba(225,29,72,.32),transparent 70%),radial-gradient(ellipse 50% 40% at 20% 0%,rgba(245,195,108,.10),transparent 70%),linear-gradient(180deg,#1a0711,#0b0408);
- box-shadow:0 10px 34px -16px rgba(225,29,72,.55),inset 0 0 0 1px rgba(255,255,255,.03);-webkit-tap-highlight-color:transparent;position:relative}
+ .duo{display:block;width:100%;max-width:440px;margin:20px auto 4px;padding:6px 4px 2px;border:1px solid rgba(245,195,108,.32);border-radius:20px;overflow:visible;cursor:pointer;color:inherit;font:inherit;
+ background:
+  radial-gradient(ellipse 55% 50% at 18% 20%,rgba(108,229,255,.16),transparent 62%),
+  radial-gradient(ellipse 60% 55% at 82% 25%,rgba(251,113,133,.28),transparent 64%),
+  radial-gradient(ellipse 70% 55% at 50% 110%,rgba(245,195,108,.20),transparent 70%),
+  linear-gradient(180deg,#201018,#0d060a);
+ box-shadow:0 14px 40px -18px rgba(225,29,72,.45),0 0 40px -18px rgba(108,229,255,.28),inset 0 0 0 1px rgba(255,255,255,.05);-webkit-tap-highlight-color:transparent;position:relative}
 .duo:focus-visible{outline:2px solid #f5c36c;outline-offset:3px}
 .duo svg{display:block;width:100%;height:auto}
-.duo .hint{position:absolute;right:12px;bottom:8px;font:600 9.5px ui-monospace,Menlo,monospace;letter-spacing:.1em;color:rgba(253,242,248,.38);text-transform:uppercase;pointer-events:none}
+.duo .hint{position:absolute;right:12px;bottom:8px;font:600 9.5px ui-monospace,Menlo,monospace;letter-spacing:.1em;color:rgba(253,242,248,.55);text-transform:uppercase;pointer-events:none}
 .duo svg *{transform-box:view-box}
 .duo .fl,.duo .en,.duo .arm,.duo .hrt,.duo .sp,.duo .eye,.duo .orbd,.duo .tip,.duo .glw{will-change:auto}
 
 /* stato finale = stato di default (anche con movimento ridotto) */
 .duo .hrt,.duo .sp{opacity:0}
-.duo.go .en-l{animation:dzInL 1.5s cubic-bezier(.16,.84,.26,1) .15s both}
-.duo.go .en-r{animation:dzInR 1.5s cubic-bezier(.16,.84,.26,1) .15s both}
+.duo.go .en-l{animation:dzInL 1.5s cubic-bezier(.22,.7,.25,1) .15s both}
+.duo.go .en-r{animation:dzInR 1.5s cubic-bezier(.22,.7,.25,1) .15s both}
 .duo.go .fl-l{animation:dzFloat 4.6s ease-in-out 1.7s infinite}
 .duo.go .fl-r{animation:dzFloat 4.6s ease-in-out 3.9s infinite}
 .duo.go .arm-l{transform-origin:28px 4px;animation:dzHiL 2.7s ease-in-out 1.85s both}
@@ -33,7 +37,7 @@
 
 @keyframes dzInL{from{transform:translateX(-190px) rotate(-7deg);opacity:0}60%{opacity:1}to{transform:none;opacity:1}}
 @keyframes dzInR{from{transform:translateX(190px) rotate(7deg);opacity:0}60%{opacity:1}to{transform:none;opacity:1}}
-@keyframes dzFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes dzFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes dzHiL{0%{transform:rotate(0)}18%{transform:rotate(-79deg)}32%{transform:rotate(-71deg)}46%{transform:rotate(-83deg)}60%{transform:rotate(-73deg)}74%{transform:rotate(-79deg)}100%{transform:rotate(0)}}
 @keyframes dzHiR{0%{transform:rotate(0)}18%{transform:rotate(79deg)}32%{transform:rotate(71deg)}46%{transform:rotate(83deg)}60%{transform:rotate(73deg)}74%{transform:rotate(79deg)}100%{transform:rotate(0)}}
 @keyframes dzHeart{0%{transform:translateY(6px) scale(.2);opacity:0}22%{transform:translateY(-4px) scale(1.25);opacity:1}38%{transform:translateY(-8px) scale(1);opacity:1}72%{transform:translateY(-16px) scale(1.05);opacity:1}100%{transform:translateY(-30px) scale(.9);opacity:0}}

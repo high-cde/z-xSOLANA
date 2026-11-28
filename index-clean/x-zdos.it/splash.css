@@ -1,0 +1,54 @@
+/* Splash d'ingresso ZDOS × OV♥ · SVG + CSS (solo transform/opacity) · © 2026 ZDOS1.3 */
+#zdosSplash[hidden]{display:none!important}
+.splash{
+  position:fixed;inset:0;z-index:200;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px 16px calc(24px + env(safe-area-inset-bottom,0px));
+  text-align:center;cursor:pointer;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 40%,rgba(251,113,133,.28),transparent 62%),
+    radial-gradient(ellipse 50% 40% at 18% 80%,rgba(245,195,108,.18),transparent 65%),
+    radial-gradient(ellipse 45% 40% at 85% 75%,rgba(108,229,255,.16),transparent 60%),
+    #0b0408;
+  -webkit-tap-highlight-color:transparent;
+}
+.splash.is-out{animation:spOut .4s ease both;pointer-events:none}
+@keyframes spOut{from{opacity:1}to{opacity:0}}
+.splash-skip{
+  position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;
+  border:0;background:transparent;color:rgba(253,242,248,.62);
+  font:600 12px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;
+  text-transform:uppercase;cursor:pointer;padding:8px 10px;
+}
+.splash-skip:focus-visible{outline:2px solid #f5c36c;outline-offset:3px}
+.splash-stage{width:min(420px,92vw);margin:0 auto 14px}
+.splash-stage svg{display:block;width:100%;height:auto;filter:drop-shadow(0 12px 28px rgba(225,29,72,.28))}
+.splash-title{
+  margin:0;font:700 clamp(22px,6vw,34px)/1.15 'Space Grotesk',sans-serif;
+  letter-spacing:-.02em;
+  background:linear-gradient(90deg,#fff,#f5c36c 42%,#fb7185 70%,#6ce5ff);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.splash-sub{margin:8px 0 0;font:500 12px/1.4 'Inter',sans-serif;color:rgba(214,184,196,.85);letter-spacing:.04em}
+.splash .duo{margin:0 auto;max-width:none;border:0;background:transparent;box-shadow:none;cursor:inherit;width:100%;padding:0}
+.splash .duo .hint{display:none}
+.splash.is-on .en-l{animation:dzInL 1.05s cubic-bezier(.22,.7,.25,1) both}
+.splash.is-on .en-r{animation:dzInR 1.05s cubic-bezier(.22,.7,.25,1) both}
+.splash.is-on .fl-l{animation:dzFloat 3.6s ease-in-out 1.1s infinite}
+.splash.is-on .fl-r{animation:dzFloat 3.6s ease-in-out 2.3s infinite}
+.splash.is-on .arm-l{transform-origin:28px 4px;animation:dzHiL 1.8s ease-in-out 1.05s both}
+.splash.is-on .arm-r{transform-origin:-28px 4px;animation:dzHiR 1.8s ease-in-out 1.05s both}
+.splash.is-on .hrt{transform-origin:200px 98px;animation:dzHeart 1.6s cubic-bezier(.2,.9,.3,1) 1.35s both}
+.splash.is-on .sp{animation:dzSpark .95s ease-out 1.35s both}
+.splash.is-on .sp2{animation-delay:1.45s}.splash.is-on .sp3{animation-delay:1.52s}.splash.is-on .sp4{animation-delay:1.4s}
+.splash.is-on .eye{animation:dzBlink 4s ease-in-out 1.2s infinite}
+.splash.is-on .eye-r{animation-delay:2.2s}
+.splash.is-on .tip{animation:dzTip 1.6s ease-in-out infinite alternate}
+.splash.is-on .glw{animation:dzGlow 2.8s ease-in-out infinite}
+.splash.is-on .orb-f{animation:dzOrbF 9s linear infinite}
+.splash.is-on .orb-b{animation:dzOrbB 9s linear infinite}
+
+@media (prefers-reduced-motion:reduce){
+  .splash,.splash *{animation:none!important}
+  .splash .hrt{opacity:1}
+}

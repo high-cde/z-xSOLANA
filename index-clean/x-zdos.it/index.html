@@ -9,8 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/hub/site-nav.css?v=20261128nav">
-<link rel="stylesheet" href="/assets/hub/home-clean.css?v=20261128c3">
-<link rel="stylesheet" href="/assets/hub/duo.css?v=20261128duo">
+<link rel="stylesheet" href="/assets/hub/home-clean.css?v=20261128v2">
+<link rel="stylesheet" href="/assets/hub/duo.css?v=20261128v2">
+<link rel="stylesheet" href="/assets/hub/splash.css?v=20261128v2">
 <!-- Il tag Google arriva da /zdos-tag.js (iniettato da nginx). Il vecchio GTM fisso e le sezioni tolte sono in /home-completa.html -->
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://x-zdos.it/">
@@ -24,8 +25,151 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-</head>
+<script src="/zdos-tag.js" defer></script></head>
 <body>
+
+<div id="zdosSplash" class="splash" hidden role="dialog" aria-label="Caricamento" aria-modal="true">
+  <button type="button" class="splash-skip" id="zdosSplashSkip">Salta</button>
+  <div class="splash-stage">
+    <div class="duo" aria-hidden="true"><svg viewBox="18 -6 364 214" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false" aria-hidden="true">
+<defs>
+<linearGradient id="dzTrim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe4a8"/><stop offset=".55" stop-color="#f5c36c"/><stop offset="1" stop-color="#e11d48"/></linearGradient>
+<linearGradient id="dzHead" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a0c1a"/><stop offset="1" stop-color="#150610"/></linearGradient>
+<linearGradient id="dzBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a0c1a"/><stop offset="1" stop-color="#12050c"/></linearGradient>
+<radialGradient id="dzCoin" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff0c4"/><stop offset=".6" stop-color="#f5c36c"/><stop offset="1" stop-color="#b45309"/></radialGradient>
+<radialGradient id="dzOrb" cx=".32" cy=".28" r=".85"><stop offset="0" stop-color="#fb7185"/><stop offset=".62" stop-color="#be123c"/><stop offset="1" stop-color="#4c0519"/></radialGradient>
+<radialGradient id="dzOrbBody" cx=".4" cy=".2" r=".9"><stop offset="0" stop-color="#9f1239"/><stop offset="1" stop-color="#3a0714"/></radialGradient>
+<radialGradient id="dzHalo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fb7185" stop-opacity=".55"/><stop offset="1" stop-color="#fb7185" stop-opacity="0"/></radialGradient>
+<radialGradient id="dzHov" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#f5c36c" stop-opacity=".5"/><stop offset="1" stop-color="#f5c36c" stop-opacity="0"/></radialGradient>
+<radialGradient id="dzHovR" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fb7185" stop-opacity=".55"/><stop offset="1" stop-color="#fb7185" stop-opacity="0"/></radialGradient>
+<path id="dzHeartP" d="M0 7C-12-2-9-13-2.5-11.5 0-11 0-8.5 0-8.5S0-11 2.5-11.5C9-13 12-2 0 7Z"/>
+<path id="dzStar" d="M0-6Q1 -1 6 0Q1 1 0 6Q-1 1-6 0Q-1-1 0-6Z"/>
+</defs>
+<!-- ombra a terra -->
+<ellipse cx="132" cy="186" rx="38" ry="4.5" fill="#000" opacity=".4"/>
+<ellipse cx="268" cy="186" rx="38" ry="4.5" fill="#000" opacity=".4"/>
+
+<!-- ============ ROBOT ZDOS (a sinistra) ============ -->
+<g transform="translate(132 120)">
+<g class="en en-l"><g class="fl fl-l">
+ <ellipse class="glw" cx="0" cy="48" rx="26" ry="7" fill="url(#dzHov)"/>
+ <!-- braccio sinistro (fermo) -->
+ <path d="M-28 4Q-42 14-44 36" fill="none" stroke="url(#dzTrim)" stroke-width="7" stroke-linecap="round"/>
+ <circle cx="-44" cy="38" r="6.5" fill="#f5c36c" stroke="#7a3b00" stroke-width="1"/>
+ <!-- torso -->
+ <rect x="-28" y="-12" width="56" height="52" rx="16" fill="url(#dzBody)" stroke="url(#dzTrim)" stroke-width="2.2"/>
+ <circle cx="0" cy="14" r="12" fill="url(#dzCoin)" stroke="#7a3b00" stroke-width="1"/>
+ <path d="M-5.5 8.5H5.5L-5 19.5H6" fill="none" stroke="#9f1239" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+ <rect x="-12" y="30" width="24" height="3" rx="1.5" fill="#e11d48" opacity=".75"/>
+ <!-- collo -->
+ <rect x="-7" y="-18" width="14" height="8" rx="3" fill="#7a3b00"/>
+ <!-- antenna -->
+ <path d="M0-72V-86" stroke="#f5c36c" stroke-width="3" stroke-linecap="round"/>
+ <circle class="tip" cx="0" cy="-90" r="5" fill="#fb7185"/>
+ <circle cx="0" cy="-90" r="2" fill="#fff0c4"/>
+ <!-- orecchie -->
+ <rect x="-48" y="-56" width="9" height="24" rx="4.5" fill="#e11d48"/>
+ <rect x="39" y="-56" width="9" height="24" rx="4.5" fill="#f5c36c"/>
+ <!-- testa -->
+ <rect x="-38" y="-74" width="76" height="58" rx="20" fill="url(#dzHead)" stroke="url(#dzTrim)" stroke-width="3"/>
+ <rect x="-29" y="-64" width="58" height="30" rx="11" fill="#050204" stroke="rgba(245,195,108,.45)" stroke-width="1.4"/>
+ <ellipse class="eye eye-l" cx="-13" cy="-49" rx="5.5" ry="6" fill="#f5c36c"/>
+ <ellipse class="eye eye-r" cx="13" cy="-49" rx="5.5" ry="6" fill="#f5c36c"/>
+ <circle cx="-11.3" cy="-51" r="1.6" fill="#fff"/><circle cx="14.7" cy="-51" r="1.6" fill="#fff"/>
+ <path d="M-12-26C-7-21 7-21 12-26" fill="none" stroke="#fb7185" stroke-width="3" stroke-linecap="round"/>
+ <path d="M-30-70Q-18-73-8-71" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2.4" stroke-linecap="round"/>
+ <!-- braccio destro (saluta) -->
+ <g class="arm arm-l">
+  <path d="M28 4Q42 14 44 36" fill="none" stroke="url(#dzTrim)" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="44" cy="38" r="6.5" fill="#f5c36c" stroke="#7a3b00" stroke-width="1"/>
+ </g>
+</g></g></g>
+
+<!-- ============ ROBOT OV♥ (a destra) ============ -->
+<g transform="translate(268 120)">
+<g class="en en-r"><g class="fl fl-r">
+ <ellipse class="glw" cx="0" cy="48" rx="26" ry="7" fill="url(#dzHovR)"/>
+ <!-- braccio destro (fermo) -->
+ <path d="M28 4Q42 14 44 36" fill="none" stroke="#fb7185" stroke-width="7" stroke-linecap="round"/>
+ <circle cx="44" cy="38" r="6.5" fill="#fda4af" stroke="#be123c" stroke-width="1"/>
+ <!-- corpo -->
+ <rect x="-26" y="-8" width="52" height="48" rx="22" fill="url(#dzOrbBody)" stroke="#fb7185" stroke-opacity=".7" stroke-width="2"/>
+ <text x="0" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="14" fill="#fff" letter-spacing=".5">OV♥</text>
+ <ellipse cx="-12" cy="-1" rx="8" ry="3" fill="#fff" opacity=".18"/>
+ <!-- alone: orbite dietro la testa -->
+ <g transform="rotate(-9 0 -48)">
+  <ellipse cx="0" cy="-48" rx="60" ry="16" fill="none" stroke="#fb7185" stroke-opacity=".34" stroke-width="1" stroke-dasharray="3 4"/>
+  <ellipse cx="0" cy="-48" rx="49" ry="12" fill="none" stroke="#fda4af" stroke-opacity=".3" stroke-width="1"/>
+  <g transform="translate(0 -48)"><g class="orbd orb-b"><circle r="9" fill="url(#dzHalo)"/><circle r="4" fill="#fb7185"/></g></g>
+ </g>
+ <!-- testa = sfera lucida -->
+ <circle cx="0" cy="-48" r="52" fill="url(#dzHalo)" opacity=".75"/>
+ <circle cx="0" cy="-48" r="36" fill="url(#dzOrb)" stroke="#fff" stroke-opacity=".45" stroke-width="1.5"/>
+ <ellipse cx="-13" cy="-68" rx="12" ry="6" fill="#fff" opacity=".4" transform="rotate(-28 -13 -68)"/>
+ <rect x="-25" y="-59" width="50" height="22" rx="11" fill="#2a0410" fill-opacity=".9" stroke="#fff" stroke-opacity=".38" stroke-width="1.2"/>
+ <rect class="eye eye-l" x="-16" y="-53" width="9" height="11" rx="4.5" fill="#fff"/>
+ <rect class="eye eye-r" x="7" y="-53" width="9" height="11" rx="4.5" fill="#fff"/>
+ <circle cx="-11.5" cy="-50" r="2" fill="#fb7185"/><circle cx="11.5" cy="-50" r="2" fill="#fb7185"/>
+ <path d="M-6-31Q0-27 6-31" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="2.2" stroke-linecap="round"/>
+ <!-- alone: parte davanti -->
+ <g transform="rotate(-9 0 -48)">
+  <path d="M-60-48A60 16 0 0 0 60-48" fill="none" stroke="#fb7185" stroke-opacity=".5" stroke-width="1" stroke-dasharray="3 4"/>
+  <path d="M-49-48A49 12 0 0 0 49-48" fill="none" stroke="#fda4af" stroke-opacity=".55" stroke-width="1"/>
+  <g transform="translate(0 -48)"><g class="orbd orb-f"><circle r="9" fill="url(#dzHalo)"/><circle r="4.2" fill="#fb7185"/></g></g>
+ </g>
+ <!-- braccio sinistro (saluta) -->
+ <g class="arm arm-r">
+  <path d="M-28 4Q-42 14-44 36" fill="none" stroke="#fb7185" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="-44" cy="38" r="6.5" fill="#fda4af" stroke="#be123c" stroke-width="1"/>
+ </g>
+</g></g></g>
+
+<!-- ============ cuore e scintille tra i due ============ -->
+<g class="sp sp1" style="transform-origin:176px 78px"><use href="#dzStar" x="176" y="78" fill="#f5c36c"/></g>
+<g class="sp sp2" style="transform-origin:226px 72px"><use href="#dzStar" x="226" y="72" fill="#fda4af"/></g>
+<g class="sp sp3" style="transform-origin:214px 112px"><use href="#dzStar" x="214" y="112" fill="#f5c36c"/></g>
+<g class="sp sp4" style="transform-origin:186px 60px"><use href="#dzStar" x="186" y="60" fill="#fb7185"/></g>
+<g class="hrt"><g transform="translate(200 98) scale(1.7)"><use href="#dzHeartP" fill="url(#dzTrim)"/></g></g>
+</svg></div>
+  </div>
+  <p class="splash-title">ZDOS × Velvet</p>
+  <p class="splash-sub">Le chiavi restano a te</p>
+</div>
+<script>
+(function () {
+  var el = document.getElementById("zdosSplash");
+  if (!el) return;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var seen = false;
+  try { seen = sessionStorage.getItem("zdosSplashV2") === "1"; } catch (e) {}
+  if (reduce || seen) return;
+  el.removeAttribute("hidden");
+  el.classList.add("is-on");
+  var closed = false;
+  function done() {
+    try { document.dispatchEvent(new Event("zdos-splash-done")); } catch (e) {}
+  }
+  function close() {
+    if (closed) return;
+    closed = true;
+    el.classList.add("is-out");
+    el.classList.remove("is-on");
+    try { sessionStorage.setItem("zdosSplashV2", "1"); } catch (e) {}
+    setTimeout(function () {
+      el.setAttribute("hidden", "");
+      el.classList.remove("is-out");
+      done();
+    }, 400);
+  }
+  el.addEventListener("click", close);
+  var skip = document.getElementById("zdosSplashSkip");
+  if (skip) skip.addEventListener("click", function (e) { e.stopPropagation(); close(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" || e.key === "Enter" || e.key === " ") close();
+  }, { once: true });
+  setTimeout(close, 2500);
+})();
+</script>
 
 <header class="top zdos-top" id="zdosTop">
   <button type="button" class="zdos-menu-btn" id="zdosMenuBtn" aria-label="Apri il menu" aria-haspopup="true" aria-expanded="false" aria-controls="zdosMenu">
@@ -40,12 +184,12 @@
 
 <main class="wrap">
   <section class="hero">
-    <div class="eyebrow"><span class="dot"></span> Z-Sovereign OS · ZLang · Multi-Chain</div>
+    <div class="eyebrow"><span class="dot"></span> ZDOS · ZLang · Solana</div>
     <h1>Evoluzione informatica &amp; sovranità digitale</h1>
-    <p>Kernel aperto, compilatore ZLang, DeFi non-custodial e community. Le chiavi restano a te.</p>
+    <p>Kernel aperto, ZLang, scambi su Solana e community. Le chiavi restano sempre a te.</p>
   <div class="duo-wrap">
-<button type="button" class="duo go" id="zdosDuo" aria-label="Due robottini, ZDOS e OV, si salutano con un cinque. Tocca per rivedere l'animazione.">
-<svg viewBox="30 0 340 200" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false" aria-hidden="true">
+<button type="button" class="duo" id="zdosDuo" aria-label="Due robottini, ZDOS e OV, si salutano con un cinque. Tocca per rivedere l'animazione.">
+<svg viewBox="18 -6 364 214" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false" aria-hidden="true">
 <defs>
 <linearGradient id="dzTrim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe4a8"/><stop offset=".55" stop-color="#f5c36c"/><stop offset="1" stop-color="#e11d48"/></linearGradient>
 <linearGradient id="dzHead" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a0c1a"/><stop offset="1" stop-color="#150610"/></linearGradient>
@@ -152,45 +296,45 @@
 
   <div class="stack">
     <div class="zl" id="zl-receipt">
-      <span class="zl-k">ZLANG / SOLANA ANCHOR RECEIPT</span>
-      <span class="zl-badge">SYNCING…</span>
-      <div class="zl-meta">Caricamento ultima ricevuta…</div>
+      <span class="zl-ico" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none"><path d="M6.6 8.6 5.4 7.4a2.3 2.3 0 1 1 3.2-3.2l1.2 1.2M11.4 9.4l1.2 1.2a2.3 2.3 0 1 1-3.2 3.2l-1.2-1.2M7.6 10.4l2.8-2.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span><span class="zl-k">RICEVUTA SOLANA</span>
+      <span class="zl-badge">…</span>
+      <div class="zl-meta">Caricamento dell'ultima firma…</div>
     </div>
 
-    <a class="zl" href="/defi/"><span class="zl-k">DEFI</span><span class="zl-d"><b>Swap · Pool · Basket</b> — firma nel tuo wallet</span><span class="zl-go">→</span></a>
-    <a class="zl" href="/ide/"><span class="zl-k">ZLANG · LINUX</span><span class="zl-d"><b>Kernel &amp; IDE</b> — VM ZLB2, ZQuest, rete zDOS</span><span class="zl-go">→</span></a>
-    <a class="zl" href="https://zx.x-zdos.it/"><span class="zl-k">AGENZIA · Z-X</span><span class="zl-d"><b>Viaggi, eSIM, Scudo K.I.R.A.</b> — ricerche e dati aperti</span><span class="zl-go">→</span></a>
-    <a class="zl" href="https://ourvelvet.online/"><span class="zl-k">OURVELVET 18+</span><span class="zl-d"><b>Club, Creator, Radar</b> — solo adulti · safeword ROSSO</span><span class="zl-go">→</span></a>
-    <a class="zl" href="https://ourvelvet.online/merito/"><span class="zl-k">MERITO</span><span class="zl-d" id="merito-live"><b>Miner merito</b> — punti per contributi reali</span><span class="zl-go">→</span></a>
+    <a class="zl" href="/defi/"><span class="zl-ico" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none"><path d="M3.5 6.2h11M11.2 3.6l3.3 2.6-3.3 2.6M14.5 11.8h-11M6.8 14.4 3.5 11.8l3.3-2.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="zl-k">DEFI</span><span class="zl-d"><b>Scambia e partecipa in sicurezza</b> — firmi sempre tu dal tuo wallet, su Solana</span><span class="zl-go">→</span></a>
+    <a class="zl" href="/ide/"><span class="zl-ico" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none"><rect x="2.5" y="3.5" width="13" height="11" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 8 5 9.5 6.5 11M11.5 8l1.5 1.5-1.5 1.5M9.2 7.5l-.4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="zl-k">KERNEL E IDE</span><span class="zl-d"><b>Scrivi e prova i tuoi programmi</b> — sul kernel aperto ZDOS, con ZLang</span><span class="zl-go">→</span></a>
+    <a class="zl" href="https://zx.x-zdos.it/"><span class="zl-ico" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none"><path d="M9 2.8a4 4 0 0 1 4 4c0 3-4 8-4 8s-4-5-4-8a4 4 0 0 1 4-4z" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="6.8" r="1.3" fill="currentColor"/></svg></span><span class="zl-k">AGENZIA Z-X</span><span class="zl-d"><b>Viaggi, eSIM e protezioni</b> — ricerche e dati aperti</span><span class="zl-go">→</span></a>
+    <a class="zl" href="https://ourvelvet.online/"><span class="zl-ico" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="5.2" fill="#fb7185"/><circle cx="7.4" cy="7.2" r="1.5" fill="#fff" opacity=".4"/><ellipse cx="9" cy="9" rx="8" ry="3.1" stroke="#fda4af" stroke-width="1"/></svg></span><span class="zl-k">OURVELVET 18+</span><span class="zl-d"><b>Community per soli adulti</b> — club, creator e radar · safeword ROSSO</span><span class="zl-go">→</span></a>
+    <a class="zl" href="https://ourvelvet.online/merito/"><span class="zl-ico" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none"><path d="M9 2.4 10.5 6l3.9.4-2.9 2.6.8 3.8L9 10.8 5.7 12.8l.8-3.8-2.9-2.6 3.9-.4z" fill="#f5c36c"/></svg></span><span class="zl-k">MERITO</span><span class="zl-d" id="merito-live"><b>Punti per contributi reali</b> — sul fondo VELVET</span><span class="zl-go">→</span></a>
 
     <details class="zl" id="agi-console">
-      <summary><span class="zl-k">ZGROK2 · TERMINALE</span><span class="zl-d">Chiedi su kernel, ZLang e token <span id="vcpu-status-pill"></span></span><span class="zl-go">+</span></summary>
+      <summary><span class="zl-ico" aria-hidden="true"><svg viewBox="0 0 18 18" fill="none"><path d="M4 4.2h10v7.2H7.2L4 14.2V4.2z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 8h4M7 10h2.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span><span class="zl-k">ASSISTENTE IA · TERMINALE</span><span class="zl-d">Chiedi di ZDOS, Solana e i token<span id="vcpu-status-pill"></span></span><span class="zl-go">→</span></summary>
       <div class="chat">
         <div class="tabs">
           <button type="button" class="tab on" data-domain="auto">AUTO</button>
-          <button type="button" class="tab" data-domain="zdos">CORE-0</button>
-          <button type="button" class="tab" data-domain="velvet">CORE-1</button>
+          <button type="button" class="tab" data-domain="zdos">ZDOS</button>
+          <button type="button" class="tab" data-domain="velvet">VELVET</button>
         </div>
-        <div class="stream" id="chat-stream"><div class="msg"><small>ZCORE-VCPU</small>Sistema pronto. Puoi interrogare il kernel ZDOS, il compilatore ZLang/ZLB2, i token $DSN / VELVET / L$D o Velvet City.</div></div>
+        <div class="stream" id="chat-stream"><div class="msg"><small>ASSISTENTE</small>Pronto. Puoi chiedere del kernel ZDOS, di ZLang, dei token $DSN, VELVET e L$D o di Velvet City.</div></div>
         <div class="qp">
-          <button type="button" data-q="Stato sincronizzazione kernel ZDOS e Dual-Grok2">Stato kernel</button>
-          <button type="button" data-q="Architettura ZLang e bytecode VM ZLB2">ZLang &amp; VM</button>
-          <button type="button" data-q="Panoramica token $DSN, VELVET, L$D e $HOLD">Token</button>
+          <button type="button" data-q="Come sta il kernel ZDOS e i servizi collegati?">Stato dei servizi</button>
+          <button type="button" data-q="Spiegami ZLang in modo semplice">ZLang</button>
+          <button type="button" data-q="Panoramica semplice dei token $DSN, VELVET, L$D e $HOLD">Token</button>
         </div>
-        <form class="form" id="agi-form"><input id="agi-input" type="text" placeholder="Scrivi a zGrok2…" autocomplete="off" required><button type="submit">Invia</button></form>
+        <form class="form" id="agi-form"><input id="agi-input" type="text" placeholder="Scrivi all'assistente…" autocomplete="off" required><button type="submit">Invia</button></form>
       </div>
     </details>
   </div>
 
   <footer class="foot">
-    <div><a href="/verifica/">Verifica firma</a><a href="https://github.com/high-cde" rel="noopener">GitHub</a><a href="https://x.com/ZDOS_Core" rel="noopener">X</a><a href="https://discord.gg/4CGZrAAxaq" rel="noopener">Discord</a><a href="https://t.me/OurVelvetHub" rel="noopener">Telegram</a><a href="/home-completa.html">Home completa</a></div>
+    <div class="links"><a href="/verifica/">Verifica firma</a><a href="https://github.com/high-cde" rel="noopener">GitHub</a><a href="https://x.com/ZDOS_Core" rel="noopener">X</a><a href="https://discord.gg/4CGZrAAxaq" rel="noopener">Discord</a><a href="https://t.me/OurVelvetHub" rel="noopener">Telegram</a><a href="/home-completa.html">Home completa</a></div>
     <div class="co">© 2026 ZDOS1.3 · P.IVA 11040550961</div>
   </footer>
 </main>
 
 <script src="/assets/hub/site-nav.js?v=20261128eco" defer></script>
 <script src="/assets/hub/hub.js?v=20261121nav" defer></script>
-<script src="/assets/hub/home-clean.js?v=20261128clean" defer></script>
-<script src="/assets/hub/duo.js?v=20261128duo" defer></script>
+<script src="/assets/hub/home-clean.js?v=20261128v2" defer></script>
+<script src="/assets/hub/duo.js?v=20261128v2" defer></script>
 </body>
 </html>
