@@ -1,3 +1,6 @@
-# Beta riservata: non indicizzare.
+# Agenzia pubblica su zx.x-zdos.it
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /api/
+Disallow: /xcloud/
+Disallow: /server/

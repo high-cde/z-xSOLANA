@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Z-X SOLANA Store — agenzia viaggi e store · beta riservata · ZDOS</title>
-<meta name="description" content="Beta riservata ZDOS: agenzia viaggi con dati aperti, eSIM, store crypto-friendly su Solana e Scudo K.I.R.A. anti-truffa. Accesso protetto, non indicizzato.">
-<meta name="robots" content="noindex, nofollow, noarchive">
-<meta name="googlebot" content="noindex, nofollow, noarchive">
+<title>Z-X SOLANA Store — Agenzia viaggi · ZDOS</title>
+<meta name="description" content="Agenzia viaggi ZDOS: ricerche già compilate verso voli, hotel, B&amp;B e noleggio auto sui siti partner, eSIM, token ufficiali e Scudo K.I.R.A. I prezzi restano sui siti partner.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://zx.x-zdos.it/">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com https://platform.twitter.com; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://unpkg.com https://*.twimg.com https://upload.wikimedia.org; connect-src 'self' https:; frame-src https://platform.twitter.com https://syndication.twitter.com;">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -15,14 +15,14 @@
 <body>
 <div class="scan"></div>
 <header>
-  <a class="logo" href="#top"><img src="zdos-pixel.svg" alt="" width="34" height="34"> Z-X <b>SOLANA</b> <small>by ZDOS · beta riservata</small></a>
+  <a class="logo" href="#top"><img src="zdos-pixel.svg" alt="" width="34" height="34"> Z-X <b>SOLANA</b> <small>by ZDOS · agenzia viaggi</small></a>
   <div class="hbtns">
     <span class="pill" id="hdrSol">SOL …</span>
     <button class="btn ghost" id="connect">Collega Phantom</button>
   </div>
 </header>
 <nav id="nav">
-  <a href="#viaggi">✈️ Viaggi</a><a href="#scudo">🛡️ Scudo K.I.R.A.</a><a href="#esim">📶 eSIM</a><a href="#store">🪙 Token</a><a href="#integrazioni">🔌 X · EV</a><a href="#agenzia">🧩 Agenzia</a><a href="xcloud/">☁️ xCLOUD <span class="tag">beta</span></a>
+  <a href="#viaggi">✈️ Viaggi</a><a href="#scudo">🛡️ Scudo K.I.R.A.</a><a href="#esim">📶 eSIM</a><a href="#store">🪙 Token</a><a href="#integrazioni">🔌 X · EV</a><a href="#agenzia">🧩 Agenzia</a><a href="/rivista/">📰 Rivista</a><a href="xcloud/">☁️ xCLOUD <span class="tag">beta</span></a>
 </nav>
 <div class="eco" aria-label="Ecosistema ZDOS">
   <a href="https://x-zdos.it/">x-zdos.it</a>
@@ -32,6 +32,7 @@
   <a href="https://velvet.x-zdos.it/">VelvetHub 18+</a>
   <a href="https://x-zdos.it/ide/">Zlang IDE</a>
   <a href="https://x-zdos.it/xcloud/">xCLOUD</a>
+  <a href="/rivista/">Rivista</a>
   <a href="https://discord.gg/4CGZrAAxaq">Discord</a>
   <a href="https://t.me/OurVelvetHub">Telegram</a>
   <a href="https://x.com/ZDOS_Core">X @ZDOS_Core</a>
@@ -40,13 +41,13 @@
 <section class="hero" id="top">
   <div class="press">INSERT COIN ▸ PLAYER 1</div>
   <h1>Viaggia, connettiti e paga <span class="grad">in stile Solana</span></h1>
-  <p class="muted">Agenzia viaggi con dati aperti e ricerche già compilate verso i siti partner, eSIM, token ufficiali e lo <b>Scudo K.I.R.A.</b> contro truffe e frodi. I prezzi li vedi sempre sui siti partner: qui non inventiamo offerte.</p>
-  <div class="proto">⚠️ Beta riservata / in costruzione · noindex · niente prenotazioni, niente pagamenti, niente link affiliati attivi. Questa pagina non è il sito pubblico.</div>
+  <p class="muted">Agenzia viaggi con dati aperti e ricerche già compilate verso voli, hotel, B&amp;B e noleggio auto sui siti partner, eSIM, token ufficiali e lo <b>Scudo K.I.R.A.</b> contro truffe e frodi. I prezzi li vedi sempre sui siti partner: qui non inventiamo offerte.</p>
+  <div class="proto">Le prenotazioni si concludono sui siti partner. Preventivi e pagamenti in crypto sono su richiesta. Nessun link affiliato attivo, nessuna affiliazione con i marchi citati.</div>
 </section>
 
 <main>
 <!-- ================= VIAGGI ================= -->
-<section id="viaggi" class="card">
+<section id="viaggi" class="card"><span id="vacation-sec"></span>
   <h2>✈️ Viaggi <small class="lvl">LEVEL 1</small></h2>
   <form id="tripForm" class="tripgrid">
     <label>Da<input id="fromCity" value="Roma" autocomplete="off"></label>
@@ -71,7 +72,7 @@
     </div>
   </div>
 
-  <h3>🔗 Cerca offerte sui siti partner <small class="muted">(link precompilati con date e ospiti)</small></h3>
+  <h3>🔗 Cerca e prenota sui siti partner <small class="muted">(voli, hotel, B&amp;B e noleggio auto: link precompilati, prezzi solo là)</small></h3>
   <div class="deeplinks" id="deeplinks"></div>
   <p class="small muted">Airbnb e Booking non offrono API pubbliche gratuite per prezzi e disponibilità: apriamo la loro ricerca già compilata. Quando doc attiverà i programmi di affiliazione, questi link porteranno il codice partner (dichiarato in pagina).</p>
 
@@ -148,10 +149,10 @@
     <div class="box tok"><b>Il tuo wallet</b><div id="wInfo" class="small muted">Collega Phantom in sola lettura: leggiamo solo indirizzo e saldo SOL. Nessuna firma, nessuna transazione.</div></div>
   </div>
   <div class="box">
-    <h3>💳 Paga in SOL (concept, disattivato)</h3>
-    <div class="row wrap"><label>Importo €<input id="payEur" type="number" value="49" class="search"></label><div class="big-num" id="payOut">≈ … SOL</div><button class="btn" disabled title="Disattivato nel prototipo">Paga con Solana Pay</button></div>
-    <ol class="small muted"><li>Il backend crea l'ordine e un riferimento univoco (Solana Pay, transfer request).</li><li>Il cliente firma <b>nel proprio wallet</b>: il sito non tocca mai chiavi o seed.</li><li>Il backend conferma la transazione on-chain e rilascia fattura in € (P.IVA).</li></ol>
-    <div class="small warn">Nessun pagamento è attivo in questa beta. $DSN e VELVET ($OV) non hanno valore garantito: non sono un investimento e non c'è rendimento atteso. DYOR. xZDOS (EnxZ…pump) è un token legacy, non è il $DSN ufficiale.</div>
+    <h3>💳 Pagamenti in crypto</h3>
+    <p class="small">I pagamenti in crypto non sono attivi su questa pagina. Per un preventivo o un pagamento in SOL (o altro) scrivi all'agenzia: lo evadiamo <b>su richiesta</b>, con fattura di ZDOS1.3 (P.IVA 11040550961). Il sito non chiede mai seed phrase e non muove fondi dal tuo wallet.</p>
+    <div class="row wrap"><label>Importo € di riferimento<input id="payEur" type="number" value="49" class="search"></label><div class="big-num" id="payOut">≈ … SOL</div><span class="pill warn">su richiesta</span></div>
+    <div class="small warn">$DSN e VELVET ($OV) non hanno valore garantito: non sono un investimento e non c'è rendimento atteso. DYOR. xZDOS (EnxZ…pump) è un token legacy, non è il $DSN ufficiale.</div>
   </div>
 </section>
 
@@ -200,7 +201,7 @@
     <div class="box"><h3>🤖 Bot e automazioni</h3><p class="small">Bot Discord/Telegram, controlli K.I.R.A., radar token, integrazioni con API ufficiali.</p></div>
     <div class="box"><h3>🎬 Contenuti</h3><p class="small">Video arcade, post per X, kit creator, testi in italiano. Onesti: niente promesse di guadagno.</p></div>
   </div>
-  <p class="small muted">Preventivi su richiesta. Contatti ufficiali solo da <a href="https://x-zdos.it/">x-zdos.it</a>, <a href="https://x.com/ZDOS_Core" target="_blank" rel="noopener">@ZDOS_Core</a>, <a href="https://discord.gg/4CGZrAAxaq" target="_blank" rel="noopener">Discord</a> e <a href="https://t.me/OurVelvetHub" target="_blank" rel="noopener">Telegram @OurVelvetHub</a>.</p>
+  <p class="small">Agenzia <b>ZDOS1.3</b> — P.IVA 11040550961. Preventivi e pagamenti in crypto su richiesta. Contatti ufficiali solo da <a href="https://x-zdos.it/">x-zdos.it</a>, <a href="https://x.com/ZDOS_Core" target="_blank" rel="noopener">@ZDOS_Core</a>, <a href="https://discord.gg/4CGZrAAxaq" target="_blank" rel="noopener">Discord</a> e <a href="https://t.me/OurVelvetHub" target="_blank" rel="noopener">Telegram @OurVelvetHub</a>. Il nome personale del titolare non viene pubblicato.</p>
 </section>
 </main>
 
@@ -215,6 +216,7 @@
     <a href="https://velvet.x-zdos.it/">VelvetHub 18+</a>
     <a href="https://x-zdos.it/ide/">Zlang IDE</a>
     <a href="https://x-zdos.it/xcloud/">xCLOUD</a>
+    <a href="/rivista/">Rivista</a>
     <a href="https://discord.gg/4CGZrAAxaq">Discord</a>
     <a href="https://t.me/OurVelvetHub">Telegram @OurVelvetHub</a>
     <a href="https://x.com/ZDOS_Core">X @ZDOS_Core</a>
@@ -222,7 +224,7 @@
   </div>
   <p class="addrs small">$DSN Solana: <code>35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4</code><br>$DSN Polygon: <code>0xfc90516a1f736FaC557e09D8853dB80dA192c296</code><br>VELVET ($OV): <code>2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump</code></p>
   <p class="small">Dati: © OpenStreetMap contributors (ODbL) · Open-Meteo (CC BY 4.0) · BCE via Frankfurter (api.frankfurter.dev) · Wikipedia/Wikivoyage (CC BY-SA) · Jupiter · CoinGecko · RugCheck · GoPlus. Marchi dei rispettivi proprietari, nessuna affiliazione implicita. Nessuna affiliazione con Musk, SpaceX, Tesla o Starlink.</p>
-  <p class="small">© 2026 ZDOS1.3 — P.IVA 11040550961 · licenza ZSEL · beta riservata, non indicizzata.</p>
+  <p class="small">© 2026 ZDOS1.3 — P.IVA 11040550961 · licenza ZSEL · agenzia viaggi su <a href="https://zx.x-zdos.it/">zx.x-zdos.it</a>.</p>
 </footer>
 <div id="toast"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

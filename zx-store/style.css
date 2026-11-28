@@ -71,3 +71,5 @@ footer .flinks a{color:var(--t);text-decoration:none;border-bottom:1px solid var
 footer .flinks a:hover{color:var(--g)}
 footer .addrs{margin:10px 0}
 footer .addrs code{display:inline;margin:0}
+
+@media(max-width:560px){.logo{font-size:1.05rem;white-space:nowrap}.logo small{display:none}.hbtns .btn{padding:8px 10px;font-size:.85rem}}

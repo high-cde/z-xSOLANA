@@ -5,7 +5,7 @@ const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAl
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const toast = (m) => { const t=$('#toast'); t.textContent=m; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),2600); };
 const J = KiraShield.fetchJson;
-const SITE = 'https://x-zdos.it';
+const SITE = 'https://zx.x-zdos.it';
 const xIntent = (text, url) => 'https://x.com/intent/post?text='+encodeURIComponent(text)+(url?'&url='+encodeURIComponent(url):'');
 const WMO = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',73:'🌨️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
 
@@ -47,11 +47,13 @@ $('#tripForm').addEventListener('submit', searchTrip);
 function renderDeepLinks(){
   const t = lastTrip; if (!t) return; const city = t.d.name; const yy = s => s.slice(2).replace(/-/g,'');
   const links = [
-    ['🏨 Booking.com', `https://www.booking.com/searchresults.it.html?ss=${encodeURIComponent(city)}&checkin=${t.din}&checkout=${t.dout}&group_adults=${t.ad}&group_children=${t.kids}&no_rooms=1`, 'hotel e appartamenti'],
-    ['🏠 Airbnb', `https://www.airbnb.it/s/${encodeURIComponent(city)}/homes?checkin=${t.din}&checkout=${t.dout}&adults=${t.ad}&children=${t.kids}`, 'case e stanze'],
+    ['🏨 Booking.com', `https://www.booking.com/searchresults.it.html?ss=${encodeURIComponent(city)}&checkin=${t.din}&checkout=${t.dout}&group_adults=${t.ad}&group_children=${t.kids}&no_rooms=1`, 'hotel, B&B e appartamenti'],
+    ['🏠 Airbnb', `https://www.airbnb.it/s/${encodeURIComponent(city)}/homes?checkin=${t.din}&checkout=${t.dout}&adults=${t.ad}&children=${t.kids}`, 'case, stanze e B&B'],
     ['🛏️ Hostelworld', 'https://www.hostelworld.com/', 'ostelli (ricerca sul sito)'],
     ['✈️ Google Flights', `https://www.google.com/travel/flights?q=${encodeURIComponent(`Voli da ${t.cFrom||t.from} a ${t.cTo||city} il ${t.din} ritorno ${t.dout}`)}&hl=it`, 'voli A/R'],
     ['🛫 Skyscanner', t.cFrom && t.cTo ? `https://www.skyscanner.it/trasporti/voli/${t.cFrom.toLowerCase()}/${t.cTo.toLowerCase()}/${yy(t.din)}/${yy(t.dout)}/?adults=${t.ad}&children=${t.kids}` : 'https://www.skyscanner.it/', 'voli A/R'],
+    ['🚗 Kayak noleggio', t.cTo ? `https://www.kayak.it/cars/${encodeURIComponent(t.cTo)}/${t.din}/${t.dout}` : 'https://www.kayak.it/cars', 'auto a noleggio (date precompilate)'],
+    ['🚗 Rentalcars', t.d && t.d.name ? `https://www.rentalcars.com/SearchResults.do?city=${encodeURIComponent(t.d.osmName||t.d.name)}` : 'https://www.rentalcars.com/it/', 'auto a noleggio'],
     ['🎟️ GetYourGuide', `https://www.getyourguide.it/s/?q=${encodeURIComponent(city)}`, 'attività e tour'],
     ['📖 Wikivoyage', `https://it.wikivoyage.org/wiki/${encodeURIComponent(city)}`, 'guida gratuita'],
   ];

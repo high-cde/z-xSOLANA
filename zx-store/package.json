@@ -1,10 +1,26 @@
 {
   "name": "zx-store",
-  "version": "1.1.0",
-  "private": true,
-  "description": "Z-X SOLANA Store — beta riservata ZDOS. Nessuna dipendenza di runtime: Node 18+ per server/dev-server.mjs.",
-  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "HOST=127.0.0.1 PORT=8742 node server/dev-server.mjs"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "playwright": "^1.65.1",
+    "playwright-core": "^1.65.1"
+  },
+  "dependencies": {
+    "docx": "^9.15.4",
+    "jszip": "^3.10.2",
+    "libarchive.js": "^2.0.2",
+    "mammoth": "^1.13.0",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^4.10.38",
+    "quill": "^2.0.3"
   }
 }

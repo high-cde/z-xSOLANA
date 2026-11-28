@@ -1,6 +1,6 @@
 # Z-X SOLANA — piano, API verificate e roadmap
 
-Prototipo per **doc / ZDOS**, avviato il 15/11/2026 (ora di Roma) e allineato il 21/11/2026. La beta riservata è su `https://beta.x-zdos.it` (HTTP Basic, `noindex`): non è il sito pubblico. In locale: `PORT=8742 HOST=127.0.0.1 node server/dev-server.mjs`.
+Prototipo per **doc / ZDOS**, avviato il 15/11/2026 (ora di Roma) e allineato il 21/11/2026. La versione pubblica dell'agenzia è su `https://zx.x-zdos.it/`. La vecchia beta su beta.x-zdos.it non ha più DNS. In locale: `PORT=8742 HOST=127.0.0.1 node server/dev-server.mjs`.
 
 ## 1. Cosa c'è nel prototipo
 
@@ -148,3 +148,12 @@ shots/*.png                  screenshot · shots.mjs, shots-xcloud.mjs per rifar
 - File del sito: `/var/www/zxstore-beta/`. Servizio `zxstore-beta` (Node, `127.0.0.1:8742`) per `/api/grok` e `/api/starlink`. Grok resta spento senza `XAI_API_KEY`.
 - Backup e rollback: `/var/backups/zxstore-beta/<timestamp>/rollback.sh`.
 - Non pubblicare in chiaro e non collegare la beta dai post o dalla home pubblica finché doc non lo chiede.
+
+
+## 11. Go-live zx.x-zdos.it (28/11/2026, Europe/Rome)
+
+- Sito pubblico, senza password, `robots.txt` consente l'indicizzazione della home (non /api/ né /xcloud/).
+- Stile della beta del 21/11 (palette Solana, arcade). La versione "ZX Sovereign Nexus" su porta 8884 è stata sostituita (resta in backup, processo PM2 non terminato).
+- Aggiunti deep link di noleggio auto (Kayak con codice città e date, Rentalcars per città).
+- Voce di menu Rivista → `/rivista/` senza creare la pagina.
+- Pagamenti in crypto: solo su richiesta (Solana Pay non era implementato in modo verificato).
