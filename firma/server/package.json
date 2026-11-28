@@ -1,0 +1,1 @@
+{"name":"zdos-firma","version":"1.0.0","private":true,"type":"module","description":"Firma ZDOS / OurVelvet: verifica firme wallet (SIWS). Nessuna chiave custodita. © 2026 ZDOS1.3","dependencies":{"bs58":"6.0.0","tweetnacl":"1.0.3"}}

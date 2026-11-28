@@ -1,0 +1,41 @@
+/* Firma ZDOS / OurVelvet — stile pagina /verifica/ e widget. Solo testo, nessun logo di terzi. © 2026 ZDOS1.3 */
+:root{--bg:#050609;--card:#10131ce6;--line:#ffffff1f;--ink:#f8fafc;--mut:#94a3b8;--acc:#22d3ee;--acc2:#e11d48;--ok:#10b981;--bad:#fb7185;--btn1:#22d3ee;--btn2:#0891b2;--btxt:#04121a;--font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;--head:var(--font);--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.t-velvet{--bg:#020002;--card:#140006e6;--line:#ff1f5b33;--ink:#fbcfe8;--mut:#c79ab3;--acc:#ff4d6d;--acc2:#c9a227;--btn1:#ff1f5b;--btn2:#b3001e;--btxt:#fff;--head:Cinzel,Georgia,"Times New Roman",serif}
+.t-zx{--bg:#07040f;--card:#120a22e6;--line:#9945ff55;--ink:#ece8ff;--mut:#9b8fc0;--acc:#14f195;--acc2:#9945ff;--btn1:#9945ff;--btn2:#14f195;--btxt:#07040f}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.6}
+body{min-height:100vh;background:radial-gradient(900px 480px at 50% -8%,color-mix(in srgb,var(--acc2) 28%,transparent),transparent 70%),var(--bg)}
+a{color:var(--acc)}
+.fm-wrap{max-width:860px;margin:0 auto;padding:22px 16px 70px}
+.fm-top{display:flex;align-items:center;gap:14px;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.fm-brand{font-family:var(--head);font-weight:700;letter-spacing:.14em;color:#fff;text-decoration:none;font-size:1.05rem}
+.fm-top nav{margin-left:auto;display:flex;gap:14px;font-size:.88rem}
+h1{font-family:var(--head);font-size:clamp(1.5rem,4.5vw,2.2rem);margin:.2em 0 .3em;letter-spacing:.04em;color:#fff}
+h2{font-family:var(--head);font-size:1.15rem;margin:0 0 10px;color:#fff;letter-spacing:.04em}
+.fm-lead{color:var(--mut);margin:0 0 22px;max-width:62ch}
+.fm-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:18px}
+.fm-btn,.fm-wbtn{font:inherit;font-weight:700;cursor:pointer;border-radius:12px;border:0;padding:11px 18px;color:var(--btxt);background:linear-gradient(90deg,var(--btn1),var(--btn2))}
+.fm-wbtn{margin:8px 8px 0 0;background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600}
+.fm-wbtn:hover{border-color:var(--acc)}
+.fm-btn:disabled{opacity:.45;cursor:not-allowed}.fm-btn.fm-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.fm-btn:focus-visible,.fm-wbtn:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.fm-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.fm-check{display:flex;gap:8px;align-items:flex-start;color:var(--mut);font-size:.88rem;margin-top:12px}
+.fm-check input{margin-top:4px}
+.fm-status{margin:12px 0 0;min-height:1.4em;color:var(--mut);word-break:break-all;font-size:.92rem}
+.fm-ok{color:var(--ok)}.fm-err{color:var(--bad)}
+label.fm-l{display:block;font-size:.8rem;color:var(--mut);margin:12px 0 4px;letter-spacing:.04em}
+textarea,input[type=text]{width:100%;background:#00000055;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-family:var(--mono);font-size:.84rem}
+textarea{min-height:190px;resize:vertical}
+.fm-res{margin-top:14px;padding:14px;border-radius:12px;border:1px solid var(--line);display:none}
+.fm-res.on{display:block}
+.fm-res.v{border-color:var(--ok)}.fm-res.n{border-color:var(--bad)}
+.fm-res strong{font-size:1.1rem}.fm-res.v strong{color:var(--ok)}.fm-res.n strong{color:var(--bad)}
+.fm-res dl{margin:10px 0 0;display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:.84rem}
+.fm-res dt{color:var(--mut)}.fm-res dd{margin:0;word-break:break-all;font-family:var(--mono)}
+.fm-chip{display:inline-block;padding:3px 10px;border:1px solid var(--ok);color:var(--ok);border-radius:999px;font-size:.8rem}
+pre{background:#00000066;border:1px solid var(--line);border-radius:10px;padding:12px;overflow-x:auto;font-family:var(--mono);font-size:.8rem;white-space:pre-wrap;word-break:break-word;margin:8px 0}
+ul.fm-list{margin:8px 0 0;padding-left:20px;color:var(--mut)}ul.fm-list li{margin:4px 0}
+.fm-small{font-size:.8rem;color:var(--mut)}
+.fm-foot{margin-top:30px;padding-top:14px;border-top:1px solid var(--line);font-size:.78rem;color:var(--mut)}
+.fm-mt{margin-top:14px}

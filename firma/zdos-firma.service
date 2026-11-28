@@ -1,0 +1,29 @@
+[Unit]
+Description=Firma ZDOS / OurVelvet v1 · verifica firme wallet (127.0.0.1:8905)
+After=network-online.target
+
+[Service]
+Type=simple
+User=zdosfirma
+Group=zdosfirma
+WorkingDirectory=/opt/zdos-firma
+Environment=PORT=8905
+Environment=FIRMA_SECRET_FILE=/etc/zdos-firma/jwt.secret
+ExecStart=/usr/bin/node /opt/zdos-firma/server.mjs
+Restart=on-failure
+RestartSec=5
+StateDirectory=zdos-firma
+StateDirectoryMode=0700
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryMax=200M
+CPUQuota=25%
+
+[Install]
+WantedBy=multi-user.target

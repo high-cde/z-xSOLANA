@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verifica firma · ZDOS / OurVelvet</title>
+<meta name="description" content="Accedi con la firma del tuo wallet e verifica pubblicamente una firma: messaggio, firma e indirizzo. Nessuna transazione, nessun costo.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#050609">
+<script src="/firma/theme.js"></script>
+<link rel="stylesheet" href="/firma/firma.css?v=1">
+</head>
+<body>
+<div class="fm-wrap">
+  <header class="fm-top">
+    <a class="fm-brand" href="/" id="brandLink">ZDOS</a>
+    <nav aria-label="Pagina"><a href="#accedi">Accedi</a><a href="#verifica">Verifica</a><a href="#formato">Formato</a></nav>
+  </header>
+
+  <h1>Firma <span id="brandName">ZDOS</span></h1>
+  <p class="fm-lead">Una firma è un messaggio firmato dal tuo wallet: prova che controlli un indirizzo, senza muovere fondi. Qui puoi accedere con il wallet e verificare, da solo e senza fidarti di noi, qualsiasi firma.</p>
+
+  <section class="fm-card" id="accedi" data-firma-box aria-labelledby="hAcc">
+    <h2 id="hAcc">Accedi con il wallet</h2>
+    <p class="fm-small">Ti chiediamo di firmare un messaggio di testo con prefisso <b id="pfx">ZDOS Firma v1</b>. Non è una transazione: non costa nulla e non autorizza spese. Se il wallet ti chiede di approvare una transazione, rifiuta.</p>
+    <div class="fm-row"><button type="button" class="fm-btn" data-zdos-firma>Accedi con ZDOS</button></div>
+    <div data-firma-wallets class="fm-small"></div>
+    <label class="fm-check"><input type="checkbox" data-firma-pubblico> <span>Mostra il badge «wallet verificato» pubblicamente per questo indirizzo (facoltativo, di base è nascosto).</span></label>
+    <p class="fm-status" data-firma-status role="status" aria-live="polite"></p>
+    <div id="sessBox" hidden>
+      <span class="fm-chip">✓ wallet verificato</span>
+      <p class="fm-small">Sessione valida 24 ore su <span id="sessDom"></span>. <button type="button" class="fm-btn fm-ghost" id="logoutBtn">Esci</button></p>
+    </div>
+  </section>
+
+  <section class="fm-card" id="verifica" aria-labelledby="hVer">
+    <h2 id="hVer">Verifica una firma</h2>
+    <p class="fm-small">Incolla il messaggio esatto (spazi e a capo compresi), la firma (base58, base64 o hex) e l’indirizzo del wallet. La verifica ed25519 avviene sul nostro server, ma puoi rifarla in autonomia con qualsiasi libreria.</p>
+    <form id="chkForm" autocomplete="off">
+      <label class="fm-l" for="msg">Messaggio</label>
+      <textarea id="msg" spellcheck="false" required></textarea>
+      <label class="fm-l" for="sig">Firma</label>
+      <input type="text" id="sig" spellcheck="false" required>
+      <label class="fm-l" for="adr">Indirizzo (chiave pubblica)</label>
+      <input type="text" id="adr" spellcheck="false" required>
+      <div class="fm-row fm-mt"><button class="fm-btn" type="submit" id="chkBtn">Verifica firma</button></div>
+    </form>
+    <div class="fm-res" id="res" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="fm-card" id="formato" aria-labelledby="hFmt">
+    <h2 id="hFmt">Che cosa firmi</h2>
+    <p class="fm-small">Messaggi nel formato Sign-In With Solana. Esempio di accesso:</p>
+    <pre id="example">Caricamento…</pre>
+    <ul class="fm-list">
+      <li>Il prefisso <b>ZDOS Firma v1</b> (sul sito OurVelvet: <b>OurVelvet Firma v1</b>) distingue una firma di accesso da qualsiasi transazione.</li>
+      <li>Il nonce è casuale, vale una sola volta e scade dopo 5 minuti.</li>
+      <li>Dominio, URI e scadenza sono nel messaggio: una firma fatta per un sito non vale per un altro.</li>
+      <li>Non chiediamo mai di firmare transazioni, né seed phrase o chiavi private. Non custodiamo nessuna chiave.</li>
+    </ul>
+    <p class="fm-small">Integrazione per sviluppatori: <code>GET /api/firma/nonce</code>, <code>POST /api/firma/verify</code>, <code>POST /api/firma/check</code> (pubblico, CORS aperto).</p>
+  </section>
+
+  <footer class="fm-foot">© 2026 ZDOS1.3 · P.IVA 11040550961. I nomi dei wallet compaiono solo come testo; nessuna affiliazione implicita.</footer>
+</div>
+<script src="/firma/firma.js?v=2"></script>
+<script src="/firma/badge.js?v=2"></script>
+<script src="/firma/verifica.js?v=2"></script>
+</body>
+</html>
