@@ -80,7 +80,7 @@ location ^~ /dom-rpc {
         client_max_body_size 8k;
     }
 
-    # /rivista/ verrà aggiunta da un altro lavoro: non creare la pagina qui.
+    include snippets/zx-rivista.conf;  # ARIA rivista (deploy/zx-rivista.conf → /etc/nginx/snippets/)
 
     location ~* ^/(server|career|\.venv|node_modules|\.git)(/|$) {
         deny all;

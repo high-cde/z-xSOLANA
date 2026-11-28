@@ -1,0 +1,786 @@
+{
+ "verificato_il": "2026-11-28",
+ "nota": "HTTP 2xx/3xx da VPS Contabo con curl -L; alcuni siti restituiscono pagine di controllo anti-bot (200/202).",
+ "link": {
+  "http://pizzogreco.com": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "http://www.bnaturalglamping.it": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "http://www.calescope.com/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "http://www.clublepeoniesardegna.it": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "http://www.costalunga.org/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "http://www.liburniats.org": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "http://www.naturismoanita.it": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "http://www.sassocorbo.com": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://badromanceclub.com/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://badromanceclub.com/ita_eventi/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://bn.org.uk/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://bn.org.uk/files/category/7-bn-magazine/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://casaledelvalla.com": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://costanatura.com/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://discord.gg/4CGZrAAxaq": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://downloads.inf-fni.org/inf-fni-focus/": {
+   "ok": false,
+   "http": 520,
+   "controllato": "2026-11-28"
+  },
+  "https://events.inf-fni.org/calendar/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centri-naturisti": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centro-naturista/11-CLUB%20LE%20PEONIE": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centro-naturista/12-RESORT%20NATURISTA%20GROTTAMIRANDA": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centro-naturista/13-IL%20COSTALUNGA%20CAMPEGGIO%20NATURISTA": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centro-naturista/15-CASALE%20DEL%20VALLA%20-%20B&B%20NATURISTA": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centro-naturista/16-AD%20NATURAM%20%E2%80%93%20SPAZIO%20NATURISTA%203VENAT": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centro-naturista/2-PIZZO%20GRECO%20CAMPEGGIO%20NATURISTA": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centro-naturista/3-CAMPING%20CLASSE%20FKK": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centro-naturista/4-CASA%20VACANZE%20LA%20SORGENTE": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centro-naturista/5-C%C3%80%20LE%20SCOPE%20CAMPING%20NATURISTA": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centro-naturista/6-B&B%20BORGO%20CORNIOLA": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centro-naturista/7-BNATURAL%20NATURISM%20&%20GLAMPING": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centro-naturista/8-ECOCAMPEGGIO%20SASSO%20CORBO": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/centro-naturista/9-SUNCAVE%20GARDEN%20NATURIST": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/focus-il-periodico-inf-fni": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/il-naturismo-e-la-legge": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/la-fenait": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://fenait.org/luoghi-naturisti": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://ffn-naturisme.com/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://inf-fni.org/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://inf-fni.org/world_naturist_day/": {
+   "ok": false,
+   "http": 520,
+   "controllato": "2026-11-28"
+  },
+  "https://naturismoanaa-fkk.org": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://naturist-life-magazine.co.uk/home/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://oops.barcelona/en/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://t.me/OurVelvetHub": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://tantraclub.fr/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://thenaturisthotels.com/it/blog/spiagge-naturiste-autorizzate-in-italia/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://v1.ffn-naturisme.com/nouvelles.htm": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.3venat.it/": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.3venat.it/ad-naturam": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.abruzzonaturista.it": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Barcellona--Spagna/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Bordeaux--Francia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Brindisi--Italia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Cagliari--Italia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Cap-d'Agde--Francia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Catania--Italia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Genova--Italia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Heraklion--Grecia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Lamezia-Terme--Italia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Malaga--Spagna/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Milano--Italia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Olbia--Italia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Pescara--Italia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Piombino--Italia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Pola--Croazia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Ravenna--Italia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Roma--Italia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Torino--Italia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.airbnb.it/s/Venezia--Italia/homes": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/es/barcelona.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/es/malaga.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/fr/bordeaux.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/fr/montpellier.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/gr/heraklion.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/hr/pula.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/it/bologna.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/it/brindisi.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/it/cagliari.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/it/catania.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/it/genoa.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/it/lamezia-terme.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/it/milan.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/it/olbia.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/it/pescara.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/it/pisa.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/it/rome.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/it/turin.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/cars/city/it/venice.it.html": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Alghero%2C+Sardegna%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Arbus%2C+Sardegna%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Barcellona%2C+Spagna": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Bordeaux%2C+Francia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Brindisi%2C+Puglia%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Cagliari%2C+Sardegna%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Campo+nell%E2%80%99Elba%2C+Toscana%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Cap+d%27Agde%2C+Francia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Castellaneta%2C+Puglia%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Catania%2C+Sicilia%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Comacchio%2C+Emilia-Romagna%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Fiumicino%2C+Lazio%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Gela%2C+Sicilia%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Genova%2C+Liguria%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Heraklion%2C+Grecia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Isola+d%E2%80%99Elba%2C+Toscana%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Lamezia+Terme%2C+Calabria%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Lido+di+Dante%2C+Emilia-Romagna%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Lido+di+Ostia%2C+Lazio%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Livorno%2C+Toscana%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=M%C3%A1laga%2C+Spagna": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Marina+di+Camerota%2C+Campania%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Messina%2C+Sicilia%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Milano%2C+Lombardia%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Muravera%2C+Sardegna%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Olbia%2C+Sardegna%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Pescara%2C+Abruzzo%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Piombino%2C+Toscana%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Porto+Ferro%2C+Sardegna%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Pula%2C+Croazia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Ravenna%2C+Emilia-Romagna%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Roma%2C+Lazio%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=San+Vero+Milis%2C+Sardegna%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=San+Vincenzo%2C+Toscana%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Santa+Marinella%2C+Lazio%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Sassoscritto%2C+Toscana%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Secchiello%2C+Emilia-Romagna%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Stignano%2C+Calabria%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Torino%2C+Piemonte%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Torino+di+Sangro%2C+Abruzzo%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Varallo+Sesia%2C+Piemonte%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Venezia%2C+Veneto%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.booking.com/searchresults.it.html?ss=Viareggio%2C+Toscana%2C+Italia": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.borgocorniola.com": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.campingclassefkk.it": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.casasorgente-naturismo.it": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.club369milano.it/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.club369milano.it/eventi/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.dfk.org/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.dfk.org/seite/753952/magazine": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.dfk.org/veranstaltungen/2718752/2027/07/31/18.-internationaler-naturistenlauf": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.discovercars.com/croatia": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.discovercars.com/france": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.discovercars.com/greece-crete": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.discovercars.com/italy-mainland": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.discovercars.com/italy-sardinia": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.discovercars.com/italy-sicily": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.discovercars.com/spain": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.dnh.hr/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.euronat.com/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.infinitoclubmilano.com/": {
+   "ok": true,
+   "http": 202,
+   "controllato": "2026-11-28"
+  },
+  "https://www.maistra.com/properties/koversada-park-camping-resort/koversada-uncovered-naturist-campsite/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.olimpoclub.com/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.resort-naturista-grottamiranda.com": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.suncavegardens.it": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.unait.org": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.valalta.hr/en/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.valamarcamping.com/solaris-naturist-resort-porec": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  },
+  "https://www.vritomartis.com/": {
+   "ok": true,
+   "http": 200,
+   "controllato": "2026-11-28"
+  }
+ }
+}

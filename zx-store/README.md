@@ -11,7 +11,7 @@ Agenzia viaggi di ZDOS1.3 (P.IVA 11040550961). Ricerche già compilate verso vol
 - **eSIM** e referral Starlink personale, con nota di non affiliazione.
 - **Token**: SOL e VELVET ($OV) da API pubbliche. $DSN (Solana e Polygon) con indirizzi ufficiali; se non è quotato, la pagina lo dice.
 - **xCLOUD**: strumenti nel browser, ancora in costruzione.
-- **Rivista**: voce di menu verso `/rivista/` (pagina a cura di un altro lavoro).
+- **Rivista**: ARIA, rivista digitale 18+ in `rivista/` (sorgenti generatore in `rivista-src/`, nginx in `deploy/zx-rivista.conf`), pubblicata su `/rivista/`. Pubblicazione: copiare `rivista/` in `/var/www/rivista/` e installare lo snippet.
 
 ## Vincoli
 
