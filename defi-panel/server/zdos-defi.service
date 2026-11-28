@@ -1,0 +1,19 @@
+[Unit]
+Description=ZDOS DeFi · pannello unico Swap/Pool/Basket (API 127.0.0.1:4198, nessun fondo custodito, solo transazioni firmate dall'utente)
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/zdos-defi
+Environment=NODE_ENV=production
+Environment=DEFI_PORT=4198
+ExecStart=/usr/bin/node /opt/zdos-defi/server.mjs
+Restart=always
+RestartSec=5
+User=root
+NoNewPrivileges=true
+MemoryMax=400M
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target
