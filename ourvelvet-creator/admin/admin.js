@@ -14,9 +14,10 @@
     get("/queue").then(function (j) {
       var g = $("#coda"); g.textContent = ""; $("#codaEmpty").hidden = j.coda && j.coda.length > 0;
       (j.coda || []).forEach(function (m) {
-        var it = el("div", "item"); var im = el("img"); im.src = m.url; im.alt = "Immagine in revisione"; im.loading = "lazy"; it.appendChild(im);
-        var b = el("div", "b"); b.appendChild(el("b", "", "@" + (m.handle || "?") + " · " + (m.tipo === "avatar" ? "avatar" : "post")));
-        b.appendChild(el("small", "", when(m.creato) + " · " + m.w + "×" + m.h + " · " + Math.round(m.bytes / 1024) + " KB"));
+        var it = el("div", "item"), isA = m.tipo === "audio";
+        if (isA) { var au = el("audio"); au.controls = true; au.preload = "none"; au.src = m.url; it.appendChild(au); } else { var im = el("img"); im.src = m.url; im.alt = "Immagine in revisione"; im.loading = "lazy"; it.appendChild(im); }
+        var b = el("div", "b"); b.appendChild(el("b", "", "@" + (m.handle || "?") + " · " + (m.tipo === "avatar" ? "avatar" : isA ? "traccia audio" : "post")));
+        b.appendChild(el("small", "", when(m.creato) + " · " + (isA ? (m.titolo ? "«" + m.titolo + "» · " : "") + (m.durata ? Math.round(m.durata) + " s · " : "") : m.w + "×" + m.h + " · ") + Math.round(m.bytes / 1024) + " KB"));
         if (m.testo) b.appendChild(el("p", "", m.testo));
         var r = el("div", "row"), ok = el("button", "btn ok", "Approva"), no = el("button", "btn no", "Rifiuta");
         ok.onclick = function () { post("/media/" + m.id, { azione: "approva" }).then(function (x) { toast(x.ok ? "Approvata" : x.errore); coda(); stats(); }); };

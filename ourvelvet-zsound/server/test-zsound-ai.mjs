@@ -1,0 +1,20 @@
+// Test dell'adattatore AI con un fornitore SIMULATO in locale (porta 8920): verifica solo il cablaggio, non genera musica vera.
+import http from "node:http"; import fs from "node:fs"; import nacl from "tweetnacl"; import bs58 from "bs58";
+const BASE = "http://127.0.0.1:8919", FIRMA = "https://ourvelvet.online", DOMAIN = "ourvelvet.online", O = { Origin: "https://" + DOMAIN, "X-OV-Social": "1", "Content-Type": "application/json" };
+let pass = 0, fail = 0; const t = (n, ok, x = "") => { (ok ? pass++ : fail++); console.log((ok ? "PASS " : "FAIL ") + n + (x ? " → " + x : "")); };
+const mock = http.createServer((q, s) => { let b = ""; q.on("data", (c) => b += c); q.on("end", () => { const j = JSON.parse(b || "{}"); if (/fail/.test(j.prompt)) { s.writeHead(500); return s.end(); } const w = Buffer.alloc(44 + 2000); w.write("RIFF", 0); w.write("WAVE", 8); s.writeHead(200, { "content-type": "audio/wav" }); s.end(w); }); }).listen(8920, "127.0.0.1");
+const msgOf = (f, a) => `${f.domain} wants you to sign in with your Solana account:\n${a}\n\n${f.statement}\n\nURI: ${f.uri}\nVersion: ${f.version}\nChain ID: ${f.chainId}\nNonce: ${f.nonce}\nIssued At: ${f.issuedAt}\nExpiration Time: ${f.expirationTime}`;
+const kp = nacl.sign.keyPair(), addr = bs58.encode(kp.publicKey); const n = await (await fetch(FIRMA + "/api/firma/nonce")).json(); const m = msgOf(n.signIn, addr);
+const v = await (await fetch(FIRMA + "/api/firma/verify", { method: "POST", headers: { "Content-Type": "application/json", Origin: "https://" + DOMAIN }, body: JSON.stringify({ message: m, signature: Buffer.from(nacl.sign.detached(Buffer.from(m), kp.secretKey)).toString("base64"), address: addr, badgePubblico: false }) })).json();
+const H = { ...O, Cookie: "zdos_firma=" + v.token };
+let r = await fetch(BASE + "/api/social/me/profile", { method: "PUT", headers: H, body: JSON.stringify({ handle: "zsai_" + Math.random().toString(36).slice(2, 7), bio: "", cats: [], maggiorenne: true, termini: true, consenso: true }) }); t("profilo", r.status === 201);
+let st = await (await fetch(BASE + "/api/social/zsound/ai/status")).json(); t("stato attivo con fornitore simulato", st.stato === "attivo" && /GPU/.test(st.fornitore), JSON.stringify(st));
+const gen = (p, s = 10) => fetch(BASE + "/api/social/zsound/ai/generate", { method: "POST", headers: H, body: JSON.stringify({ prompt: p, seconds: s }) });
+r = await gen("ok"); t("prompt troppo corto (400)", r.status === 400);
+r = await gen("bambina teen che balla"); t("prompt vietato dal filtro (400)", r.status === 400);
+r = await gen("techno scura strumentale"); const b = Buffer.from(await r.arrayBuffer()); t("generazione ok: audio restituito, non salvato", r.status === 200 && /audio\/wav/.test(r.headers.get("content-type")) && b.length === 2044);
+r = await gen("fail provider"); t("errore del fornitore → 502 pulito", r.status === 502);
+r = await gen("terza richiesta valida"); r = await gen("quarta richiesta valida"); t("limite orario per wallet (429)", r.status === 429, String(r.status));
+r = await fetch(BASE + "/api/social/zsound/ai/generate", { method: "POST", headers: O, body: JSON.stringify({ prompt: "senza login ok" }) }); t("senza login: 401", r.status === 401);
+await fetch(BASE + "/api/social/me", { method: "DELETE", headers: H, body: JSON.stringify({ conferma: "ELIMINA" }) });
+mock.close(); console.log(`${pass}/${pass + fail}`); process.exit(fail ? 1 : 0);

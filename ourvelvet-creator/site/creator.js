@@ -262,6 +262,10 @@
     w.addEventListener("click", function () { openCreator(p.autore.handle); }); h.appendChild(w); a.appendChild(h);
     if (p.text) a.appendChild(el("p", "", p.text));
     if (p.media) { var m = el("div", "media"), mi = el("img"); mi.src = p.media; mi.alt = "Immagine del post"; mi.loading = "lazy"; m.appendChild(mi); a.appendChild(m); }
+    if (p.audio) {
+      var tk = el("div", "track"), th = el("div", "track-h"); th.appendChild(el("span", "track-i", "♫")); var tn = el("div", "track-n"); tn.appendChild(el("b", "", p.audio.titolo)); tn.appendChild(el("small", "", "Musica" + (p.audio.durata ? " · " + Math.floor(p.audio.durata / 60) + ":" + ("0" + Math.round(p.audio.durata % 60)).slice(-2) : "") + " · creata con Z-Sound o caricata dal creator")); th.appendChild(tn); tk.appendChild(th);
+      var au = el("audio"); au.controls = true; au.preload = "none"; au.src = p.audio.url; tk.appendChild(au); a.appendChild(tk);
+    }
     var ac = el("div", "acts");
     var lk = el("button", p.piace ? "on" : "", (p.piace ? "♥ " : "♡ ") + p.like); lk.type = "button"; lk.setAttribute("aria-label", "Mi piace");
     if (p.stato && p.stato !== "pubblico") lk.disabled = true;

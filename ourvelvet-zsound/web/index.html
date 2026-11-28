@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="it" data-brand="OurVelvet">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Z-Sound · Studio DJ per creator — OurVelvet</title>
+<meta name="description" content="Z-Sound: lo studio DJ nel browser per i creator OurVelvet. Due deck, mixer, effetti, campionatore, registrazione del mix e pubblicazione nel profilo. Solo 18+, consenso, safeword ROSSO.">
+<meta name="theme-color" content="#070410">
+<meta property="og:title" content="Z-Sound · Studio DJ — OurVelvet Creator">
+<meta property="og:description" content="Deck, mixer, effetti e campionatore nel browser. Registra il mix e pubblicalo nel tuo profilo creator.">
+<link rel="canonical" href="https://ourvelvet.online/creator/z-sound/">
+<link rel="icon" href="/creator-radar/assets/logo-lsd.png" type="image/png">
+<link rel="stylesheet" href="zsound.css?v=5">
+<script src="/zdos-tag.js" defer></script>
+<script src="/firma/theme.js"></script>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<header class="zs-top glass">
+  <a class="back" href="/creator-radar/">‹ Creator</a>
+  <div class="brand"><span class="mark" aria-hidden="true">♫</span><div><h1 class="shimmer">Z-Sound</h1><small>Studio DJ · OurVelvet Creator</small></div></div>
+  <div class="top-r">
+    <button type="button" class="state" id="audioState" aria-live="polite">Tocca per attivare l'audio</button>
+    <button type="button" class="pad-btn ghost sm" id="midiBtn">MIDI</button>
+    <button type="button" class="pad-btn ghost sm" id="helpBtn">Tasti</button>
+    <span class="chip-me" id="meChip" hidden></span>
+    <a class="pad-btn sm" id="loginLink" href="#pubblica">Accedi</a>
+  </div>
+</header>
+
+<div class="floatp glass" id="midiPanel" hidden>
+  <h3>MIDI</h3>
+  <p class="muted sm" id="midiState">…</p>
+  <div class="row small"><button type="button" class="pad-btn" id="midiScan">Cerca dispositivi</button><button type="button" class="pad-btn" id="midiLearn">MIDI learn</button><button type="button" class="pad-btn ghost" id="midiClear">Cancella</button></div>
+  <p class="fine" id="midiInfo"></p>
+  <p class="fine">Predefinito: note 36–43 suonano gli 8 pad. Con «MIDI learn» tocca un controllo qui e poi muovi o premi il tuo: la mappa resta salvata sul dispositivo.</p>
+</div>
+<div class="floatp glass" id="helpPanel" hidden>
+  <h3>Scorciatoie da tastiera</h3>
+  <table class="keys">
+    <tr><th>Deck A</th><td>Q play · W cue · E sync · R loop 4 · 1–4 hot cue</td></tr>
+    <tr><th>Deck B</th><td>U play · I cue · O sync · Y loop 4 · 7 8 9 0 hot cue</td></tr>
+    <tr><th>Pad</th><td>Z X C V · A S D F</td></tr>
+    <tr><th>Mixer</th><td>← → crossfader · ↓ centro · M registra</td></tr>
+  </table>
+  <p class="fine">Hot cue: clic per impostare o saltare; tasto destro o Maiusc+clic per cancellare. Manopole: trascina, rotellina o frecce; doppio clic per azzerare.</p>
+</div>
+
+<nav class="tabs" id="tabs" aria-label="Sezioni dello studio">
+  <button type="button" data-tab="a" class="on">Deck A</button>
+  <button type="button" data-tab="mix">Mixer</button>
+  <button type="button" data-tab="b">Deck B</button>
+  <button type="button" data-tab="fx">FX</button>
+  <button type="button" data-tab="pad">Pad</button>
+  <button type="button" data-tab="pub">Rec</button>
+</nav>
+
+<main class="studio" id="studio" data-tab="a">
+  <section id="deckA" data-p="a" aria-label="Deck A"></section>
+  <section id="mixer" class="mixer glass" data-p="mix" aria-label="Mixer"></section>
+  <section id="deckB" data-p="b" aria-label="Deck B"></section>
+  <section id="fxp" class="panel glass" data-p="fx" aria-label="Effetti"></section>
+  <section id="padp" class="panel glass" data-p="pad" aria-label="Campionatore"></section>
+  <section id="recp" class="panel glass" data-p="pub" aria-label="Registrazione"></section>
+  <section id="pubp" class="panel glass wide2" data-p="pub" aria-label="Pubblicazione"><span id="pubblica"></span><p class="guard" id="noProf" hidden>Hai fatto l'accesso ma non hai ancora un profilo creator. <a href="/creator-radar/#profilo">Crealo qui</a> (dichiarazione 18+, termini e consenso) e torna.</p></section>
+  <section id="aip" class="panel glass" data-p="pub" aria-label="Genera con AI"></section>
+</main>
+
+<noscript><p class="panel">Z-Sound usa Web Audio e JavaScript: attivali per usare lo studio.</p></noscript>
+<footer class="zs-foot">
+  <p>© 2026 ZDOS1.3 · Licenza proprietaria · P.IVA 11040550961 · Solo 18+, solo consenso, safeword <b>ROSSO</b>.</p>
+  <p>Non pubblicare brani di altri senza licenza: mixare file tuoi o con licenza resta sotto la tua responsabilità. <a href="/creator-radar/">Torna ai Creator</a></p>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="zs-engine.js?v=5"></script>
+<script src="zs-ui.js?v=5"></script>
+<script src="zs-social.js?v=5"></script>
+<script src="/firma/firma.js?v=1"></script>
+</body>
+</html>

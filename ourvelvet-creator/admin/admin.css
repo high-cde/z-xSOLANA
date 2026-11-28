@@ -12,3 +12,4 @@
 .rep{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}.rep img{max-width:200px;border-radius:8px;display:block;margin-top:6px}
 table{width:100%;border-collapse:collapse;font-size:13px}td,th{border-bottom:1px solid var(--line);padding:6px;text-align:left}
 .empty{color:var(--mut)}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#22143a;border:1px solid var(--line);padding:8px 16px;border-radius:999px;opacity:0;transition:.2s}.toast.on{opacity:1}
+.item audio{width:100%;display:block;padding:10px;background:#120a1e}
