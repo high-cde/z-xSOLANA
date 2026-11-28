@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ZLang Launcher by ZDOS · demo</title>
+<meta name="description" content="ZLang Launcher by ZDOS: lancia un token su Solana con sicurezza di default e commissioni chiare. Demo: nessuna transazione reale.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#fbf9ff">
+<link rel="canonical" href="https://x-zdos.it/launcher/">
+<link rel="icon" type="image/svg+xml" href="/launcher/assets/zlang-mark.svg">
+<link rel="preload" href="/assets/fonts/SpaceGrotesk-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="/launcher/launcher.css?v=1">
+<script src="/launcher/boot.js"></script>
+</head>
+<body>
+<a class="zl-skip" href="#main">Vai al contenuto</a>
+<header class="zl-top">
+  <div class="zl-wrap">
+    <a class="zl-brand" href="/launcher/" aria-label="ZLang by ZDOS, launcher"><img src="/launcher/assets/zlang-mark.svg" alt="" width="34" height="34"><span><b>ZLang</b><small>by ZDOS</small></span></a>
+    <span class="zl-spacer"></span>
+    <button type="button" class="zl-btn ghost sm" id="btnConnect" aria-describedby="connNote">Collega Phantom</button>
+  </div>
+</header>
+<div class="zl-band" role="note"><div class="zl-wrap"><span class="k">ZLANG // SOLANA ANCHOR RECEIPT</span><span class="zl-pill">DEMO</span><span>spec <span class="h" id="bandHash">…</span></span></div></div>
+<p class="zl-demo" role="status">Demo — nessuna transazione reale</p>
+
+<main id="main">
+<div class="zl-wrap">
+  <section class="zl-hero">
+    <h1>Lancia il tuo token su <span>Solana</span>, in modo semplice.</h1>
+    <p>Sicurezza di default, commissioni chiare e visibili, una ricevuta ZLang per ogni lancio. Qui puoi provare tutto in simulazione: non viene firmato né inviato niente.</p>
+    <ul class="zl-facts">
+      <li><b>Mint e freeze</b> revocati</li>
+      <li><b>Liquidità</b> bloccata</li>
+      <li><b>0,01 SOL</b> fissi</li>
+      <li><b>Party pool</b> alla comunità</li>
+    </ul>
+    <p class="zl-note" id="connNote">Phantom è facoltativo: serve solo a mostrare il tuo indirizzo. La demo non chiede firme.</p>
+  </section>
+</div>
+
+<nav class="zl-tabs" aria-label="Sezioni del launcher"><div class="zl-wrap" role="tablist">
+  <button class="zl-tab" role="tab" id="tab-crea" aria-controls="p-crea" aria-selected="true" data-p="crea">Crea token</button>
+  <button class="zl-tab" role="tab" id="tab-faucet" aria-controls="p-faucet" aria-selected="false" data-p="faucet">Faucet</button>
+  <button class="zl-tab" role="tab" id="tab-airdrop" aria-controls="p-airdrop" aria-selected="false" data-p="airdrop">Airdrop</button>
+  <button class="zl-tab" role="tab" id="tab-party" aria-controls="p-party" aria-selected="false" data-p="party">Party pool</button>
+  <a class="zl-tab link" href="/launcher/piano/">Piano ↗</a>
+</div></nav>
+
+<div class="zl-wrap">
+
+<!-- CREA -->
+<section class="zl-panel on" id="p-crea" role="tabpanel" aria-labelledby="tab-crea">
+<div class="zl-grid two zl-crea">
+    <form class="zl-card c-form" id="frm" novalidate autocomplete="off">
+      <h2>1 · Il tuo token</h2>
+      <p class="zl-sub">Compila i campi: l'anteprima si aggiorna da sola.</p>
+      <label class="zl-l" for="fName">Nome</label>
+      <input class="zl-in" id="fName" type="text" value="Esempio Token" maxlength="32" autocomplete="off">
+      <p class="zl-err" id="eName"></p>
+      <div class="zl-row2">
+        <div><label class="zl-l" for="fSym">Simbolo</label><input class="zl-in mono" id="fSym" type="text" value="ESEMPIO" maxlength="10" autocapitalize="characters" autocomplete="off"><p class="zl-err" id="eSym"></p></div>
+        <div><label class="zl-l" for="fDec">Decimali</label><select class="zl-in" id="fDec"><option value="6" selected>6 (come L$D)</option><option value="9">9</option></select></div>
+      </div>
+      <label class="zl-l" for="fSupply">Supply totale</label>
+      <input class="zl-in mono" id="fSupply" type="text" inputmode="numeric" value="1000000000" autocomplete="off">
+      <p class="zl-err" id="eSupply"></p>
+      <label class="zl-l" for="fImg">Indirizzo dell'immagine (https, facoltativo)</label>
+      <input class="zl-in mono" id="fImg" type="url" inputmode="url" placeholder="https://…/logo.png" autocomplete="off">
+      <p class="zl-err" id="eImg"></p>
+      <p class="zl-note">L'immagine viene caricata dal tuo browser solo per l'anteprima.</p>
+
+      <h3>Liquidità iniziale</h3>
+      <div class="zl-row2">
+        <div><label class="zl-l" for="fSol">SOL nel pool</label><input class="zl-in mono" id="fSol" type="text" inputmode="decimal" value="1"><p class="zl-err" id="eSol"></p></div>
+        <div><label class="zl-l" for="fPct">Supply nel pool</label><select class="zl-in" id="fPct"><option value="100" selected>100%</option><option value="90">90%</option><option value="80">80%</option><option value="70">70%</option><option value="50">50%</option></select></div>
+      </div>
+      <label class="zl-l" for="fFee">Commissione del pool</label>
+      <select class="zl-in" id="fFee"><option value="25" selected>0,25% (consigliata)</option><option value="50">0,5%</option><option value="100">1%</option></select>
+      <p class="zl-note">La commissione del pool va alla tua posizione di liquidità. ZDOS non prende nulla sugli scambi.</p>
+      <label class="zl-l" for="fStd">Standard del token</label>
+      <select class="zl-in" id="fStd"><option value="spl" selected>SPL Token (massima compatibilità)</option><option value="t22">Token-2022 (metadati nel mint)</option></select>
+
+      <h3>Sicurezza</h3>
+      <label class="zl-tg"><input type="checkbox" id="tMint" checked><span class="zl-sw" aria-hidden="true"></span><span><b>Revoca la mint authority</b><span class="d">Nessuno potrà creare altri token, nemmeno tu.</span></span></label>
+      <label class="zl-tg"><input type="checkbox" id="tFreeze" checked><span class="zl-sw" aria-hidden="true"></span><span><b>Revoca la freeze authority</b><span class="d">Nessuno potrà bloccare i conti dei possessori.</span></span></label>
+      <label class="zl-tg"><input type="checkbox" id="tLock" checked><span class="zl-sw" aria-hidden="true"></span><span><b>Blocca la liquidità (LP lock)</b><span class="d">La liquidità iniziale non si può più ritirare. Le commissioni del pool le riscuoti comunque.</span></span></label>
+    </form>
+    <div class="zl-card c-prev" aria-live="polite">
+      <h2>2 · Anteprima</h2>
+      <div class="zl-tok"><img id="pvImg" src="/launcher/assets/token-placeholder.svg" alt="" width="72" height="72" referrerpolicy="no-referrer"><div><h2 id="pvName">…</h2><div class="sym" id="pvSym">…</div></div></div>
+      <dl class="zl-kv">
+        <dt>Supply totale</dt><dd id="pvSupply">…</dd>
+        <dt>Nel pool</dt><dd id="pvPool">…</dd>
+        <dt>Resta a te</dt><dd id="pvKeep">…</dd>
+        <dt>Prezzo iniziale</dt><dd id="pvPrice">…</dd>
+        <dt>Standard</dt><dd id="pvStd">…</dd>
+      </dl>
+      <h3>Controlli di sicurezza</h3>
+      <p class="u-m06"><span class="zl-badge ok" id="pvBadge">Standard ZDOS</span></p>
+      <ul class="zl-chk" id="chkOut"></ul>
+      <p class="zl-note">Dopo un lancio reale, K.I.R.A. legge il token in sola lettura, con le sue soglie di sempre.</p>
+    </div>
+    <div class="zl-card c-cost">
+      <h2>3 · Costi in SOL</h2>
+      <p class="zl-sub">Commissione ZDOS fissa e visibile. Il resto sono depositi di rete Solana, al costo, senza ricarico.</p>
+      <div class="zl-tw"><table class="zl-t"><thead><tr><th>Voce</th><th class="n">SOL</th></tr></thead><tbody id="feeOut"></tbody></table></div>
+      <p class="zl-note">Stime con rent di 5.080 lamport per byte: al momento della firma la cifra esatta si rilegge dalla chain. La liquidità che depositi non è un costo: resta tua.</p>
+      <button type="button" class="u-full u-mt12 zl-btn" id="btnSim">Simula il lancio</button>
+      <div class="zl-res" id="simRes" role="status" tabindex="-1"></div>
+    </div>
+    <div class="zl-card c-spec">
+      <h2>Specifica ZLang</h2>
+      <p class="zl-sub">Il lancio è descritto da questo testo. Il suo hash SHA-256 finisce nella ricevuta.</p>
+      <pre class="zl-code" id="specOut" tabindex="0" aria-label="Specifica ZLang del lancio"></pre>
+      <div class="u-row u-mt10"><button type="button" class="zl-btn ghost sm" id="btnCopy">Copia la specifica</button></div>
+      <details class="zl-d"><summary>Transazioni che verrebbero costruite</summary><ol class="zl-steps" id="stepsOut"></ol></details>
+    </div>
+</div>
+</section>
+
+<!-- FAUCET -->
+<section class="zl-panel" id="p-faucet" role="tabpanel" aria-labelledby="tab-faucet">
+<div class="zl-grid two">
+  <div class="zl-card">
+    <h2><img class="zl-lsd" src="/launcher/assets/lsd-coin.png" alt="" width="20" height="20">Faucet L$D</h2>
+    <p class="zl-sub">Una piccola quantità di L$D per provare, una richiesta per wallet e per periodo. Qui è tutto simulato: nessun L$D viene inviato.</p>
+    <label class="zl-l" for="faAddr">Indirizzo del wallet</label>
+    <input class="zl-in mono" id="faAddr" type="text" placeholder="Incolla un indirizzo o collega Phantom" autocomplete="off" spellcheck="false">
+    <p class="zl-err" id="eFa"></p>
+    <label class="zl-l" for="faAge">Età del wallet (simulata)</label>
+    <select class="zl-in" id="faAge"><option value="3">3 giorni</option><option value="30" selected>30 giorni</option></select>
+    <p class="zl-note">In produzione l'età si legge dalla chain. Qui la scegli tu per provare i due esiti.</p>
+    <div class="u-row u-mt12"><button type="button" class="zl-btn" id="btnFa">Controlla e richiedi (simulato)</button><button type="button" class="zl-btn ghost" id="btnFaReset">Azzera la prova</button></div>
+    <div class="zl-res" id="faRes" role="status" tabindex="-1"></div>
+  </div>
+  <div class="zl-card">
+    <h2>Regole</h2>
+    <p class="zl-sub">Parametri di esempio, da decidere prima del lancio.</p>
+    <ul class="zl-chk" id="faRules"></ul>
+    <h3>Come si finanzia</h3>
+    <p class="u-m0 zl-sub">Con un trasferimento esplicito, firmato dal titolare del tesoro, verso un wallet del faucet dedicato e con saldo limitato. Nessuna chiave del titolare sul server. Il faucet si può fermare in ogni momento.</p>
+  </div>
+</div>
+</section>
+
+<!-- AIRDROP -->
+<section class="zl-panel" id="p-airdrop" role="tabpanel" aria-labelledby="tab-airdrop">
+<div class="zl-grid two">
+  <div class="zl-card">
+    <h2>Airdrop a merito</h2>
+    <p class="zl-sub">Per chi fa cose reali, con regole pubbliche prima del round. Qui l'elenco è <b>di esempio</b>, ma la verifica della prova di Merkle è vera: viene calcolata nel tuo browser.</p>
+    <label class="zl-l" for="adSel">Voce dell'elenco di esempio</label>
+    <select class="zl-in" id="adSel"></select>
+    <p class="zl-note">Oppure scrivi un identificativo qualsiasi per vedere l'esito «non presente».</p>
+    <label class="zl-l" for="adId">Identificativo</label>
+    <input class="zl-in mono" id="adId" type="text" autocomplete="off" spellcheck="false">
+    <div class="u-row u-mt12"><button type="button" class="zl-btn" id="btnAd">Verifica la prova</button><button type="button" class="zl-btn ghost" id="btnAdClaim" disabled>Claim (simulato)</button></div>
+    <div class="zl-res" id="adRes" role="status" tabindex="-1"></div>
+  </div>
+  <div class="zl-card">
+    <h2>Radice di Merkle</h2>
+    <p class="zl-sub">Impronta dell'intero elenco: chiunque può ricalcolarla.</p>
+    <pre class="zl-code" id="adRoot" tabindex="0" aria-label="Radice di Merkle dell'elenco di esempio"></pre>
+    <h3>Come funziona</h3>
+    <ol class="zl-steps">
+      <li><b>Regole</b> e data dello snapshot pubblicate prima.</li>
+      <li>ZDOS pubblica l'elenco e la <b>radice</b>.</li>
+      <li>Il titolare del tesoro firma il deposito dei token del round.</li>
+      <li>Ogni beneficiario fa <b>claim</b> con la sua prova; il programma la verifica una sola volta.</li>
+      <li>Alla scadenza, i token non reclamati tornano al tesoro.</li>
+    </ol>
+    <p class="zl-note">Nessun importo qui è reale e nessun airdrop è promesso.</p>
+  </div>
+</div>
+</section>
+
+<!-- PARTY POOL -->
+<section class="zl-panel" id="p-party" role="tabpanel" aria-labelledby="tab-party">
+<div class="zl-grid two">
+  <div class="zl-card">
+    <h2>Party pool</h2>
+    <p class="zl-sub">Ogni lancio aggiunge una quota fissa a un indirizzo pubblico, che finanzia faucet e airdrop a merito. Non è un fondo di rendimento e non sostiene il prezzo di nessun token.</p>
+    <div class="zl-flow">
+      <div><b>Commissione di lancio ZDOS</b>0,01 SOL fissi, visibili nella transazione</div>
+      <div class="arrow" aria-hidden="true">↓</div>
+      <div><b>50% → Party pool</b>0,005 SOL a lancio, indirizzo pubblico</div>
+      <div><b>50% → Servizio ZDOS</b>0,005 SOL a lancio</div>
+    </div>
+    <p class="zl-note">Indirizzo del party pool: <b>non ancora creato</b>. Lo crea e lo firma il titolare del tesoro, meglio come multisig.</p>
+  </div>
+  <div class="zl-card">
+    <h2>Simulatore</h2>
+    <p class="zl-sub">Aritmetica semplice, non una previsione di lanci.</p>
+    <label class="zl-l" for="ppN">Numero di lanci: <b id="ppNv">10</b></label>
+    <input type="range" id="ppN" min="1" max="1000" value="10">
+    <p class="u-mt12 u-m0t zl-big" id="ppOut">…</p>
+    <p class="zl-note" id="ppSub"></p>
+    <h3>Le tue prove in questo browser</h3>
+    <p class="u-m0 zl-big" id="ppLocal">0 <small>lanci simulati</small></p>
+    <p class="zl-note">Conteggio salvato solo nel tuo browser. Non è un dato della chain.</p>
+    <button type="button" class="u-mt8 zl-btn ghost sm" id="btnPpReset">Azzera</button>
+  </div>
+</div>
+</section>
+
+</div>
+</main>
+<footer class="zl-ft"><div class="zl-wrap">ZLang by ZDOS · ZDOS1.3 · P.IVA 11040550961 · Demo senza transazioni reali, nessun consiglio di investimento.<br>Liquidità su protocollo Solana standard. <a href="/launcher/piano/">Piano del progetto</a></div></footer>
+<script src="/launcher/launcher.js?v=1"></script>
+</body>
+</html>

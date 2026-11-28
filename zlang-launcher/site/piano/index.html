@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Piano · ZLang Launcher by ZDOS</title>
+<meta name="description" content="Piano del progetto ZLang Launcher by ZDOS: architettura, commissioni, party pool, faucet, airdrop, sicurezza, costi in SOL e fasi.">
+<meta name="theme-color" content="#fbf9ff">
+<link rel="canonical" href="https://x-zdos.it/launcher/piano/">
+<link rel="icon" type="image/svg+xml" href="/launcher/assets/zlang-mark.svg">
+<link rel="preload" href="/assets/fonts/SpaceGrotesk-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="/launcher/launcher.css?v=1">
+</head>
+<body>
+<header class="zl-top"><div class="zl-wrap">
+  <a class="zl-brand" href="/launcher/" aria-label="ZLang by ZDOS, launcher"><img src="/launcher/assets/zlang-mark.svg" alt="" width="34" height="34"><span><b>ZLang</b><small>by ZDOS</small></span></a>
+  <span class="zl-spacer"></span>
+  <a class="zl-btn ghost sm u-link" href="/launcher/">Apri la demo</a>
+</div></header>
+<div class="zl-band"><div class="zl-wrap"><span class="k">ZLANG // SOLANA ANCHOR RECEIPT</span><span class="zl-pill">PIANO v1.0 · PROPOSTA</span><span>28 nov 2026</span></div></div>
+<main class="zl-doc" id="main">
+<h1 id="zlang-launcher-by-zdos-piano-di-progetto">ZLang Launcher by ZDOS — piano di progetto</h1>
+<p><em>ZDOS1.3 · P.IVA 11040550961 · versione 1.0 del 28 novembre 2026 · stato: proposta. La demo è su <code>https://x-zdos.it/launcher/</code> e funziona solo in simulazione: nessuna transazione reale.</em></p>
+<blockquote>
+<p>Informazione tecnica, non è un consiglio di investimento. Nessun rendimento è promesso. Ogni parametro economico di questo piano è una <strong>proposta da confermare</strong> e può cambiare prima del lancio.</p>
+</blockquote>
+<ul class="zl-toc"><li><a href="#1-che-cosa-vogliamo-costruire">Che cosa vogliamo costruire</a></li><li><a href="#2-architettura">Architettura</a></li><li><a href="#3-modello-commissioni-zdos-proposta">Modello commissioni ZDOS (proposta)</a></li><li><a href="#4-party-pool">Party pool</a></li><li><a href="#5-faucet">Faucet</a></li><li><a href="#6-airdrop-a-merito">Airdrop a merito</a></li><li><a href="#7-sicurezza">Sicurezza</a></li><li><a href="#8-costi-in-sol-passo-per-passo-stime">Costi in SOL, passo per passo (stime)</a></li><li><a href="#9-fasi-e-firme-del-titolare-del-tesoro">Fasi e firme del titolare del tesoro</a></li><li><a href="#10-rischi-aperti">Rischi aperti</a></li></ul>
+<h2 id="1-che-cosa-vogliamo-costruire">1. Che cosa vogliamo costruire</h2>
+<p>Un lanciatore di token su Solana che sia semplice, leggero e onesto, tutto con identità <strong>ZLang by ZDOS</strong>. Resta su Solana: nessuna nuova chain, nessun validatore da gestire. Quello che costruiamo è la parte nostra:</p>
+<ul>
+<li>una <strong>specifica di lancio in ZLang</strong>: ogni lancio è descritto da un testo dichiarativo che chiunque può leggere, con la sua impronta (hash) pubblicata;</li>
+<li>un <strong>router delle commissioni ZDOS</strong>: una quota fissa e visibile di ogni lancio va al <em>party pool</em>;</li>
+<li>il <strong>party pool</strong>: un indirizzo pubblico che finanzia faucet e airdrop a merito;</li>
+<li>un <strong>front-end leggero</strong>, mobile-first, senza librerie pesanti, senza timer finti.</li>
+</ul>
+<p>L$D (Dom-Coin) resta la moneta di comunità dell'ecosistema: mint <code>FSwCz9qgcvfWGEU8QU3h4fQpyQ8TB2KLHYC9bmoMxDgP</code>, 6 decimali, 200M di supply, mint e freeze authority revocati. Il launcher non modifica L$D né i suoi parametri.</p>
+<h3 id="principi-non-negoziabili">Principi (non negoziabili)</h3>
+<ol>
+<li><strong>Nessun FOMO</strong>: niente timer finti, niente contatori inventati, niente promesse di guadagno.</li>
+<li><strong>Nessuna custodia</strong>: chi lancia firma con il proprio wallet. ZDOS non tiene fondi di terzi né chiavi del titolare sul server.</li>
+<li><strong>Sicuro di default</strong>: mint e freeze revocati, liquidità bloccata, metadati completi.</li>
+<li><strong>Numeri veri</strong>: ogni cifra o è calcolata dai parametri o ha una fonte; il resto è scritto come <em>esempio</em>.</li>
+<li><strong>Niente wash trading, niente distribuzione finta</strong>; le soglie K.I.R.A. non cambiano.</li>
+</ol>
+<h2 id="2-architettura">2. Architettura</h2>
+<h3 id="21-flusso-di-creazione">2.1 Flusso di creazione</h3>
+<ol>
+<li><strong>Spec ZLang.</strong> Il form (nome, simbolo, supply, immagine, opzioni di sicurezza) produce una specifica <code>launch ZLangLaunch { … }</code> e ne calcola l'hash SHA-256.</li>
+<li><strong>Compilazione in istruzioni.</strong> Un costruttore deterministico traduce la specifica in istruzioni Solana, in 2–3 transazioni, tutte costruite nel browser di chi lancia:</li>
+<li>creazione del mint (SPL Token di default; Token-2022 come opzione con metadati dentro il mint);</li>
+<li>creazione del conto token del creatore e conio dell'intera supply;</li>
+<li>metadati (nome, simbolo, immagine);</li>
+<li><strong>revoca della mint authority</strong> e <strong>revoca della freeze authority</strong>;</li>
+<li>creazione del pool di liquidità SOL + token e deposito iniziale;</li>
+<li><strong>blocco permanente della liquidità</strong> (LP lock);</li>
+<li>trasferimenti della commissione ZDOS: quota al party pool, quota al servizio;</li>
+<li>un'istruzione Memo con l'hash della specifica (<code>ZLANG:LAUNCH:v1:&lt;hash&gt;</code>): è la <em>ricevuta ZLang</em>, verificabile da chiunque.</li>
+<li><strong>Firma del creatore.</strong> Il wallet mostra le istruzioni; il creatore firma. Il sito non firma e non invia nulla al posto suo.</li>
+<li><strong>Controlli K.I.R.A.</strong> dopo il lancio il token entra nella lettura K.I.R.A. in sola lettura, con le soglie esistenti (invariate).</li>
+</ol>
+<h3 id="22-standard-del-token">2.2 Standard del token</h3>
+<ul>
+<li><strong>SPL Token</strong> è il default: massima compatibilità con wallet e aggregatori, metadati in un conto dedicato.</li>
+<li><strong>Token-2022</strong> è un'opzione: metadati nel mint, meno conti. Va abilitato solo dopo prove su devnet, perché non tutti i wallet gestiscono ogni estensione. Estensioni pericolose (transfer fee, permanent delegate, freeze di default) <strong>non sono ammesse</strong> dal launcher.</li>
+</ul>
+<h3 id="23-liquidita">2.3 Liquidità</h3>
+<p>Il pool nasce subito alla creazione, senza fase "a curva" che spinga alla corsa. Il creatore sceglie quanta parte della supply mettere nel pool e quanti SOL depositare; il prezzo iniziale è il rapporto tra i due. Di default il 100% della supply va nel pool e la posizione è bloccata per sempre.</p>
+<blockquote>
+<p><em>Nota tecnica:</em> la liquidità sta su un protocollo Solana standard, aperto e verificabile on-chain; il pool è quindi visibile agli aggregatori che indicizzano i pool Solana. La visibilità non è garantita e dipende dall'indicizzazione e dalla liquidità.</p>
+</blockquote>
+<h3 id="24-router-delle-commissioni-zdos">2.4 Router delle commissioni ZDOS</h3>
+<ul>
+<li><strong>Fase 1 (senza programma nostro):</strong> la commissione è formata da due istruzioni di trasferimento SOL dentro la stessa transazione del lancio, verso due indirizzi pubblici. Tutto è visibile su qualunque explorer. Limite onesto: la regola è applicata dal nostro front-end, non dalla chain.</li>
+<li><strong>Fase 5 (programma <code>zdos_fee_router</code>):</strong> un programma ZDOS con configurazione on-chain (ripartizione in punti base, indirizzi, autorità in multisig) che applica la regola e scrive un evento a ogni lancio. Richiede audit e firma del titolare del tesoro.</li>
+</ul>
+<h2 id="3-modello-commissioni-zdos-proposta">3. Modello commissioni ZDOS (proposta)</h2>
+<div class="zl-tw"><table>
+<thead>
+<tr>
+<th>Voce</th>
+<th>Proposta</th>
+<th>A chi va</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Commissione di lancio ZDOS</td>
+<td><strong>0,01 SOL</strong> fissi per lancio</td>
+<td>50% party pool, 50% servizio ZDOS</td>
+</tr>
+<tr>
+<td>Commissione di scambio ZDOS</td>
+<td><strong>0%</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Commissione del pool</td>
+<td>scelta del creatore, default <strong>0,25%</strong></td>
+<td>alla posizione di liquidità del creatore</td>
+</tr>
+<tr>
+<td>Costi di rete (rent e firme)</td>
+<td>al costo, senza ricarico</td>
+<td>alla rete Solana</td>
+</tr>
+<tr>
+<td>Pagamento in L$D</td>
+<td>non in fase 1 (serve un prezzo affidabile, il pool L$D è sottile)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>Perché così: la commissione ZDOS è piccola, fissa e visibile, e non prende nulla sugli scambi. Il costo reale di un lancio è soprattutto il deposito di rete (rent) che Solana richiede per creare i conti. Il costo tipico stimato di un lancio, senza contare la liquidità che il creatore deposita, è <strong>circa 0,045 SOL</strong> (dettaglio al §8).</p>
+<p>Possibili estensioni, da valutare dopo il pilota: commissione iniziale decrescente contro i bot (tetto basso, pochi minuti, mai al 99%), sconti per chi paga in L$D quando ci sarà un prezzo affidabile.</p>
+<h2 id="4-party-pool">4. Party pool</h2>
+<p><strong>Cos'è.</strong> Un indirizzo pubblico (meglio un multisig) che riceve la metà della commissione di lancio ZDOS. Ogni lancio "attiva" il party pool aggiungendogli 0,005 SOL: questo è tutto il meccanismo, e si verifica sulla chain.</p>
+<p><strong>A cosa serve.</strong> Finanzia, con regole pubbliche, i round di faucet e di airdrop a merito. Non è un fondo di rendimento: nessuno ci deposita aspettandosi un ritorno e nessuno riceve interessi.</p>
+<p><strong>Parole oneste:</strong></p>
+<ul>
+<li>il party pool <em>non</em> garantisce nulla ai token lanciati e <em>non</em> sostiene il loro prezzo;</li>
+<li>l'importo è la somma reale delle commissioni, nient'altro; in demo si vede solo un contatore locale del tuo browser, non dati reali;</li>
+<li>ogni uscita dal party pool è una transazione pubblica firmata dal titolare del tesoro o dal multisig;</li>
+<li>eventuali conversioni in L$D (acquisti sul pool) sono dichiarate in anticipo e mai fatte per muovere il prezzo.</li>
+</ul>
+<p>Il Pool Party a merito già descritto per l'ecosistema (distribuzione per attività verificata, il capitale pesa al massimo come moltiplicatore con tetto) resta il criterio con cui i fondi del party pool vengono distribuiti.</p>
+<h2 id="5-faucet">5. Faucet</h2>
+<p><strong>Scopo:</strong> far provare L$D con piccole quantità, una volta per wallet e per periodo.</p>
+<p><strong>Regole proposte (parametri di esempio, da decidere):</strong></p>
+<ul>
+<li>importo piccolo e fisso per richiesta (es. 50 L$D), una richiesta ogni 7 giorni per wallet;</li>
+<li><strong>età del wallet</strong>: almeno N giorni (es. 14) e almeno una transazione precedente, letti dalla chain;</li>
+<li><strong>firma di un messaggio</strong> (non una transazione) che prova il possesso del wallet, con nonce e dominio per evitare il riuso;</li>
+<li><strong>limite di frequenza</strong> per indirizzo, per IP e per budget giornaliero totale;</li>
+<li>una <strong>ricevuta di richiesta per wallet</strong> (conto on-chain o registro firmato) che impedisce il doppio incasso nello stesso periodo.</li>
+</ul>
+<p><strong>Come si finanzia, senza tenere chiavi del titolare sul server:</strong></p>
+<ul>
+<li><strong>Versione semplice (fase 3):</strong> il titolare del tesoro trasferisce con la propria firma una quantità limitata di L$D a un <strong>wallet dedicato al faucet</strong>, con una chiave nuova, creata solo per questo e diversa da quelle di doc. Quel wallet invia l'importo fisso a chi supera i controlli. Il rischio massimo è il saldo di quel wallet, deciso dal titolare, e il faucet si ferma togliendo la chiave o svuotando il saldo.</li>
+<li><strong>Versione a programma (dopo audit):</strong> il conto del faucet è controllato da un programma che rilascia l'importo solo a chi presenta un'attestazione valida e non ancora usata; la chiave dell'attestatore firma l'idoneità, non muove fondi.</li>
+</ul>
+<p><strong>Limiti onesti:</strong> nessuna difesa anti-sybil è perfetta. Qui l'importo è piccolo, così sfruttare più wallet non conviene; il faucet si può mettere in pausa in qualsiasi momento.</p>
+<h2 id="6-airdrop-a-merito">6. Airdrop a merito</h2>
+<p><strong>Principi:</strong> solo per attività reali (merito, creator, uso dei servizi), regole pubbliche <em>prima</em> del round, nessun acquisto di punti, nessuna promessa di valore.</p>
+<p><strong>Meccanismo (Merkle claim):</strong></p>
+<ol>
+<li>si pubblicano le regole e la data dello snapshot;</li>
+<li>ZDOS calcola l'elenco indirizzo → importo e lo pubblica insieme alla <strong>radice di Merkle</strong> (hash dell'intero elenco), così chiunque può ricalcolarla;</li>
+<li>il titolare del tesoro firma il deposito dei token del round in un conto di distribuzione e la pubblicazione della radice;</li>
+<li>ogni beneficiario fa <strong>claim</strong> presentando la sua prova di Merkle; il programma verifica la prova e segna il claim come usato;</li>
+<li>alla scadenza, i token non reclamati tornano al tesoro.</li>
+</ol>
+<p>Il distributore può essere un programma open source standard per Solana, oppure un programma ZLang/ZDOS dedicato dopo audit. La demo contiene un controllo di prova di Merkle <strong>reale</strong> (SHA-256 nel browser) su un elenco di esempio chiaramente finto.</p>
+<h2 id="7-sicurezza">7. Sicurezza</h2>
+<ul>
+<li><strong>Default anti-rug:</strong> mint revocato, freeze revocato, LP lock permanente, metadati completi. Chi disattiva qualcosa vede un avviso e il lancio viene marcato come "non standard".</li>
+<li><strong>Estensioni vietate</strong> su Token-2022 (transfer fee, permanent delegate, default frozen).</li>
+<li><strong>K.I.R.A.:</strong> ogni token lanciato viene letto con i controlli esistenti (autorità, concentrazione dei holder, blocco LP, metadati). Le soglie non cambiano. Un token con un solo holder iniziale (il pool) sarà giallo sulla concentrazione: è corretto così.</li>
+<li><strong>Audit:</strong> programmi nostri (<code>zdos_fee_router</code>, eventuale distributore, faucet a programma) solo dopo revisione indipendente; fino ad allora il lancio usa solo istruzioni di sistema, istruzioni standard del token e Memo.</li>
+<li><strong>Chiavi:</strong> nessuna chiave del titolare sul server; upgrade authority dei programmi in multisig; chiave del faucet dedicata, con saldo limitato e sostituibile.</li>
+<li><strong>Front-end:</strong> nessuno script di terzi, Content-Security-Policy stretta, nessun dato personale raccolto.</li>
+<li><strong>Onestà sui limiti:</strong> "sicuro di default" non vuol dire "senza rischio". Un token nuovo può perdere tutto il suo valore; il launcher non dà consigli di investimento.</li>
+</ul>
+<h2 id="8-costi-in-sol-passo-per-passo-stime">8. Costi in SOL, passo per passo (stime)</h2>
+<p>Basate sul costo di rent di 5.080 lamport per byte indicato dalle fonti pubbliche al 22 novembre 2026; <strong>la cifra esatta va riletta on-chain</strong> (<code>getMinimumBalanceForRentExemption</code>) al momento della firma.</p>
+<div class="zl-tw"><table>
+<thead>
+<tr>
+<th>Passo on-chain</th>
+<th>Costo stimato</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Conto mint (SPL, 82 byte)</td>
+<td>0,0010668 SOL</td>
+<td>deposito di rete</td>
+</tr>
+<tr>
+<td>Conto token del creatore</td>
+<td>0,0014884 SOL</td>
+<td>deposito di rete, recuperabile chiudendo il conto</td>
+</tr>
+<tr>
+<td>Metadati (SPL Token)</td>
+<td>0,0037338 SOL + 0,01 SOL</td>
+<td>rent + commissione del programma metadati; con Token-2022 circa 0,0026 SOL, nessuna commissione</td>
+</tr>
+<tr>
+<td>Revoca mint e freeze</td>
+<td>solo firma di rete (circa 0,000005 SOL l'una)</td>
+<td></td>
+</tr>
+<tr>
+<td>Pool di liquidità</td>
+<td>0,0093 SOL</td>
+<td>rent del pool</td>
+</tr>
+<tr>
+<td>Posizione di liquidità</td>
+<td>0,0087 SOL</td>
+<td>recuperabile solo se non bloccata; con LP lock è permanente</td>
+</tr>
+<tr>
+<td>Blocco LP</td>
+<td>solo firma di rete</td>
+<td></td>
+</tr>
+<tr>
+<td>Commissione ZDOS</td>
+<td>0,01 SOL</td>
+<td>0,005 party pool + 0,005 servizio</td>
+</tr>
+<tr>
+<td>Firme e priorità (margine)</td>
+<td>circa 0,0005 SOL</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Totale tipico</strong></td>
+<td><strong>circa 0,045 SOL</strong></td>
+<td>più la liquidità iniziale scelta dal creatore, che resta sua</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Costi lato ZDOS (non pagati dai creatori):</strong></p>
+<div class="zl-tw"><table>
+<thead>
+<tr>
+<th>Voce</th>
+<th>Stima</th>
+<th>Quando</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Indirizzo party pool e tesoreria (multisig)</td>
+<td>frazioni di centesimo di SOL di rent</td>
+<td>una tantum</td>
+</tr>
+<tr>
+<td>Programma <code>zdos_fee_router</code></td>
+<td>circa 1–2 SOL di rent (dipende dalla dimensione), in buona parte recuperabili chiudendo il programma; un buffer temporaneo durante il deploy</td>
+<td>fase 5</td>
+</tr>
+<tr>
+<td>Distributore Merkle (istanza propria)</td>
+<td>circa 1–2 SOL come sopra, più 0,0015 SOL per il conto dei token</td>
+<td>fase 4</td>
+</tr>
+<tr>
+<td>Per ogni claim airdrop</td>
+<td>circa 0,0015 SOL (conto token) + 0,001 SOL (registro del claim) + firma</td>
+<td>a carico del beneficiario o del party pool</td>
+</tr>
+<tr>
+<td>Wallet del faucet (chiave dedicata)</td>
+<td>rent minimo e qualche centesimo di SOL di firme</td>
+<td>fase 3</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="9-fasi-e-firme-del-titolare-del-tesoro">9. Fasi e firme del titolare del tesoro</h2>
+<div class="zl-tw"><table>
+<thead>
+<tr>
+<th>Fase</th>
+<th>Contenuto</th>
+<th>Costo SOL reale</th>
+<th>Serve la firma del titolare?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>0 · Demo</strong> (fatta)</td>
+<td>pagina <code>/launcher/</code> e questo piano, tutto simulato</td>
+<td>0</td>
+<td>no</td>
+</tr>
+<tr>
+<td><strong>1 · Devnet</strong></td>
+<td>costruttore delle transazioni, prove di pool, lock e Memo su devnet con un wallet di prova (non del titolare); verifica Merkle e attestatore su devnet</td>
+<td>0 (SOL devnet gratuiti)</td>
+<td>no</td>
+</tr>
+<tr>
+<td><strong>2 · Pilota chiuso</strong></td>
+<td>1–3 lanci di token di prova su mainnet fatti dal titolare, con party pool e tesoreria già creati</td>
+<td>circa 0,05 SOL a lancio + liquidità scelta</td>
+<td><strong>sì</strong>: creazione degli indirizzi (meglio multisig), approvazione scritta dei parametri, firma di ogni lancio</td>
+</tr>
+<tr>
+<td><strong>3 · Faucet</strong></td>
+<td>wallet dedicato del faucet con saldo limitato</td>
+<td>rent minimo + L$D scelti dal titolare</td>
+<td><strong>sì</strong>: trasferimento di L$D al faucet</td>
+</tr>
+<tr>
+<td><strong>4 · Airdrop a merito</strong></td>
+<td>regole pubbliche, radice di Merkle, conto di distribuzione</td>
+<td>circa 1–2 SOL se programma proprio; altrimenti poco</td>
+<td><strong>sì</strong>: deposito dei token e pubblicazione della radice</td>
+</tr>
+<tr>
+<td><strong>5 · Apertura pubblica e router</strong></td>
+<td>launcher aperto a tutti con K.I.R.A. su ogni lancio; programma <code>zdos_fee_router</code> dopo audit</td>
+<td>circa 1–2 SOL di rent del programma</td>
+<td><strong>sì</strong>: deploy e autorità in multisig</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Cosa non facciamo:</strong> nessuna transazione, nessun mint e nessun deposito di liquidità senza l'ok esplicito e la firma del titolare del tesoro.</p>
+<h2 id="10-rischi-aperti">10. Rischi aperti</h2>
+<ul>
+<li>Le commissioni e i costi di rete possono cambiare: le cifre vanno riverificate prima di ogni fase.</li>
+<li>In fase 1 la commissione è applicata dal front-end, non dalla chain: va bene per il pilota, non è una garanzia fino alla fase 5.</li>
+<li>Un pool sottile è sensibile agli scambi piccoli: il launcher lo mostra, non lo nasconde.</li>
+<li>Responsabilità legali e fiscali di un lanciatore pubblico (termini d'uso, privacy, avvertenze): da rivedere con consulenza prima della fase 5.</li>
+</ul>
+</main>
+<footer class="zl-ft"><div class="zl-wrap">ZLang by ZDOS · ZDOS1.3 · P.IVA 11040550961 · Proposta: nessuna transazione reale, nessun consiglio di investimento.<br>Liquidità su protocollo Solana standard. <a href="/launcher/">Demo del launcher</a></div></footer>
+</body>
+</html>
