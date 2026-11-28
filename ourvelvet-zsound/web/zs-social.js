@@ -68,7 +68,9 @@
     var r = h("div", "row"); r.appendChild(h("button", "pad-btn primary", "Accedi con OurVelvet", { type: "button", "data-zdos-firma": "" })); box.appendChild(r);
     box.appendChild(h("div", "wallets", null, { "data-firma-wallets": "" }));
     var lb = h("label", "check"); lb.appendChild(h("input", "", null, { type: "checkbox", "data-firma-pubblico": "" })); lb.appendChild(h("span", "", " Mostra il badge «wallet verificato» sul mio profilo (facoltativo).")); box.appendChild(lb);
-    box.appendChild(h("p", "fm-status", "", { "data-firma-status": "", role: "status", "aria-live": "polite" })); p.appendChild(box);
+    box.appendChild(h("p", "fm-status", "", { "data-firma-status": "", role: "status", "aria-live": "polite" }));
+    box.appendChild(h("p", "muted sm", "Oppure, per entrare nel social senza wallet:")); box.appendChild(h("div", "vz-tt-box", null, { "data-vz-tiktok": "", "data-next": "/creator/z-sound/#pubblica" })); if (window.VZTT) window.VZTT.scan(box);
+    p.appendChild(box);
     var form = h("div", "pubform", null, { id: "pubForm" });
     form.appendChild(h("p", "src", "", { id: "pubSrc" }));
     var sr = h("div", "row small"), fb = h("button", "pad-btn ghost", "Scegli un file audio", { type: "button" }), fi = h("input", "", null, { type: "file", accept: "audio/*,.wav,.mp3,.m4a,.ogg,.webm", hidden: "" });

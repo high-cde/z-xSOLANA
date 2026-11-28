@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS pool_approvals(id INTEGER PRIMARY KEY AUTOINCREMENT, 
   // ---- collettore LP: una volta all'ora registra chi ha liquidità nel pool L$D-SOL (dati on-chain reali via zdos-defi) ----
   async function collectLp() {
     const hour = Math.floor(now() / HOUR);
-    for (const p of q("SELECT wallet FROM profiles WHERE status='attivo'")) {
+    for (const p of q("SELECT wallet FROM profiles WHERE status='attivo' AND wallet NOT LIKE 'tt:%'")) {
       try {
         const w = await walletInfo(p.wallet);
         if ((w.positions || []).some((x) => x.pool === LSD_POOL && (Number(x.x) > 0 || Number(x.y) > 0))) db.prepare("INSERT OR IGNORE INTO pool_lp(wallet,hour) VALUES(?,?)").run(p.wallet, hour);
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS pool_approvals(id INTEGER PRIMARY KEY AUTOINCREMENT, 
 
   async function compute(ws) {
     const we = ws + 7 * DAY, t = now(), X = exclusions();
-    const profiles = q("SELECT * FROM profiles WHERE status='attivo'");
+    const profiles = q("SELECT * FROM profiles WHERE status='attivo' AND wallet NOT LIKE 'tt:%'"); // gli account solo-TikTok (tt:) non maturano merito finché non collegano un wallet firmato
     const active = new Set(profiles.map((p) => p.wallet));
     const zc = await zcommSummary().catch(() => ({ leaderboard: [], emissions: null }));
     const items = [];

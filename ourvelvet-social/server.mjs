@@ -10,6 +10,9 @@ import Database from "better-sqlite3";
 import sharp from "sharp";
 import { check as textCheck } from "./filter.mjs";
 import { publish as zbusPublish } from "/opt/zdos-filiera/zbus.mjs";
+import { createPool } from "./pool.mjs"; // Pool Party inverso (sola lettura)
+import { createTiktok } from "./tiktok.mjs"; // «Registrati con TikTok» (Login Kit Web, spento finché non ci sono chiavi)
+import { createZsoundAi } from "./zsound-ai.mjs"; // Z-Sound: adattatore AI (spento finché doc non approva fornitore e chiave)
 
 const E = process.env;
 const PORT = +(E.PORT || 8910), HOST = "127.0.0.1";
@@ -24,6 +27,9 @@ const TERMS_V = "2026-11-28";
 const CATS = ["Cartoon", "Anime-style", "Cyber", "Gotico", "Fantasy", "Burlesque", "Roleplay", "Narrativa", "Musica", "Arte", "AI"];
 const RESERVED = new Set(["admin", "staff", "ourvelvet", "zdos", "velvet", "rosso", "moderatore", "moderazione", "support", "supporto", "api", "root", "system", "creator", "official", "ufficiale"]);
 const MAX_IMG = 5 * 1024 * 1024;
+// Z-Sound: audio dei creator (mix e tracce registrati nel browser o caricati dal creator)
+const MAX_AUDIO = 25 * 1024 * 1024, MAX_AUDIO_SEC = 1800, AUDIO_QUOTA = 200 * 1024 * 1024;
+const AUDIO_MIME = { wav: "audio/wav", webm: "audio/webm", ogg: "audio/ogg", mp3: "audio/mpeg", m4a: "audio/mp4" };
 fs.mkdirSync(MEDIA, { recursive: true, mode: 0o700 });
 
 // ---------- database ----------
@@ -45,6 +51,9 @@ CREATE TABLE IF NOT EXISTS reports(id INTEGER PRIMARY KEY AUTOINCREMENT, reporte
   status TEXT NOT NULL DEFAULT 'aperta', created INTEGER NOT NULL, resolved_at INTEGER, action TEXT, UNIQUE(reporter, kind, target));
 CREATE TABLE IF NOT EXISTS modlog(id INTEGER PRIMARY KEY AUTOINCREMENT, ts INTEGER NOT NULL, staff TEXT, action TEXT NOT NULL, target TEXT NOT NULL);
 `);
+for (const [t, c, d] of [["media", "mime", "TEXT"], ["media", "title", "TEXT"], ["media", "dur", "REAL"], ["posts", "audio", "TEXT"]]) {
+  if (!db.prepare(`PRAGMA table_info(${t})`).all().some((x) => x.name === c)) db.exec(`ALTER TABLE ${t} ADD COLUMN ${c} ${d}`);
+}
 const now = () => Math.floor(Date.now() / 1000);
 const rid = (n = 9) => crypto.randomBytes(n).toString("base64url");
 
@@ -74,7 +83,7 @@ function limited(key, max, winS) {
 
 // ---------- sessione firma ----------
 const sessCache = new Map();
-async function session(req) {
+async function firmaSession(req) {
   const tok = (String(req.headers.authorization || "").startsWith("Bearer ") ? String(req.headers.authorization).slice(7) : "") ||
     (String(req.headers.cookie || "").match(/(?:^|;\s*)zdos_firma=([^;]+)/) || [])[1] || "";
   if (!tok || tok.length > 4096) return null;
@@ -90,20 +99,28 @@ async function session(req) {
   } catch { return null; }
 }
 
+// sessione unica: prima la firma del wallet; in sua assenza l'eventuale sessione solo-social di TikTok (identità tt:<hash>)
+async function session(req) { return (await firmaSession(req)) || TT.session(req); }
+const TT = createTiktok({ db, now, limited, ipHash, getSession: (req) => session(req), SITE });
+
 // ---------- badge "wallet verificato" (opt-in, via zdos-firma) ----------
 const badgeCache = new Map();
 async function badge(addr) {
+  if (String(addr).startsWith("tt:")) return false; // account solo social: nessun wallet da verificare
   const c = badgeCache.get(addr); if (c && c.until > Date.now()) return c.v;
   let v = false;
   try { const r = await fetch(FIRMA + "/api/firma/badge?address=" + encodeURIComponent(addr), { headers: { "X-Forwarded-Host": SITE, "X-Real-IP": "127.0.0.2" } }); const j = await r.json(); v = !!(j && j.verificato); } catch {}
   badgeCache.set(addr, { v, until: Date.now() + 10 * 60000 }); return v;
 }
 
+const pool = createPool({ db, badge, session });
+
 // ---------- merito (zcomm): solo se il profilo merito OV-XXXX esiste già ----------
 async function ovidOf(wallet) {
   try { const r = await fetch(ZCOMM + "/zcomm/api/ovid-by-wallet?wallet=" + encodeURIComponent(wallet)); const j = await r.json(); return j && j.ok && /^OV-[A-Z0-9]{4}-VELVET$/.test(j.ovid || "") ? j.ovid : null; } catch { return null; }
 }
 async function merit(wallet, key, type, data) {
+  if (String(wallet).startsWith("tt:")) return { emesso: false, motivo: "account solo social: nessun wallet collegato" };
   try {
     const ov = await ovidOf(wallet); if (!ov) return { emesso: false, motivo: "nessun profilo merito collegato al wallet" };
     db.prepare("UPDATE profiles SET ovid=? WHERE wallet=?").run(ov, wallet);
@@ -128,7 +145,36 @@ async function storeImage(buf, wallet, kind) {
   db.prepare("INSERT INTO media(id,wallet,kind,status,w,h,bytes,created) VALUES(?,?,?,?,?,?,?,?)").run(id, wallet, kind, "in_revisione", info.width, info.height, data.length, now());
   return { id, w: info.width, h: info.height, bytes: data.length };
 }
-function deleteMediaFile(id) { try { fs.unlinkSync(path.join(MEDIA, id + ".webp")); } catch {} }
+function deleteMediaFile(id) { for (const e of ["webp", ...Object.keys(AUDIO_MIME)]) { try { fs.unlinkSync(path.join(MEDIA, id + "." + e)); } catch {} } }
+function mediaPath(m) { return path.join(MEDIA, m.id + "." + (m.kind === "audio" ? Object.keys(AUDIO_MIME).find((e) => AUDIO_MIME[e] === m.mime) || "wav" : "webp")); }
+// invia un file media (immagine o audio) con supporto Range per l'audio
+function serveMedia(req, res, m, priv) {
+  let buf; try { buf = fs.readFileSync(mediaPath(m)); } catch { return fail(res, 404, "non trovata"); }
+  const cc = priv ? "private, no-store" : "public, max-age=86400";
+  if (m.kind !== "audio") { res.writeHead(200, { "content-type": "image/webp", "content-length": buf.length, "cache-control": cc, ...SEC, "content-security-policy": "default-src 'none'" }); return res.end(buf); }
+  const base = { "content-type": m.mime || "audio/wav", "accept-ranges": "bytes", "cache-control": cc, ...SEC, "content-security-policy": "default-src 'none'" };
+  const rg = String(req.headers.range || "").match(/^bytes=(\d*)-(\d*)$/);
+  if (rg && (rg[1] || rg[2])) {
+    let a = rg[1] ? +rg[1] : Math.max(0, buf.length - +rg[2]), b = rg[1] && rg[2] ? Math.min(+rg[2], buf.length - 1) : buf.length - 1;
+    if (a > b || a >= buf.length) { res.writeHead(416, { "content-range": "bytes */" + buf.length, ...SEC }); return res.end(); }
+    res.writeHead(206, { ...base, "content-range": `bytes ${a}-${b}/${buf.length}`, "content-length": b - a + 1 }); return res.end(buf.subarray(a, b + 1));
+  }
+  res.writeHead(200, { ...base, "content-length": buf.length }); return res.end(buf);
+}
+// riconoscimento del formato dai primi byte (non ci si fida dell'estensione)
+function sniffAudio(b) {
+  if (b.length < 16) return null;
+  if (b.subarray(0, 4).toString("latin1") === "RIFF" && b.subarray(8, 12).toString("latin1") === "WAVE") {
+    const br = b.length > 32 ? b.readUInt32LE(28) : 0; return { ext: "wav", dur: br > 0 ? (b.length - 44) / br : null };
+  }
+  if (b[0] === 0x1a && b[1] === 0x45 && b[2] === 0xdf && b[3] === 0xa3) return { ext: "webm", dur: null };
+  if (b.subarray(0, 4).toString("latin1") === "OggS") return { ext: "ogg", dur: null };
+  if (b.subarray(0, 3).toString("latin1") === "ID3" || (b[0] === 0xff && (b[1] & 0xe0) === 0xe0)) return { ext: "mp3", dur: null };
+  if (b.subarray(4, 8).toString("latin1") === "ftyp" && ["M4A ", "mp42", "isom", "iso2", "dash", "M4B "].includes(b.subarray(8, 12).toString("latin1"))) return { ext: "m4a", dur: null };
+  return null;
+}
+const AI = createZsoundAi({ db, now });
+const trackUsed = (id) => !!db.prepare("SELECT 1 FROM posts WHERE media=? OR audio=?").get(id, id);
 
 // ---------- viste pubbliche ----------
 const P = (w) => db.prepare("SELECT * FROM profiles WHERE wallet=?").get(w);
@@ -153,6 +199,10 @@ async function pubPost(r, viewer, own = false) {
   const o = { id: r.id, text: r.text, media: r.media && (r.status === "pubblico" || own) ? "/api/social/media/" + r.media : null, creato: r.created,
     like: db.prepare("SELECT COUNT(*) n FROM likes WHERE post=?").get(r.id).n,
     autore: { handle: a.handle, avatar: a.avatar ? "/api/social/media/" + a.avatar : null, verificato: await badge(a.wallet) } };
+  if (r.audio && (r.status === "pubblico" || own)) {
+    const am = db.prepare("SELECT * FROM media WHERE id=?").get(r.audio);
+    if (am) o.audio = { url: "/api/social/media/" + am.id, titolo: am.title || "Senza titolo", durata: am.dur, tipo: am.mime };
+  }
   if (viewer) { o.piace = !!db.prepare("SELECT 1 FROM likes WHERE post=? AND wallet=?").get(r.id, viewer); o.mio = viewer === r.wallet; }
   if (own) o.stato = r.status;
   return o;
@@ -175,12 +225,13 @@ function exportData(w) {
   return {
     generato: new Date().toISOString(), titolare: "ZDOS1.3 · P.IVA 11040550961", wallet: w,
     profilo: p ? { ...p, cats: JSON.parse(p.cats || "[]") } : null,
-    immagini: db.prepare("SELECT id,kind,status,w,h,bytes,created,reviewed_at FROM media WHERE wallet=?").all(w),
-    post: db.prepare("SELECT id,text,media,status,created,published FROM posts WHERE wallet=?").all(w),
+    immagini: db.prepare("SELECT id,kind,status,w,h,bytes,created,reviewed_at,mime,title,dur FROM media WHERE wallet=?").all(w),
+    post: db.prepare("SELECT id,text,media,audio,status,created,published FROM posts WHERE wallet=?").all(w),
     mi_piace: db.prepare("SELECT post,created FROM likes WHERE wallet=?").all(w),
     seguiti: db.prepare("SELECT p.handle, f.created FROM follows f LEFT JOIN profiles p ON p.wallet=f.followee WHERE f.follower=?").all(w),
     bloccati: db.prepare("SELECT p.handle, b.created FROM blocks b LEFT JOIN profiles p ON p.wallet=b.blocked WHERE b.blocker=?").all(w),
     segnalazioni_inviate: db.prepare("SELECT kind,target,reason,status,created FROM reports WHERE reporter=?").all(w),
+    tiktok: TT.exportFor(w),
     nota: "Non salviamo indirizzi IP: per il rate limit usiamo solo un hash temporaneo in memoria. Le immagini sono ricodificate senza metadati EXIF.",
   };
 }
@@ -196,6 +247,7 @@ const deleteAll = db.transaction((w) => {
   const p = P(w); if (p) db.prepare("DELETE FROM reports WHERE kind='profile' AND target=?").run(p.handle);
   db.prepare("DELETE FROM media WHERE wallet=?").run(w);
   db.prepare("DELETE FROM profiles WHERE wallet=?").run(w);
+  TT.purge(w);
   return { media, posts: posts.length };
 });
 
@@ -225,18 +277,19 @@ async function handle(req, res) {
   }
 
   if (M === "GET" && p === "/api/social/health") return send(res, 200, { ok: true, servizio: "zdos-social", versione: 1, profili: db.prepare("SELECT COUNT(*) n FROM profiles WHERE status='attivo'").get().n });
-  if (M === "GET" && p === "/api/social/meta") return send(res, 200, { ok: true, categorie: CATS, termini: TERMS_V, safeword: "ROSSO", maxImmagine: MAX_IMG, formati: ["image/jpeg", "image/png", "image/webp"] });
+  if (M === "GET" && p === "/api/social/meta") return send(res, 200, { ok: true, categorie: CATS, termini: TERMS_V, safeword: "ROSSO", maxImmagine: MAX_IMG, formati: ["image/jpeg", "image/png", "image/webp"], audio: { max: MAX_AUDIO, maxSecondi: MAX_AUDIO_SEC, formati: Object.values(AUDIO_MIME) } });
+
+  if (p.startsWith("/api/social/tiktok/") || p === "/api/social/tiktok") return TT.handle(req, res, p, url);
+  if (p.startsWith("/api/social/pool/")) return pool.handle(req, res, p, url, { send, fail, readJson });
 
   const s = await session(req); const me = s ? s.address : null; const mine = me ? P(me) : null;
 
   // --- immagini ---
-  if (M === "GET" && p.startsWith("/api/social/media/")) {
+  if ((M === "GET" || M === "HEAD") && p.startsWith("/api/social/media/")) {
     const id = p.slice(18); if (!/^[A-Za-z0-9_-]{16}$/.test(id)) return fail(res, 404, "non trovata");
     const m = db.prepare("SELECT * FROM media WHERE id=?").get(id); if (!m) return fail(res, 404, "non trovata");
     if (m.status !== "approvato" && m.wallet !== me) return fail(res, 404, "non trovata");
-    let buf; try { buf = fs.readFileSync(path.join(MEDIA, id + ".webp")); } catch { return fail(res, 404, "non trovata"); }
-    res.writeHead(200, { "content-type": "image/webp", "content-length": buf.length, "cache-control": m.status === "approvato" ? "public, max-age=86400" : "private, no-store", ...SEC, "content-security-policy": "default-src 'none'" });
-    return res.end(buf);
+    return serveMedia(req, res, m, m.status !== "approvato");
   }
 
   // --- io ---
@@ -274,6 +327,43 @@ async function handle(req, res) {
   }
   if (!mine && mutating && p !== "/api/social/me") return fail(res, 403, "Crea prima il tuo profilo creator (con dichiarazione 18+ e consenso).");
   if (mine && mine.status !== "attivo" && mutating && !(M === "DELETE" && p === "/api/social/me")) return fail(res, 403, "Profilo sospeso dallo staff.");
+
+  if (p.startsWith("/api/social/zsound/")) return AI.handle(req, res, p, { me, mine, send, fail, readJson, limited, textCheck });
+
+  // --- Z-Sound: upload audio ---
+  if (M === "POST" && p === "/api/social/audio") {
+    if (limited("aud:" + me, 8, 3600)) return fail(res, 429, "Troppi caricamenti audio in un'ora: riprova più tardi.");
+    const ct = String(req.headers["content-type"] || "").split(";")[0].trim().toLowerCase();
+    if (!ct.startsWith("audio/")) return fail(res, 415, "Formato non ammesso: solo audio WAV, WebM, OGG, MP3 o M4A.");
+    if (+req.headers["content-length"] > MAX_AUDIO) return fail(res, 413, "Audio troppo grande: massimo 25 MB.");
+    const used = db.prepare("SELECT COALESCE(SUM(bytes),0) n FROM media WHERE wallet=? AND kind='audio'").get(me).n;
+    const buf = await readBody(req, MAX_AUDIO);
+    if (!buf.length) return fail(res, 400, "audio vuoto");
+    if (used + buf.length > AUDIO_QUOTA) return fail(res, 413, "Spazio audio esaurito (massimo 200 MB per profilo): elimina qualche traccia.");
+    const sn = sniffAudio(buf); if (!sn) return fail(res, 415, "Formato non riconosciuto: solo WAV, WebM, OGG, MP3 o M4A.");
+    let dur = Math.min(MAX_AUDIO_SEC + 1, Math.max(0, +(url.searchParams.get("dur") || 0) || 0));
+    if (sn.dur != null) dur = sn.dur; // per il WAV la durata si ricava dall'header
+    if (dur > MAX_AUDIO_SEC) return fail(res, 413, "Traccia troppo lunga: massimo 30 minuti.");
+    const title = String(url.searchParams.get("titolo") || "").trim().slice(0, 60);
+    if (title) { const tc = textCheck(title); if (!tc.ok) return fail(res, 400, tc.motivo); }
+    const id = rid(12);
+    fs.writeFileSync(path.join(MEDIA, id + "." + sn.ext), buf, { mode: 0o600 });
+    db.prepare("INSERT INTO media(id,wallet,kind,status,bytes,created,mime,title,dur) VALUES(?,?,?,?,?,?,?,?,?)").run(id, me, "audio", "in_revisione", buf.length, now(), AUDIO_MIME[sn.ext], title || null, dur ? Math.round(dur * 10) / 10 : null);
+    return send(res, 201, { ok: true, media: id, stato: "in_revisione", tipo: AUDIO_MIME[sn.ext], bytes: buf.length, durata: dur ? Math.round(dur) : null, nota: "La traccia diventa pubblica dopo l'approvazione dello staff." });
+  }
+  const mad = p.match(/^\/api\/social\/audio\/([A-Za-z0-9_-]{16})$/);
+  if (mad && M === "DELETE") {
+    const m = db.prepare("SELECT * FROM media WHERE id=? AND wallet=? AND kind='audio'").get(mad[1], me); if (!m) return fail(res, 404, "Traccia non trovata.");
+    if (trackUsed(m.id)) return fail(res, 409, "La traccia è usata in un post: elimina prima il post.");
+    db.prepare("DELETE FROM media WHERE id=?").run(m.id); deleteMediaFile(m.id); return send(res, 200, { ok: true, eliminata: true });
+  }
+  if (M === "GET" && p === "/api/social/me/tracks") {
+    const rows = db.prepare("SELECT * FROM media WHERE wallet=? AND kind='audio' ORDER BY created DESC LIMIT 100").all(me);
+    const foto = db.prepare("SELECT * FROM media WHERE wallet=? AND kind='post' AND status='approvato' ORDER BY created DESC LIMIT 40").all(me);
+    return send(res, 200, { ok: true,
+      tracce: rows.map((m) => ({ id: m.id, titolo: m.title || "Senza titolo", url: "/api/social/media/" + m.id, tipo: m.mime, bytes: m.bytes, durata: m.dur, stato: m.status, creata: m.created, inPost: trackUsed(m.id) })),
+      foto: foto.map((m) => ({ id: m.id, url: "/api/social/media/" + m.id })) });
+  }
 
   if (M === "POST" && (p === "/api/social/me/avatar" || p === "/api/social/media")) {
     const kind = p.endsWith("avatar") ? "avatar" : "post";
@@ -344,18 +434,27 @@ async function handle(req, res) {
   if (M === "POST" && p === "/api/social/posts") {
     const b = await readJson(req);
     const text = String(b.text || "").trim().slice(0, 500);
-    const mediaId = b.media ? String(b.media) : null;
-    if (!text && !mediaId) return fail(res, 400, "Scrivi qualcosa o allega un'immagine.");
+    const mediaId = b.media ? String(b.media) : null, audioId = b.audio ? String(b.audio) : null;
+    if (!text && !mediaId && !audioId) return fail(res, 400, "Scrivi qualcosa o allega un'immagine o una traccia.");
     const tc = textCheck(text); if (!tc.ok) return fail(res, 400, tc.motivo);
     if (limited("post:" + me, 10, 3600)) return fail(res, 429, "Massimo 10 post all'ora.");
-    if (mediaId) { const m = db.prepare("SELECT * FROM media WHERE id=? AND wallet=? AND kind='post'").get(mediaId, me); if (!m || m.status === "rifiutato" || db.prepare("SELECT 1 FROM posts WHERE media=?").get(mediaId)) return fail(res, 400, "Immagine non valida."); }
-    const m = mediaId ? db.prepare("SELECT status FROM media WHERE id=?").get(mediaId) : null;
-    const status = !m || m.status === "approvato" ? "pubblico" : "in_revisione";
+    let am = null, cm = null;
+    if (audioId) {
+      am = db.prepare("SELECT * FROM media WHERE id=? AND wallet=? AND kind='audio'").get(audioId, me);
+      if (!am || am.status === "rifiutato") return fail(res, 400, "Traccia non valida.");
+    }
+    if (mediaId) {
+      cm = db.prepare("SELECT * FROM media WHERE id=? AND wallet=? AND kind='post'").get(mediaId, me);
+      // con una traccia la copertina può essere una foto già approvata del creator (riusabile); senza traccia vale la regola di sempre
+      const reusable = !!am && cm && cm.status === "approvato";
+      if (!cm || cm.status === "rifiutato" || (!reusable && db.prepare("SELECT 1 FROM posts WHERE media=?").get(mediaId))) return fail(res, 400, "Immagine non valida.");
+    }
+    const status = [am, cm].every((m) => !m || m.status === "approvato") ? "pubblico" : "in_revisione";
     const id = rid(9), t = now();
-    db.prepare("INSERT INTO posts(id,wallet,text,media,status,created,published) VALUES(?,?,?,?,?,?,?)").run(id, me, text, mediaId, status, t, status === "pubblico" ? t : null);
+    db.prepare("INSERT INTO posts(id,wallet,text,media,audio,status,created,published) VALUES(?,?,?,?,?,?,?,?)").run(id, me, text, mediaId, audioId, status, t, status === "pubblico" ? t : null);
     let mer = null; if (status === "pubblico") mer = await merit(me, "creator:post:" + id, "creator_post_published", { post: id });
     return send(res, 201, { ok: true, post: await pubPost(P(me) && db.prepare("SELECT * FROM posts WHERE id=?").get(id), me, true), stato: status, merito: mer,
-      nota: status === "in_revisione" ? "Il post con immagine è in revisione: diventa pubblico dopo l'approvazione dello staff." : undefined });
+      nota: status === "in_revisione" ? "Il post con immagine o traccia è in revisione: diventa pubblico dopo l'approvazione dello staff." : undefined });
   }
   const mp = p.match(/^\/api\/social\/posts\/([A-Za-z0-9_-]{12})(\/like)?$/);
   if (mp) {
@@ -363,6 +462,7 @@ async function handle(req, res) {
     if (!r || (r.status !== "pubblico" && r.wallet !== me) || blockedBetween(me, r.wallet)) return fail(res, 404, "Post non trovato.");
     if (M === "POST" && mp[2]) {
       if (r.status !== "pubblico") return fail(res, 400, "Il post non è pubblico.");
+      if (r.wallet === me) return fail(res, 400, "Non puoi mettere mi piace ai tuoi post.");
       if (limited("like:" + me, 120, 600)) return fail(res, 429, "Troppe azioni: riprova tra qualche minuto.");
       const on = !!db.prepare("SELECT 1 FROM likes WHERE post=? AND wallet=?").get(r.id, me);
       if (on) db.prepare("DELETE FROM likes WHERE post=? AND wallet=?").run(r.id, me); else db.prepare("INSERT INTO likes VALUES(?,?,?)").run(r.id, me, now());
@@ -371,7 +471,8 @@ async function handle(req, res) {
     if (M === "DELETE" && !mp[2]) {
       if (r.wallet !== me) return fail(res, 403, "Puoi eliminare solo i tuoi post.");
       db.prepare("DELETE FROM likes WHERE post=?").run(r.id); db.prepare("DELETE FROM reports WHERE kind='post' AND target=?").run(r.id); db.prepare("DELETE FROM posts WHERE id=?").run(r.id);
-      if (r.media) { db.prepare("DELETE FROM media WHERE id=?").run(r.media); deleteMediaFile(r.media); }
+      // le tracce restano nella libreria del creator; le foto si cancellano solo se nessun altro post le usa
+      if (r.media && !trackUsed(r.media)) { db.prepare("DELETE FROM media WHERE id=?").run(r.media); deleteMediaFile(r.media); }
       return send(res, 200, { ok: true, eliminato: true });
     }
   }
@@ -409,12 +510,12 @@ async function admin(req, res, p, url, staff) {
   if (M === "GET" && p === "/queue") {
     const rows = db.prepare("SELECT m.*, pr.handle FROM media m LEFT JOIN profiles pr ON pr.wallet=m.wallet WHERE m.status='in_revisione' ORDER BY m.created LIMIT 100").all();
     return send(res, 200, { ok: true, coda: rows.map((m) => ({ id: m.id, tipo: m.kind, handle: m.handle, w: m.w, h: m.h, bytes: m.bytes, creato: m.created,
-      testo: m.kind === "post" ? (db.prepare("SELECT text FROM posts WHERE media=?").get(m.id) || {}).text || "" : "", url: "/creator-radar/admin/api/media/" + m.id })) });
+      testo: m.kind === "post" || m.kind === "audio" ? (db.prepare("SELECT text FROM posts WHERE media=? OR audio=?").get(m.id, m.id) || {}).text || "" : "", titolo: m.title || null, durata: m.dur || null, tipoMime: m.mime || null, url: "/creator-radar/admin/api/media/" + m.id })) });
   }
   const mm = p.match(/^\/media\/([A-Za-z0-9_-]{16})$/);
   if (mm && M === "GET") {
-    let buf; try { buf = fs.readFileSync(path.join(MEDIA, mm[1] + ".webp")); } catch { return fail(res, 404, "non trovata"); }
-    res.writeHead(200, { "content-type": "image/webp", "cache-control": "private, no-store", ...SEC }); return res.end(buf);
+    const am0 = db.prepare("SELECT * FROM media WHERE id=?").get(mm[1]); if (!am0) return fail(res, 404, "non trovata");
+    return serveMedia(req, res, am0, true);
   }
   if (mm && M === "POST") {
     const b = await readJson(req); const m = db.prepare("SELECT * FROM media WHERE id=?").get(mm[1]); if (!m) return fail(res, 404, "non trovata");
@@ -422,7 +523,10 @@ async function admin(req, res, p, url, staff) {
       db.prepare("UPDATE media SET status='approvato', reviewed_at=?, reviewer=? WHERE id=?").run(now(), staff, m.id);
       const merits = [];
       if (m.kind === "avatar") db.prepare("UPDATE profiles SET avatar=?, avatar_pending=NULL WHERE wallet=? AND avatar_pending=?").run(m.id, m.wallet, m.id);
-      else for (const ps of db.prepare("SELECT * FROM posts WHERE media=? AND status='in_revisione'").all(m.id)) {
+      else for (const ps of db.prepare("SELECT * FROM posts WHERE (media=? OR audio=?) AND status='in_revisione'").all(m.id, m.id)) {
+        // un post con copertina e traccia diventa pubblico solo quando tutto ciò che contiene è approvato
+        const pend = db.prepare("SELECT COUNT(*) n FROM media WHERE id IN (?,?) AND status!='approvato'").get(ps.media || "-", ps.audio || "-").n;
+        if (pend) continue;
         db.prepare("UPDATE posts SET status='pubblico', published=? WHERE id=?").run(now(), ps.id);
         merits.push(await merit(ps.wallet, "creator:post:" + ps.id, "creator_post_published", { post: ps.id }));
       }
@@ -431,7 +535,7 @@ async function admin(req, res, p, url, staff) {
     if (b.azione === "rifiuta") {
       db.prepare("UPDATE media SET status='rifiutato', reviewed_at=?, reviewer=?, note=? WHERE id=?").run(now(), staff, String(b.nota || "").slice(0, 200), m.id);
       if (m.kind === "avatar") db.prepare("UPDATE profiles SET avatar_pending=NULL WHERE avatar_pending=?").run(m.id);
-      db.prepare("UPDATE posts SET status='rifiutato' WHERE media=?").run(m.id); deleteMediaFile(m.id);
+      db.prepare("UPDATE posts SET status='rifiutato' WHERE media=? OR audio=?").run(m.id, m.id); deleteMediaFile(m.id);
       log("rifiuta_immagine", m.id); return send(res, 200, { ok: true, stato: "rifiutato" });
     }
     return fail(res, 400, "azione: approva | rifiuta");
@@ -466,6 +570,12 @@ async function admin(req, res, p, url, staff) {
   if (M === "GET" && p === "/log") return send(res, 200, { ok: true, log: db.prepare("SELECT * FROM modlog ORDER BY id DESC LIMIT 100").all() });
   return fail(res, 404, "non trovato");
 }
+
+// Z-Sound: ogni ora cancello le tracce caricate da più di 24 ore e mai usate in un post
+setInterval(() => {
+  try { for (const m of db.prepare("SELECT id FROM media WHERE kind='audio' AND created<?").all(now() - 86400)) if (!trackUsed(m.id)) { db.prepare("DELETE FROM media WHERE id=?").run(m.id); deleteMediaFile(m.id); } }
+  catch (e) { console.error("[social] pulizia audio:", e.message); }
+}, 3600_000).unref();
 
 const server = http.createServer((req, res) => {
   handle(req, res).catch((e) => { if (!e.code || typeof e.code !== "number") console.error("[social] errore:", e.message); if (!res.headersSent) fail(res, typeof e.code === "number" ? e.code : 500, typeof e.code === "number" ? e.message : "errore interno"); else res.end(); });

@@ -1,0 +1,7 @@
+{
+  "enabled": false,
+  "client_key": "",
+  "redirect_uri": "https://ourvelvet.online/api/social/tiktok/callback",
+  "pkce": false,
+  "revoke_after_login": true
+}

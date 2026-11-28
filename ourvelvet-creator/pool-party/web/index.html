@@ -1,59 +1,39 @@
 <!doctype html>
-<html lang="it">
+<html lang="it" data-vz="pool">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Pool Party · OurVelvet — distribuzione meritocratica (proposta)</title>
 <meta name="description" content="Pool Party inverso: il merito conta più del capitale. Classifica e distribuzione proposta in sola lettura, senza pagamenti.">
-<meta name="theme-color" content="#0b0408">
+<meta name="theme-color" content="#070410">
 <link rel="canonical" href="https://ourvelvet.online/pool-party/">
-<style>
-:root{--bg:#0b0408;--ink:#fdf2f8;--mut:#c9aab8;--line:rgba(244,114,182,.22);--rose:#e11d48;--pink:#fb7185;--gold:#f5c36c;--cy:#67e8f9;--ok:#86efac;--warn:#fbbf24}
-*{box-sizing:border-box}
-html,body{margin:0;background:radial-gradient(ellipse 90% 45% at 50% 0,rgba(190,18,60,.28),transparent 65%),radial-gradient(ellipse 50% 40% at 90% 100%,rgba(245,195,108,.08),transparent 60%),var(--bg);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100dvh;overflow-x:clip}
-a{color:var(--pink)}
-.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
-header{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line)}
-header a.b{color:var(--ink);text-decoration:none;font-family:Georgia,serif;letter-spacing:.06em}
-header nav{margin-left:auto;display:flex;gap:16px;font-size:.85rem}
-header nav a{color:var(--mut);text-decoration:none}header nav a:hover{color:var(--ink)}
-/* fascia sottile stile "ZLANG // ANCHOR RECEIPT" */
-.band{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:8px 18px;border-bottom:1px solid var(--line);font:.72rem/1.4 ui-monospace,Menlo,monospace;letter-spacing:.06em;color:var(--mut)}
-.band .k{color:var(--cy);font-weight:700}.band.rose .k{color:var(--pink)}.band.gold .k{color:var(--gold)}
-.band .v{color:var(--ink);word-break:break-all}.band .r{margin-left:auto}
-.pill{display:inline-block;padding:1px 8px;border:1px solid var(--warn);color:var(--warn);border-radius:999px;font-size:.68rem;letter-spacing:.08em}
-.pill.ok{border-color:var(--ok);color:var(--ok)}.pill.no{border-color:var(--pink);color:var(--pink)}.pill.t{border-color:var(--cy);color:var(--cy)}
-main{max-width:980px;margin:0 auto;padding:34px 18px 70px}
-h1{font:400 clamp(1.9rem,5vw,2.8rem)/1.1 Georgia,serif;margin:0 0 10px}
-.lead{color:var(--mut);max-width:62ch;margin:0 0 26px}
-h2{font:700 .78rem/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin:38px 0 12px}
-.row{display:flex;flex-wrap:wrap;gap:26px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.kv .l{font:.68rem ui-monospace,Menlo,monospace;letter-spacing:.1em;color:var(--mut);text-transform:uppercase}.kv .n{font-size:1.35rem;font-family:Georgia,serif}
-.kv .n small{font-size:.75rem;color:var(--mut);font-family:ui-sans-serif,system-ui}
-table{width:100%;border-collapse:collapse;font-size:.95rem}
-th{font:.68rem ui-monospace,Menlo,monospace;letter-spacing:.1em;color:var(--mut);text-align:left;padding:6px 8px;text-transform:uppercase;font-weight:400}
-td{padding:9px 8px;border-top:1px solid var(--line);vertical-align:middle}
-td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
-.bar{height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:5px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--rose),var(--gold))}
-tr.me td{background:rgba(251,113,133,.08)}
-.empty{color:var(--mut);padding:18px 0}
-details{border-top:1px solid var(--line);padding:10px 0}details:last-of-type{border-bottom:1px solid var(--line)}
-summary{cursor:pointer;color:var(--ink)}summary::marker{color:var(--pink)}
-details p,details li{color:var(--mut);font-size:.93rem}details ul{padding-left:18px;margin:8px 0}
-.blk{list-style:none;padding:0;margin:0}.blk li{padding:9px 0;border-top:1px solid var(--line);display:flex;gap:12px;font-size:.93rem}.blk li:first-child{border-top:0}.blk b{min-width:130px;font:.78rem ui-monospace,Menlo,monospace;color:var(--warn);font-weight:400}
-.note{color:var(--mut);font-size:.85rem}
-button{background:transparent;color:var(--ink);border:1px solid var(--pink);border-radius:999px;padding:7px 16px;font:inherit;cursor:pointer}button:hover{background:rgba(251,113,133,.14)}
-footer{border-top:1px solid var(--line);padding:18px;text-align:center;color:var(--mut);font-size:.8rem}
-@media(max-width:640px){td.hide,th.hide{display:none}.band .r{margin-left:0}header nav{display:none}}
-</style>
+<link rel="stylesheet" href="/assets/velvet-zdos.css?v=1">
+<link rel="icon" href="/assets/vz-coin.png" type="image/png">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OurVelvet">
+<meta property="og:locale" content="it_IT">
+<meta property="og:title" content="Pool Party · OurVelvet — distribuzione meritocratica (proposta)">
+<meta property="og:description" content="Pool Party inverso: il merito conta più del capitale. Classifica e distribuzione proposta in sola lettura, senza pagamenti.">
+<meta property="og:url" content="https://ourvelvet.online/pool-party/">
+<meta property="og:image" content="https://x-zdos.it/ecosistema/og-pool-party.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pool Party · OurVelvet — distribuzione meritocratica (proposta)">
+<meta name="twitter:description" content="Pool Party inverso: il merito conta più del capitale. Classifica e distribuzione proposta in sola lettura, senza pagamenti.">
+<meta name="twitter:image" content="https://x-zdos.it/ecosistema/og-pool-party.png">
 </head>
 <body>
-<header><a class="b" href="/">OurVelvet</a><nav><a href="/creator-radar/">Creator</a><a href="/merito/">Merito</a><a href="/verifica/">Verifica firma</a></nav></header>
-<div class="band" id="rec"><span class="k">ZLANG // POOL RECEIPT</span><span class="pill" id="pMode">CARICAMENTO</span><span class="v" id="rEpoch">—</span><span class="r">hash <span class="v" id="rHash">—</span></span></div>
-<div class="band rose"><span class="k">SOLO ADULTI 18+</span><span>consenso reciproco · safeword ROSSO · nessun minore</span></div>
+<div class="vz-aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<header class="vz-top"><div class="vz-wrap"><a class="vz-lockup" href="/" aria-label="Dom-Coin &amp; Velvet by ZDOS"><span class="vz-logos" aria-hidden="true"><img class="vz-ov" src="/assets/vz-ov.png" width="34" height="34" alt=""><img class="vz-coin" src="/assets/vz-coin.png" width="34" height="34" alt=""></span><span class="vz-name"><b>Dom-Coin <i>&amp;</i> Velvet</b><small>by ZDOS</small></span></a><span class="vz-page">Pool Party</span><nav class="vz-nav" aria-label="Sezioni"><a href="/creator-radar/">Creator</a><a href="/creator/z-sound/">Z-Sound</a><a href="/gateway/">Gateway</a><a href="/merito/">Merito</a><a href="/verifica/">Verifica firma</a></nav></div></header>
+<div class="bands">
+<div class="vz-band vz-rv" id="rec"><span class="k">ZLANG // POOL RECEIPT</span><span class="pill" id="pMode">CARICAMENTO</span><span class="v" id="rEpoch">—</span><span style="margin-left:auto">hash <span class="v" id="rHash">—</span></span></div>
+<div class="vz-band rose vz-rv d1"><span class="k">SOLO ADULTI 18+</span><span>consenso reciproco · safeword ROSSO · nessun minore</span></div>
+</div>
 <main>
-  <h1>Pool Party inverso</h1>
-  <p class="lead">Nel pool party classico paga chi deposita di più. Qui è il contrario: i punti vengono dall'attività verificata, e il capitale pesa al massimo come un moltiplicatore con tetto. Detenere L$D da solo vale zero. Questa pagina <b>calcola e mostra</b>: non esegue pagamenti.</p>
+  <h1 class="vz-rv">Pool Party inverso</h1>
+  <p class="lead vz-rv d1">Nel pool party classico paga chi deposita di più. Qui è il contrario: i punti vengono dall'attività verificata, e il capitale pesa al massimo come un moltiplicatore con tetto. Detenere L$D da solo vale zero. Questa pagina <b>calcola e mostra</b>: non esegue pagamenti.</p>
   <p class="note" id="banner"></p>
 
   <h2>Budget settimanale <span class="pill">proposta, da confermare con doc</span></h2>
@@ -80,7 +60,7 @@ footer{border-top:1px solid var(--line);padding:18px;text-align:center;color:var
   <ul class="blk" id="blk"></ul>
   <p class="note" id="foot"></p>
 </main>
-<footer>© 2026 ZDOS1.3 · P.IVA 11040550961 · nessun rendimento promesso · <a href="/api/social/pool/state">dati grezzi (JSON)</a></footer>
+<footer class="vz-foot"><div class="vz-wrap"><a class="vz-lockup" href="/" aria-label="Dom-Coin &amp; Velvet by ZDOS"><span class="vz-logos" aria-hidden="true"><img class="vz-ov" src="/assets/vz-ov.png" width="34" height="34" alt=""><img class="vz-coin" src="/assets/vz-coin.png" width="34" height="34" alt=""></span><span class="vz-name"><b>Dom-Coin <i>&amp;</i> Velvet</b><small>by ZDOS</small></span></a><div class="vz-copy"><p>© ZDOS1.3 · Licenza proprietaria · P.IVA 11040550961</p><p>Solo adulti 18+ · consenso reciproco · safeword <b>ROSSO</b></p></div><nav aria-label="Link utili"><a href="/gateway/">Gateway</a><a href="https://zx.x-zdos.it/rivista/">ARIA 18+</a><a href="/creator/z-sound/">Z-Sound</a><a href="/creator-radar/">Creator</a><a href="/verifica/">Verifica firma</a><a href="/privacy/">Privacy</a><a href="/termini/">Termini</a><a href="/api/social/pool/state">Dati grezzi (JSON)</a></nav></div></footer>
 <script>
 (function(){
 const $=id=>document.getElementById(id), N=(v,d=0)=>v==null?"—":Number(v).toLocaleString("it-IT",{maximumFractionDigits:d,minimumFractionDigits:d});
