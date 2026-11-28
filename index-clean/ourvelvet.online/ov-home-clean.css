@@ -1,0 +1,24 @@
+/* OurVelvet home pulita — fasce sottili (linguaggio della ricevuta ZLang / Solana) · © 2026 ZDOS1.3 */
+main.zwrap{display:block !important;grid-template-columns:none !important;max-width:760px;margin:0 auto;padding:0 16px 28px}
+.zhero{text-align:center;padding:38px 0 22px}
+.zhero .eyebrow{display:inline-block;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;padding:0}
+.zhero h1{margin:0 0 10px;font-size:clamp(1.9rem,6vw,3rem);line-height:1.1;font-weight:700;letter-spacing:.01em;color:var(--text)}
+.zhero .lead{margin:0 auto;max-width:520px;color:var(--muted);font-size:.98rem;line-height:1.6}
+.zstack{display:grid;gap:8px}
+.zl{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 14px;border:1px solid var(--border);border-radius:10px;background:rgba(26,9,18,.55);font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);text-decoration:none;transition:border-color .18s,background .18s}
+a.zl:hover{border-color:rgba(245,195,108,.55);background:rgba(40,12,26,.75)}
+.zl-k{color:var(--gold);letter-spacing:.05em;font-weight:700;min-width:140px}
+.zl-d{flex:1 1 220px}
+.zl-d b{color:var(--text);font-weight:600}
+.zl-go{margin-left:auto;color:var(--gold)}
+.zl-rose{border-color:rgba(251,113,133,.35)}
+.zl-rose .zl-k{color:var(--pink)}
+.zl-cy{border-color:rgba(120,220,255,.22);background:rgba(12,18,28,.62);color:#cde4f7}
+.zl-cy .zl-k{color:#6ce5ff}
+.zl-badge{margin-left:auto;font-size:11px;padding:1px 9px;border-radius:999px;background:rgba(108,229,255,.14);color:#8ef0ff}
+.zl-meta{flex:1 1 100%;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:11.5px}
+.zl-meta b{color:#94a3b8;font-weight:500}
+.zfoot{margin-top:26px;text-align:center;font:11px/1.9 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}
+.zfoot a{color:var(--muted);text-decoration:none;margin:0 7px}.zfoot a:hover{color:var(--gold)}
+.zfoot .co{margin-top:8px;opacity:.7}
+@media(max-width:560px){.zl-k{min-width:0;flex:1 1 0;order:1}.zl-go,.zl-badge{margin-left:0;order:2}.zl-d{flex-basis:100%;order:3}.zl-meta{order:4}}

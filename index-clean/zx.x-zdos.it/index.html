@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Z-X SOLANA Store — Agenzia viaggi · ZDOS</title>
+<meta name="description" content="Agenzia viaggi ZDOS: ricerche già compilate verso voli, hotel, B&amp;B e noleggio auto sui siti partner, eSIM, token ufficiali e Scudo K.I.R.A. I prezzi restano sui siti partner.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://zx.x-zdos.it/">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com https://platform.twitter.com; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://unpkg.com https://*.twimg.com https://upload.wikimedia.org; connect-src 'self' https:; frame-src https://platform.twitter.com https://syndication.twitter.com;">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="home-clean.css?v=20261128c3">
+</head>
+<body>
+<header>
+  <a class="logo" href="#top"><img src="zdos-pixel.svg" alt="" width="34" height="34"> Z-X <b>SOLANA</b> <small>by ZDOS · agenzia viaggi</small></a>
+  <div class="hbtns">
+    <button class="btn ghost" id="zxMenuBtn" type="button" aria-expanded="false" aria-controls="zxMenu">Menu ▾</button>
+    <span class="pill" id="hdrSol">SOL …</span>
+    <button class="btn ghost" id="connect">Collega Phantom</button>
+  </div>
+</header>
+<nav id="zxMenu" class="zxmenu" hidden aria-label="Menu del sito">
+  <div class="zxm-sec">Z-X</div>
+  <a href="#viaggi">✈️ Viaggi</a><a href="#scudo">🛡️ Scudo K.I.R.A.</a><a href="#esim">📶 eSIM</a><a href="#store">🪙 Token</a><a href="#integrazioni">🔌 X · EV</a><a href="#agenzia">🧩 Agenzia</a><a href="/rivista/">📰 Rivista</a><a href="xcloud/">☁️ xCLOUD (beta)</a>
+  <div class="zxm-sec">ZDOS</div>
+  <a href="https://x-zdos.it/">x-zdos.it</a><a href="https://x-zdos.it/defi/">DeFi · Swap · Pool · Basket</a><a href="/verifica/">Verifica firma</a><a href="https://swap.x-zdos.it/zroute/">zRoute</a><a href="https://swap.x-zdos.it/">ZSwap</a><a href="https://quest.x-zdos.it/">ZQuest</a><a href="https://x-zdos.it/ide/">Zlang IDE</a><a href="https://x-zdos.it/xcloud/">xCLOUD</a><a href="https://velvet.x-zdos.it/">VelvetHub 18+</a>
+  <div class="zxm-sec">Community</div>
+  <a href="https://discord.gg/4CGZrAAxaq">Discord</a><a href="https://t.me/OurVelvetHub">Telegram</a><a href="https://x.com/ZDOS_Core">X @ZDOS_Core</a><a href="https://github.com/high-cde">GitHub</a>
+  <div class="zxm-sec">Altro</div>
+  <a href="/home-completa.html">Home completa (archivio)</a>
+</nav>
+<section class="hero" id="top">
+  <div class="press">Z-X SOLANA · by ZDOS1.3</div>
+  <h1>Viaggia, connettiti e paga <span class="grad">in stile Solana</span></h1>
+  <p class="muted">Agenzia viaggi con ricerche già compilate, eSIM, token ufficiali e lo <b>Scudo K.I.R.A.</b> contro le truffe. I prezzi si vedono sempre sui siti partner.</p>
+  <div class="zl" id="zl-receipt" style="margin-top:14px">
+    <span class="zl-k">ZLANG / SOLANA ANCHOR RECEIPT</span>
+    <span class="zl-badge">SYNCING…</span>
+    <div class="zl-meta">Caricamento ultima ricevuta…</div>
+  </div>
+  <div class="zl zl-note"><span class="zl-d">Le prenotazioni si concludono sui siti partner. Nessun link affiliato attivo, nessuna affiliazione con i marchi citati.</span></div>
+</section>
+
+<main>
+<!-- ================= VIAGGI ================= -->
+<details id="viaggi" class="card zsec"><summary><span class="zl-k">VIAGGI</span><span class="zl-d">Mappa, meteo, hotel e link precompilati ai partner</span><span class="zl-go">+</span></summary><span id="vacation-sec"></span>
+  <form id="tripForm" class="tripgrid">
+    <label>Da<input id="fromCity" value="Roma" autocomplete="off"></label>
+    <label>Destinazione<input id="toCity" value="Lisbona" autocomplete="off"></label>
+    <label>Check-in<input id="din" type="date" value="2026-12-20"></label>
+    <label>Check-out<input id="dout" type="date" value="2026-12-27"></label>
+    <label>Adulti<input id="adults" type="number" min="1" max="16" value="2"></label>
+    <label>Bambini<input id="kids" type="number" min="0" max="10" value="0"></label>
+    <button class="btn big" type="submit">▶ CERCA</button>
+  </form>
+  <div id="tripStatus" class="muted small"></div>
+
+  <div class="tripwrap">
+    <div>
+      <div id="map"></div>
+      <div class="legend small"><span class="dot h"></span>Hotel (OSM) <span class="dot p"></span>Da vedere (Wikipedia) <span class="dot e"></span>Ricarica EV (OSM)</div>
+    </div>
+    <div class="side">
+      <div class="box" id="destInfo"><b>Destinazione</b><div class="muted small">Cerca una città.</div></div>
+      <div class="box" id="weather"><b>Meteo 7 giorni</b><div class="muted small">—</div></div>
+      <div class="box" id="extra"><b>Info utili</b><div class="muted small">—</div></div>
+    </div>
+  </div>
+
+  <h3>🔗 Cerca e prenota sui siti partner <small class="muted">(voli, hotel, B&amp;B e noleggio auto: link precompilati, prezzi solo là)</small></h3>
+  <div class="deeplinks" id="deeplinks"></div>
+  <p class="small muted">Airbnb e Booking non offrono API pubbliche gratuite per prezzi e disponibilità: apriamo la loro ricerca già compilata. Quando doc attiverà i programmi di affiliazione, questi link porteranno il codice partner (dichiarato in pagina).</p>
+
+  <div class="two">
+    <div class="box">
+      <h3>💱 Convertitore valuta <small class="muted">tassi BCE via Frankfurter (api.frankfurter.dev)</small></h3>
+      <div class="row"><input id="fxAmt" type="number" value="100" class="search"><select id="fxFrom"></select><span>→</span><select id="fxTo"></select></div>
+      <div id="fxOut" class="big-num">—</div><div id="fxDate" class="small muted"></div>
+    </div>
+    <div class="box">
+      <h3>🏨 Hotel vicini <small class="muted">OpenStreetMap, senza prezzi</small></h3>
+      <ul id="hotelList" class="list"></ul>
+    </div>
+  </div>
+  <div class="box">
+    <h3>📍 Da vedere <small class="muted">Wikipedia, entro 5 km</small></h3>
+    <ul id="poiList" class="list cols"></ul>
+  </div>
+  <div class="row wrap"><a class="btn ghost" id="shareTrip" target="_blank" rel="noopener">Condividi il viaggio su X</a><a class="btn ghost" href="https://www.viaggiaresicuri.it/" target="_blank" rel="noopener">⚠️ Avvisi e visti: Viaggiare Sicuri (Farnesina)</a></div>
+</details>
+
+<!-- ================= SCUDO K.I.R.A. ================= -->
+<details id="scudo" class="card shield zsec"><summary><span class="zl-k">SCUDO K.I.R.A.</span><span class="zl-d">Controlli anti-truffa su token, link, wallet e annunci</span><span class="zl-go">+</span></summary>
+  <p class="muted">Controlli <b>solo difensivi</b> su token, link, wallet e annunci. Semaforo 🟢🟡🔴 con i motivi. Non profiliamo persone. Un semaforo verde non è una garanzia: DYOR.</p>
+  <div class="tabs" id="shTabs">
+    <button data-t="tok" class="on">🪙 Token</button><button data-t="dom">🌐 Link / dominio</button><button data-t="wal">👛 Wallet</button><button data-t="lst">🏠 Annuncio viaggio</button>
+  </div>
+  <div class="shpane" data-p="tok">
+    <div class="row"><input id="tokIn" class="search" value="2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump" placeholder="Mint Solana"><button class="btn" id="tokGo">Controlla</button></div>
+    <div class="small muted">Stessa logica K.I.R.A. di zRoute: RPC Solana (mint/freeze authority, estensioni Token-2022, holder) + RugCheck + GoPlus.</div>
+  </div>
+  <div class="shpane hidden" data-p="dom">
+    <div class="row"><input id="domIn" class="search" value="https://x-zd0s.it/airdrop" placeholder="URL o dominio"><button class="btn" id="domGo">Controlla</button></div>
+    <div class="small muted">Sosia di x-zdos.it, blocklist Phantom, GoPlus phishing, età dominio (RDAP), DNS, HTTPS.</div>
+  </div>
+  <div class="shpane hidden" data-p="wal">
+    <div class="row"><input id="walIn" class="search" value="35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4" placeholder="Indirizzo Solana"><button class="btn" id="walGo">Controlla</button></div>
+    <div class="small muted">Formato, tipo di account on-chain, segnalazioni GoPlus, indirizzi "avvelenati" simili a quelli che usi.</div>
+  </div>
+  <div class="shpane hidden" data-p="lst">
+    <textarea id="lstText" rows="4" class="search">Appartamento centro Lisbona, 7 notti a 210€ totali! Per bloccarlo scrivimi su WhatsApp e paga la caparra con bonifico o USDT, fuori da Airbnb così risparmi la commissione. Foto qui: http://airbnb-lisbon-deal.top</textarea>
+    <div class="row"><label>Prezzo/notte annuncio €<input id="lstPrice" type="number" value="30" class="search"></label><label>Prezzo medio/notte in zona €<input id="lstMedian" type="number" value="110" class="search"></label><button class="btn" id="lstGo">Analizza</button></div>
+    <div class="small muted">Il prezzo medio lo inserisci tu guardando gli annunci simili sui siti partner: non lo inventiamo.</div>
+  </div>
+  <div id="shOut"></div>
+</details>
+
+<!-- ================= eSIM ================= -->
+<details id="esim" class="card zsec"><summary><span class="zl-k">ESIM</span><span class="zl-d">Piani dati per viaggiare — acquisto sui siti partner</span><span class="zl-go">+</span></summary>
+  <p class="muted">Scegli il paese: ti mandiamo al sito del provider o del comparatore, dove vedi prezzi e piani reali. Nessun prezzo inventato qui.</p>
+  <div class="row"><select id="esimCountry" class="search"></select></div>
+  <div id="esimOut" class="deeplinks"></div>
+  <div class="box starlink">
+    <h3>🛰️ Starlink-ready: internet satellitare in viaggio</h3>
+    <p class="small">Per camper, barca, case isolate o lavoro da remoto dove la rete mobile non arriva.</p>
+    <div class="row wrap"><a class="btn" href="https://starlink.com/?referral=RC-DF-9104479-37073-52&amp;app_source=share" target="_blank" rel="noopener nofollow sponsored">🔗 Link referral personale di doc ↗</a></div>
+    <div class="small muted">Premi e termini secondo Starlink, variano per paese. È un link referral personale: ZDOS non è affiliata a Starlink né a SpaceX, e il marchio appartiene ai rispettivi proprietari.</div>
+  </div>
+  <p class="small muted">Prima di comprare controlla che il tuo telefono supporti l'eSIM e sia sbloccato. Airalo ha un programma partner (anche via Travelpayouts): da attivare con la P.IVA di doc.</p>
+</details>
+
+<!-- ================= STORE ================= -->
+<details id="store" class="card zsec"><summary><span class="zl-k">TOKEN</span><span class="zl-d">Token ufficiali e store</span><span class="zl-go">+</span></summary>
+  <div class="grid3">
+    <div class="box tok"><b>SOL</b><div class="big-num" id="pSol">…</div><div class="small muted" id="pSolEur"></div></div>
+    <div class="box tok"><b>$DSN</b><div class="big-num" id="pDsn">…</div><div class="small muted" id="pDsnInfo"></div>
+      <div class="small">Solana · Token-2022<br><code>35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4</code> · <a href="https://solscan.io/token/35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4" target="_blank" rel="noopener">Solscan ↗</a></div>
+      <div class="small">Polygon<br><code>0xfc90516a1f736FaC557e09D8853dB80dA192c296</code> · <a href="https://polygonscan.com/token/0xfc90516a1f736FaC557e09D8853dB80dA192c296" target="_blank" rel="noopener">Polygonscan ↗</a></div>
+    </div>
+    <div class="box tok"><b>VELVET ($OV)</b><div class="big-num" id="pOv">…</div><div class="small muted" id="pOvInfo"></div><code class="small">2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump</code> · <a href="https://solscan.io/token/2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump" target="_blank" rel="noopener">Solscan ↗</a></div>
+    <div class="box tok"><b>Il tuo wallet</b><div id="wInfo" class="small muted">Collega Phantom in sola lettura: leggiamo solo indirizzo e saldo SOL. Nessuna firma, nessuna transazione.</div></div>
+  </div>
+  <div class="box">
+    <h3>💳 Pagamenti in crypto</h3>
+    <p class="small">I pagamenti in crypto non sono attivi su questa pagina. Per un preventivo o un pagamento in SOL (o altro) scrivi all'agenzia: lo evadiamo <b>su richiesta</b>, con fattura di ZDOS1.3 (P.IVA 11040550961). Il sito non chiede mai seed phrase e non muove fondi dal tuo wallet.</p>
+    <div class="row wrap"><label>Importo € di riferimento<input id="payEur" type="number" value="49" class="search"></label><div class="big-num" id="payOut">≈ … SOL</div><span class="pill warn">su richiesta</span></div>
+    <div class="small warn">$DSN e VELVET ($OV) non hanno valore garantito: non sono un investimento e non c'è rendimento atteso. DYOR. xZDOS (EnxZ…pump) è un token legacy, non è il $DSN ufficiale.</div>
+  </div>
+</details>
+
+<!-- ================= INTEGRAZIONI ================= -->
+<details id="integrazioni" class="card zsec"><summary><span class="zl-k">X · EV</span><span class="zl-d">Post @ZDOS_Core, ricarica EV, percorso in auto</span><span class="zl-go">+</span></summary>
+  <p class="small muted">"Integrazione con" significa che usiamo API o link pubblici ufficiali. Nessuna partnership o approvazione da parte di X, xAI o altri marchi. Nessuna affiliazione con Musk, SpaceX, Tesla o Starlink.</p>
+  <div class="two">
+    <div class="box">
+      <h3>🤖 Assistente viaggio (integrazione con API xAI · Grok)</h3>
+      <div id="grokState" class="pill warn">verifica backend…</div>
+      <div id="grokLog" class="chatlog"><div class="msg bot">Ciao! Chiedimi un itinerario, cosa mettere in valigia o come muoverti a destinazione.</div></div>
+      <form id="grokForm" class="row"><input id="grokIn" class="search" placeholder="Es. 3 giorni a Lisbona con bambini" disabled><button class="btn" disabled id="grokBtn">Invia</button></form>
+      <div class="small muted">Il sito chiama solo <code>/api/grok</code> sul nostro server, che inoltra a <code>https://api.x.ai/v1/chat/completions</code>. La chiave XAI_API_KEY sta solo nelle variabili d'ambiente del server, mai nel browser.</div>
+    </div>
+    <div class="box">
+      <h3>𝕏 Integrazione con X</h3>
+      <div class="row wrap">
+        <a class="btn" href="https://x.com/intent/follow?screen_name=ZDOS_Core" target="_blank" rel="noopener">Segui @ZDOS_Core</a>
+        <a class="btn ghost" href="https://discord.gg/4CGZrAAxaq" target="_blank" rel="noopener">Discord</a>
+        <a class="btn ghost" href="https://t.me/OurVelvetHub" target="_blank" rel="noopener">Telegram @OurVelvetHub</a>
+        <a class="btn ghost" id="shareSite" target="_blank" rel="noopener">Condividi Z-X SOLANA</a>
+      </div>
+      <div class="xtl"><a class="twitter-timeline" data-theme="dark" data-height="300" href="https://twitter.com/ZDOS_Core">Post di @ZDOS_Core</a><div class="small muted" id="xtlNote">Se la timeline non si carica (X la mostra solo in certi casi a chi non ha fatto login), apri il profilo: <a href="https://x.com/ZDOS_Core" target="_blank" rel="noopener">x.com/ZDOS_Core</a>.</div></div>
+      <div class="small muted">Roadmap: "Accedi con X" (OAuth 2.0 + PKCE) gestito dal backend, solo per profilo e quest, nessun post automatico.</div>
+    </div>
+  </div>
+  <div class="two">
+    <div class="box">
+      <h3>⚡ Ricarica EV sul viaggio</h3>
+      <div id="evList" class="small muted">Le colonnine (OSM, amenity=charging_station) compaiono sulla mappa dei Viaggi.</div>
+      <div class="small muted">Una eventuale integrazione con API di ricarica di terzi (chiave e consenso del proprietario del veicolo) è in roadmap, senza alcuna affiliazione. Open Charge Map richiede una chiave gratuita, quindi qui non è attiva.</div>
+    </div>
+    <div class="box">
+      <h3>🛣️ Percorso in auto</h3>
+      <div id="routeOut" class="small muted">Calcolato con OSRM (demo pubblica) tra partenza e destinazione.</div>
+    </div>
+  </div>
+</details>
+
+<!-- ================= AGENZIA ================= -->
+<details id="agenzia" class="card zsec"><summary><span class="zl-k">AGENZIA ZDOS</span><span class="zl-d">Siti, bot e contenuti su richiesta</span><span class="zl-go">+</span></summary>
+  <div class="grid3">
+    <div class="box"><h3>🌐 Web dev</h3><p class="small">Siti statici veloci, dApp Solana con Phantom e Jupiter (come ZSwap Hub e zRoute), dashboard.</p></div>
+    <div class="box"><h3>🤖 Bot e automazioni</h3><p class="small">Bot Discord/Telegram, controlli K.I.R.A., radar token, integrazioni con API ufficiali.</p></div>
+    <div class="box"><h3>🎬 Contenuti</h3><p class="small">Video arcade, post per X, kit creator, testi in italiano. Onesti: niente promesse di guadagno.</p></div>
+  </div>
+  <p class="small">Agenzia <b>ZDOS1.3</b> — P.IVA 11040550961. Preventivi e pagamenti in crypto su richiesta. Contatti ufficiali solo da <a href="https://x-zdos.it/">x-zdos.it</a>, <a href="https://x.com/ZDOS_Core" target="_blank" rel="noopener">@ZDOS_Core</a>, <a href="https://discord.gg/4CGZrAAxaq" target="_blank" rel="noopener">Discord</a> e <a href="https://t.me/OurVelvetHub" target="_blank" rel="noopener">Telegram @OurVelvetHub</a>. Il nome personale del titolare non viene pubblicato.</p>
+</details>
+</main>
+
+<footer>
+  <p><b>DYOR · non è consiglio finanziario.</b> Prezzi, disponibilità e condizioni di viaggi ed eSIM sono quelli dei siti partner: verificali sempre lì prima di pagare.</p>
+  <p>🛡️ <b>Anti-truffa:</b> ZDOS non ti chiederà mai seed phrase, chiavi private o pagamenti fuori piattaforma. Nessun "supporto" ti scrive per primo in DM. Domini ufficiali: <code>x-zdos.it</code> e sottodomini.</p>
+  <div class="flinks"><a href="/verifica/">Verifica firma</a><a href="https://x-zdos.it/defi/">DeFi</a><a href="/home-completa.html">Home completa</a><a href="https://x-zdos.it/">x-zdos.it</a></div>
+  <p class="addrs small">$DSN Solana: <code>35w74RT77BPSYNpmzpvxmR9wu2ihpgzubKy4bkGHR3F4</code><br>$DSN Polygon: <code>0xfc90516a1f736FaC557e09D8853dB80dA192c296</code><br>VELVET ($OV): <code>2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump</code></p>
+  <p class="small">Dati: © OpenStreetMap contributors (ODbL) · Open-Meteo (CC BY 4.0) · BCE via Frankfurter (api.frankfurter.dev) · Wikipedia/Wikivoyage (CC BY-SA) · Jupiter · CoinGecko · RugCheck · GoPlus. Marchi dei rispettivi proprietari, nessuna affiliazione implicita. Nessuna affiliazione con Musk, SpaceX, Tesla o Starlink.</p>
+  <p class="small">© 2026 ZDOS1.3 — P.IVA 11040550961 · licenza ZSEL · agenzia viaggi su <a href="https://zx.x-zdos.it/">zx.x-zdos.it</a>.</p>
+</footer>
+<div id="toast"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+<script src="kira-core.js" defer></script>
+<script src="data.js" defer></script>
+<script src="shield.js" defer></script>
+<script src="app.js" defer></script>
+<script src="home-clean.js?v=20261128clean" defer></script>
+</body>
+</html>

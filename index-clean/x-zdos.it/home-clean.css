@@ -1,0 +1,50 @@
+/* ZDOS home pulita — linguaggio "fascia sottile" (come la ricevuta ZLang / Solana) · © 2026 ZDOS1.3 */
+:root{--bg:#050609;--cy:#6ce5ff;--tx:#e6f4ff;--mu:#94a3b8;--ln:rgba(120,220,255,.22);--ln2:rgba(120,220,255,.5);--em:#10b981;--mono:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg) radial-gradient(ellipse 80% 40% at 50% -10%,rgba(34,211,238,.10),transparent);color:var(--tx);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.55;padding-top:68px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 28px}
+.hero{text-align:center;padding:34px 0 22px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--cy);margin-bottom:14px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--em);box-shadow:0 0 9px var(--em);animation:pl 2.4s ease-in-out infinite}
+@keyframes pl{50%{opacity:.4}}
+.hero h1{font:700 clamp(26px,5.5vw,42px)/1.12 'Space Grotesk',sans-serif;letter-spacing:-.025em;margin-bottom:10px;background:linear-gradient(180deg,#fff 35%,#94a3b8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--mu);font-size:15px;max-width:520px;margin:0 auto}
+.stack{display:grid;gap:8px}
+.zl{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 14px;border:1px solid var(--ln);border-radius:10px;background:rgba(12,18,28,.55);font:12px/1.5 var(--mono);color:#cde4f7;text-decoration:none;transition:border-color .18s,background .18s}
+a.zl:hover,details.zl[open],details.zl:hover{border-color:var(--ln2);background:rgba(14,22,34,.75)}
+.zl-k{color:var(--cy);letter-spacing:.05em;font-weight:700;min-width:140px}
+.zl-d{flex:1 1 220px;color:var(--mu)}
+.zl-d b{color:var(--tx);font-weight:600}
+.zl-go{color:var(--cy);margin-left:auto}
+.zl-badge{font-size:11px;padding:1px 9px;border-radius:999px;background:rgba(108,229,255,.14);color:#8ef0ff;margin-left:auto}
+.zl-meta{flex:1 1 100%;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:11.5px;color:#cde4f7}
+.zl-meta b{color:var(--mu);font-weight:500}
+.zl.live{padding:9px 14px}
+.zl-live{flex:1 1 220px;color:#cde4f7}
+.sep{margin:18px 0 8px;font:500 10.5px var(--mono);letter-spacing:.12em;color:var(--mu);text-transform:uppercase}
+details.zl{display:block;padding:0}
+details.zl>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 14px}
+details.zl>summary::-webkit-details-marker{display:none}
+details.zl[open]>summary .zl-go{transform:rotate(45deg)}
+.zl-go{transition:transform .2s}
+.chat{padding:0 14px 14px}
+.tabs{display:flex;gap:6px;margin-bottom:8px}
+.tab{font:600 10.5px var(--mono);padding:4px 10px;border-radius:7px;border:1px solid var(--ln);background:transparent;color:var(--mu);cursor:pointer}
+.tab.on{color:#041017;background:var(--cy);border-color:var(--cy)}
+.stream{max-height:260px;overflow:auto;display:grid;gap:8px;padding:4px 0 10px}
+.msg{padding:9px 12px;border:1px solid var(--ln);border-radius:9px;font:12.5px/1.5 'Inter',sans-serif;white-space:pre-wrap;word-break:break-word}
+.msg small{display:block;font:600 9.5px var(--mono);color:var(--cy);letter-spacing:.07em;margin-bottom:3px}
+.msg.u{border-color:rgba(234,179,8,.35)}.msg.u small{color:#eab308}
+.qp{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.qp button{font:11px var(--mono);padding:4px 9px;border-radius:999px;border:1px solid var(--ln);background:transparent;color:var(--mu);cursor:pointer}
+.qp button:hover{border-color:var(--ln2);color:var(--tx)}
+.form{display:flex;gap:8px}
+.form input{flex:1;min-width:0;padding:9px 11px;border-radius:8px;border:1px solid var(--ln);background:rgba(5,6,9,.7);color:var(--tx);font:13px 'Inter',sans-serif}
+.form input:focus{outline:0;border-color:var(--ln2)}
+.form button{padding:0 14px;border-radius:8px;border:1px solid var(--ln2);background:transparent;color:var(--cy);font:700 12px var(--mono);cursor:pointer}
+.foot{margin-top:26px;text-align:center;font:11px/1.9 var(--mono);color:var(--mu)}
+.foot a{color:var(--mu);text-decoration:none;margin:0 7px}.foot a:hover{color:var(--cy)}
+.foot .co{margin-top:8px;color:#64748b}
+@media(max-width:560px){.zl-k{min-width:0;flex:1 1 0;order:1}.zl-go,.zl-badge{margin-left:0;order:2}.zl-d{flex-basis:100%;order:3}.zl-meta{order:4}}
+@media(prefers-reduced-motion:reduce){.dot{animation:none}html{scroll-behavior:auto}}

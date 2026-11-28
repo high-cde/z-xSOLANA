@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta name="robots" content="noindex, follow">
+<!-- ARCHIVIO: home completa prima della pulizia (2026-11-28). La home attuale è /  -->
+<!-- Google Tag Manager (GTM-T9NHG4R3) -->
+<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-T9NHG4R3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+</script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>ZDOS × VELVET CITY — Sovereign Kernel, Dual-Grok2 AGI & Multi-Chain</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050609;
+      --bg-elevated: rgba(13, 15, 22, 0.84);
+      --bg-card: rgba(16, 19, 28, 0.90);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --cyan: #22d3ee;
+      --crimson: #e11d48;
+      --gold: #eab308;
+      --emerald: #10b981;
+      --text: #f8fafc;
+      --text-secondary: #94a3b8;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse 85% 45% at 50% -8%, rgba(34, 211, 238, 0.13), transparent),
+        radial-gradient(ellipse 65% 40% at 95% 22%, rgba(225, 29, 72, 0.11), transparent),
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.58;
+      -webkit-font-smoothing: antialiased;
+      padding-top: 68px;
+      padding-bottom: 140px;
+    }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 18px; }
+
+    /* SINGLE-ROW TOPBAR + MOBILE DRAWER */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: 58px;
+      background: rgba(5, 6, 9, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width: 1120px; height: 100%; margin: 0 auto; padding: 0 16px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .logo {
+      display: inline-flex; align-items: center; gap: 8px;
+      text-decoration: none; font-family: var(--font-display);
+      font-weight: 700; font-size: 15px; letter-spacing: 0.03em;
+      color: var(--text); white-space: nowrap; flex-shrink: 0;
+    }
+    .logo-mark {
+      width: 24px; height: 24px; border-radius: 6px;
+      background: linear-gradient(135deg, var(--cyan), var(--crimson));
+      display: grid; place-items: center;
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: #050608;
+    }
+    .logo span { color: var(--text-secondary); font-weight: 500; }
+
+    .nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .nav-desktop { display: none; align-items: center; gap: 4px; }
+    @media (min-width: 820px) {
+      .nav-desktop { display: flex; }
+      .menu-toggle { display: none !important; }
+    }
+    .nav-link {
+      text-decoration: none; color: var(--text-secondary); font-size: 13px; font-weight: 500;
+      padding: 6px 11px; border-radius: 8px; white-space: nowrap; transition: 0.16s;
+    }
+    .nav-link:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .btn-agi-nav {
+      text-decoration: none; color: #041017; background: var(--cyan);
+      font-size: 12.5px; font-weight: 700; padding: 6px 12px; border-radius: 8px;
+      white-space: nowrap; box-shadow: 0 0 18px rgba(34,211,238,0.28);
+    }
+    .menu-toggle {
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border-strong);
+      color: var(--text); border-radius: 8px; width: 34px; height: 32px;
+      display: grid; place-items: center; font-size: 16px; cursor: pointer;
+    }
+    .mobile-drawer {
+      display: none; position: fixed; top: 58px; left: 0; right: 0; z-index: 999;
+      background: rgba(8, 10, 15, 0.96); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-strong);
+      padding: 12px 16px;
+      grid-template-columns: repeat(2, 1fr); gap: 8px;
+    }
+    .mobile-drawer.open { display: grid; }
+    .drawer-item {
+      text-decoration: none; color: var(--text); font-size: 13px; font-weight: 500;
+      padding: 10px 12px; border-radius: 10px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    /* HERO */
+    .hero { padding: 26px 0 22px; text-align: center; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 13px; border-radius: 999px;
+      background: rgba(255, 255, 255, 0.035); border: 1px solid var(--border-strong);
+      font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.07em;
+      text-transform: uppercase; color: var(--cyan); margin-bottom: 14px;
+    }
+    .pulse {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--emerald); box-shadow: 0 0 10px var(--emerald); flex-shrink: 0;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 6vw, 52px); font-weight: 700;
+      line-height: 1.08; letter-spacing: -0.03em; margin-bottom: 12px;
+      background: linear-gradient(180deg, #ffffff 35%, #94a3b8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      max-width: 620px; margin: 0 auto 20px;
+      color: var(--text-secondary); font-size: 14.5px;
+    }
+
+    /* CONNECTORS GRID */
+    .connectors {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+      max-width: 680px; margin: 0 auto;
+    }
+    @media (min-width: 680px) {
+      .connectors { display: flex; justify-content: center; flex-wrap: wrap; max-width: none; }
+    }
+    .conn-pill {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 8px 12px; border-radius: 10px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text); text-decoration: none; font-size: 12px; font-weight: 500;
+      transition: 0.18s;
+    }
+    .conn-pill:hover { border-color: var(--cyan); transform: translateY(-1px); }
+    .conn-pill.wide { grid-column: span 2; }
+    .conn-tag {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+      color: var(--gold); text-transform: uppercase;
+    }
+
+    /* AGI WORKSPACE */
+    .workspace {
+      margin: 24px 0 28px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: 18px;
+      backdrop-filter: blur(20px);
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+    }
+    .ws-header {
+      padding: 14px 16px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px;
+      background: rgba(255, 255, 255, 0.015);
+    }
+    .ws-title { display: flex; align-items: center; gap: 10px; }
+    .ws-title h2 { font-family: var(--font-display); font-size: 15.5px; font-weight: 700; }
+    .ws-sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-secondary); }
+    .core-tabs {
+      display: inline-flex; background: rgba(0, 0, 0, 0.5);
+      padding: 3px; border-radius: 9px; border: 1px solid var(--border); gap: 3px;
+    }
+    .core-tab {
+      border: none; background: transparent; color: var(--text-secondary);
+      font-family: var(--font-mono); font-size: 10.5px; font-weight: 600;
+      padding: 5px 10px; border-radius: 6px; cursor: pointer; transition: 0.15s;
+    }
+    .core-tab.active {
+      background: rgba(34, 211, 238, 0.16); color: var(--cyan);
+      box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.35);
+    }
+
+    .chat-stream {
+      height: 240px; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .bubble {
+      max-width: 86%; padding: 11px 14px; border-radius: 14px;
+      font-size: 13.5px; line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+    }
+    .bubble.ai {
+      align-self: flex-start; background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border); color: var(--text);
+    }
+    .bubble.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.16), rgba(14, 165, 233, 0.12));
+      border: 1px solid rgba(34, 211, 238, 0.32); color: #f0f9ff;
+    }
+    .bubble-meta {
+      display: block; font-family: var(--font-mono); font-size: 9.5px;
+      letter-spacing: 0.05em; color: var(--cyan); margin-bottom: 3px;
+    }
+    .bubble.user .bubble-meta { color: var(--gold); }
+
+    .quick-prompts {
+      padding: 0 16px 10px; display: flex; gap: 7px;
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .quick-prompts::-webkit-scrollbar { display: none; }
+    .qp-btn {
+      background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
+      color: var(--text-secondary); font-size: 11.5px; padding: 5px 11px;
+      border-radius: 999px; white-space: nowrap; cursor: pointer;
+    }
+    .qp-btn:hover { border-color: var(--cyan); color: var(--text); }
+
+    .ws-footer {
+      padding: 12px 16px; border-top: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.38); display: flex; gap: 8px;
+    }
+    .ws-input {
+      flex: 1; background: rgba(12, 14, 20, 0.92); border: 1px solid var(--border-strong);
+      border-radius: 11px; padding: 11px 14px; color: var(--text);
+      font-family: var(--font-sans); font-size: 14px; outline: none;
+    }
+    .ws-input:focus { border-color: var(--cyan); }
+    .ws-submit {
+      background: var(--text); color: #050608; border: none;
+      border-radius: 11px; padding: 0 18px; font-weight: 700; font-size: 13px;
+      cursor: pointer; white-space: nowrap;
+    }
+    .ws-submit:hover { background: var(--cyan); }
+
+    /* PILLARS */
+    .section-label {
+      font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-secondary); margin-bottom: 12px;
+    }
+    .pillars {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 14px; margin-bottom: 22px;
+    }
+    .pillar {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .pillar-num {
+      font-family: var(--font-mono); font-size: 10.5px; color: var(--gold); margin-bottom: 6px;
+    }
+    .pillar h3 { font-family: var(--font-display); font-size: 18px; margin-bottom: 8px; }
+    .pillar p { font-size: 13.5px; color: var(--text-secondary); margin-bottom: 18px; }
+    .pillar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-card {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 8px 14px; border-radius: 9px; font-size: 12.5px; font-weight: 600;
+      text-decoration: none; border: 1px solid var(--border-strong);
+      color: var(--text); background: rgba(255,255,255,0.03);
+    }
+    .btn-card:hover { border-color: var(--cyan); color: var(--cyan); }
+    .btn-card.velvet { background: var(--crimson); border-color: var(--crimson); color: #fff; }
+
+    /* TELEMETRY */
+    .telemetry {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .tel-head {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px;
+    }
+    .tel-title { font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; }
+    #vcpu-status-pill {
+      font-family: var(--font-mono); font-size: 10.5px; padding: 3px 9px;
+      border-radius: 999px; background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35); color: var(--emerald);
+    }
+    .nodes-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;
+    }
+    @media (min-width: 680px) {
+      .nodes-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    .node-chip {
+      font-family: var(--font-mono); font-size: 10.5px; padding: 5px 9px;
+      border-radius: 7px; background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border); color: var(--text-secondary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .node-chip.up { color: var(--text); border-color: rgba(34, 211, 238, 0.25); }
+    .node-chip.up::before { content: "● "; color: var(--emerald); }
+
+    .sig {
+      margin-top: 20px; text-align: center;
+      font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary);
+      padding-bottom: 12px;
+    }
+    .sig strong { color: var(--text); }
+
+    /* ANIMATED BOT SPLASH INTRO */
+    #zdos-bot-splash {
+      position: fixed; inset: 0; z-index: 99999;
+      background: radial-gradient(circle at 50% 38%, rgba(34,211,238,0.16), rgba(5,6,9,0.98) 65%), #050609;
+      backdrop-filter: blur(22px);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 24px; text-align: center;
+      transition: opacity 0.55s ease, visibility 0.55s ease, transform 0.55s ease;
+    }
+    #zdos-bot-splash.hidden {
+      opacity: 0; visibility: hidden; transform: scale(1.03); pointer-events: none;
+    }
+    .bot-stage {
+      position: relative; width: 156px; height: 156px;
+      display: grid; place-items: center; margin-bottom: 20px;
+    }
+    .bot-ring {
+      position: absolute; inset: 0; border-radius: 50%;
+      border: 1.5px dashed rgba(34,211,238,0.38);
+      animation: spinSlow 9s linear infinite;
+    }
+    .bot-ring-2 {
+      position: absolute; inset: 14px; border-radius: 50%;
+      border: 1.5px solid transparent;
+      border-top-color: #e11d48; border-bottom-color: #22d3ee;
+      animation: spinRev 4.5s linear infinite;
+    }
+    .bot-avatar {
+      width: 96px; height: 96px;
+      animation: botFloat 2.6s ease-in-out infinite;
+      filter: drop-shadow(0 0 22px rgba(34,211,238,0.45));
+    }
+    .bot-eye { animation: botBlink 3.4s infinite; transform-origin: center; }
+    .bot-antenna-tip { animation: pulseTip 1.2s ease-in-out infinite alternate; }
+    @keyframes spinSlow { to { transform: rotate(360deg); } }
+    @keyframes spinRev { to { transform: rotate(-360deg); } }
+    @keyframes botFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-7px); }
+    }
+    @keyframes botBlink {
+      0%, 46%, 50%, 94%, 98%, 100% { transform: scaleY(1); }
+      48%, 96% { transform: scaleY(0.12); }
+    }
+    @keyframes pulseTip {
+      from { fill: #22d3ee; r: 4; }
+      to { fill: #e11d48; r: 6; }
+    }
+    .splash-tag {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
+      color: var(--cyan); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .splash-title {
+      font-family: var(--font-display); font-size: clamp(24px, 5vw, 34px);
+      font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px;
+      background: linear-gradient(90deg, #fff, #22d3ee, #fda4af);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .splash-log {
+      font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary);
+      min-height: 20px; margin-bottom: 16px;
+    }
+    .splash-bar {
+      width: min(280px, 80vw); height: 5px; border-radius: 999px;
+      background: rgba(255,255,255,0.08); overflow: hidden; margin-bottom: 20px;
+    }
+    .splash-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #22d3ee, #e11d48);
+      transition: width 0.25s ease;
+    }
+    .splash-actions { display: flex; gap: 10px; align-items: center; }
+    .splash-enter {
+      background: linear-gradient(135deg, #22d3ee, #0284c7);
+      color: #041017; border: none; border-radius: 11px;
+      padding: 10px 20px; font-weight: 700; font-size: 13px; cursor: pointer;
+      box-shadow: 0 0 24px rgba(34,211,238,0.35);
+    }
+    .splash-skip {
+      background: rgba(255,255,255,0.04); color: var(--text-secondary);
+      border: 1px solid var(--border-strong); border-radius: 11px;
+      padding: 10px 14px; font-size: 12px; cursor: pointer;
+    }
+
+  </style>
+  <link rel="stylesheet" href="/assets/hub/site-nav.css?v=20261128nav">
+  <style>
+    .merito-box{margin:0 auto 22px;max-width:620px;text-align:left}
+    .merito-box a{display:block;text-decoration:none;color:inherit;padding:14px 16px;border:1px solid var(--border-strong,#333);border-radius:14px;background:rgba(255,255,255,0.03)}
+    .merito-box .tag{font-family:var(--font-mono,monospace);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--cyan,#22d3ee);margin:0 0 6px}
+    .merito-box h2{font-size:1.15rem;margin:0 0 6px}
+    .merito-box p{margin:0 0 6px;color:var(--text-secondary,#94a3b8);font-size:13.5px}
+    .merito-box #merito-live{color:var(--text,#e2e8f0);font-size:13px}
+    .merito-box .go{color:var(--cyan,#22d3ee);font-size:13px;font-weight:600}
+  </style>
+</head>
+<body>
+
+  <div id="zdos-bot-splash" role="dialog" aria-label="zGrok2 Boot Sequence">
+    <div class="bot-stage">
+      <div class="bot-ring"></div>
+      <div class="bot-ring-2"></div>
+      <svg class="bot-avatar" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="60" y1="12" x2="60" y2="28" stroke="#22d3ee" stroke-width="3" stroke-linecap="round"/>
+        <circle class="bot-antenna-tip" cx="60" cy="10" r="4.5" fill="#22d3ee"/>
+        <rect x="24" y="28" width="72" height="58" rx="18" fill="#0f172a" stroke="url(#botGrad)" stroke-width="3"/>
+        <rect x="14" y="46" width="8" height="22" rx="4" fill="#e11d48"/>
+        <rect x="98" y="46" width="8" height="22" rx="4" fill="#22d3ee"/>
+        <rect x="33" y="40" width="54" height="28" rx="10" fill="#050811" stroke="rgba(34,211,238,0.4)" stroke-width="1.5"/>
+        <circle class="bot-eye" cx="47" cy="54" r="5.5" fill="#22d3ee"/>
+        <circle class="bot-eye" cx="73" cy="54" r="5.5" fill="#22d3ee"/>
+        <path d="M47 76C51 80 69 80 73 76" stroke="#eab308" stroke-width="3" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="botGrad" x1="24" y1="28" x2="96" y2="86" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#22d3ee"/>
+            <stop offset="1" stop-color="#e11d48"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="splash-tag">ZCORE-VCPU · DUAL-GROK2 AGI</div>
+    <div class="splash-title">Benvenuto in ZDOS × Velvet</div>
+    <div id="splash-log" class="splash-log">Inizializzazione kernel bare-metal...</div>
+    <div class="splash-bar"><div id="splash-fill" class="splash-fill"></div></div>
+    <div class="splash-actions">
+      <button type="button" id="splash-enter" class="splash-enter">ENTRA NEL PORTALE →</button>
+      <button type="button" id="splash-skip" class="splash-skip">Salta</button>
+    </div>
+  </div>
+
+
+  <header class="top zdos-top" id="zdosTop">
+    <button type="button" class="zdos-menu-btn" id="zdosMenuBtn" aria-label="Apri il menu" aria-haspopup="true" aria-expanded="false" aria-controls="zdosMenu">
+      <img src="/assets/hub/zdos-pixel.svg" width="36" height="36" alt="">
+    </button>
+    <a class="zdos-wordmark" href="https://x-zdos.it/" aria-label="ZDOS, home">ZDOS</a>
+    <div class="session" id="sessionbox">
+      <button type="button" class="btn primary sm zdos-wallet" id="connectBtn">Phantom</button>
+    </div>
+    <noscript><nav aria-label="Menu del sito" class="zdos-panel" style="position:static;display:block"><section class="zdos-group"><h2>Sito</h2><ul><li><a href="https://x-zdos.it/">Home</a></li><li><a href="https://x-zdos.it/ide/">IDE</a></li><li><a href="https://x-zdos.it/dev/">Dev</a></li><li><a href="https://x-zdos.it/rete/">Rete zDOS</a></li><li><a href="https://ourvelvet.online/merito/">Miner merito</a></li><li><a href="https://t.me/OurVelvetHub">Telegram</a></li><li><a href="https://discord.gg/4CGZrAAxaq">Discord</a></li><li><a href="https://x.com/ZDOS_Core">X @ZDOS_Core</a></li></ul></section></nav></noscript>
+  </header>
+
+  <div class="container">
+    <section class="hero">
+      <div class="eyebrow"><span class="pulse"></span> Z-Sovereign OS · Dual-Grok2 vCPU · Multi-Chain</div>
+      <h1>Evoluzione Informatica &amp; Sovranità Digitale</h1>
+      <p>Un’unica architettura aperta che fonde kernel bare-metal x86_64, compilatore ZLang, intelligenza distribuita Dual-Grok2 e finanza non-custodial.</p>
+
+      <div class="connectors" id="community">
+        <a class="conn-pill" href="https://github.com/high-cde" target="_blank" rel="noopener"><span class="conn-tag">GitHub</span> high-cde</a>
+        <a class="conn-pill" href="https://x.com/ZDOS_Core" target="_blank" rel="noopener"><span class="conn-tag">X</span> @ZDOS_Core</a>
+        <a class="conn-pill wide" href="https://huggingface.co/AsapKali/velvet-grok2" target="_blank" rel="noopener"><span class="conn-tag">Hugging Face</span> AsapKali/velvet-grok2</a>
+        <a class="conn-pill" href="https://discord.gg/4CGZrAAxaq" target="_blank" rel="noopener"><span class="conn-tag">Discord</span> Community</a>
+        <a class="conn-pill" href="https://t.me/OurVelvetHub" target="_blank" rel="noopener"><span class="conn-tag">Telegram</span> OurVelvetHub</a>
+      </div>
+    </section>
+
+    <aside class="merito-box" id="merito-box">
+      <a href="https://ourvelvet.online/merito/">
+        <p class="tag">VELVET · merito</p>
+        <h2>Miner merito</h2>
+        <p>Punti per contributi reali. Premio per contributo, non rendimento.</p>
+        <p id="merito-live">Dati in tempo reale…</p>
+        <span class="go">Apri il miner →</span>
+      </a>
+    </aside>
+
+
+    <section id="agi-console" class="workspace">
+      <div class="ws-header">
+        <div class="ws-title">
+          <span class="pulse"></span>
+          <div>
+            <h2>zGrok2 Super-AGI Terminal</h2>
+            <div class="ws-sub">Dual-Core Orchestrator (:8900) · Core-0 ZDOS + Core-1 Velvet</div>
+          </div>
+        </div>
+        <div class="core-tabs">
+          <button type="button" class="core-tab active" data-domain="auto">AUTO</button>
+          <button type="button" class="core-tab" data-domain="zdos">CORE-0</button>
+          <button type="button" class="core-tab" data-domain="velvet">CORE-1</button>
+        </div>
+      </div>
+
+      <div id="chat-stream" class="chat-stream">
+        <div class="bubble ai"><span class="bubble-meta">ZCORE-VCPU · DUAL-GROK2 ONLINE</span>Sistema pronto. Puoi interrogare il kernel ZDOS, il compilatore ZLang/ZLB2, i token $DSN / $OV / L$D o Velvet City.</div>
+      </div>
+
+      <div class="quick-prompts">
+        <button type="button" class="qp-btn" data-q="Stato sincronizzazione kernel ZDOS e Dual-Grok2">Stato Kernel &amp; vCPU</button>
+        <button type="button" class="qp-btn" data-q="Architettura ZLang e bytecode VM ZLB2">ZLang &amp; VM ZLB2</button>
+        <button type="button" class="qp-btn" data-q="Panoramica token $DSN, $OV, L$D e $HOLD">Token Multi-Chain</button>
+      </div>
+
+      <form id="agi-form" class="ws-footer">
+        <input id="agi-input" class="ws-input" type="text" placeholder="Scrivi a zGrok2 AGI..." autocomplete="off" required />
+        <button type="submit" class="ws-submit">Invia →</button>
+      </form>
+    </section>
+
+    <div class="section-label">01 — Infrastruttura &amp; Ecosistema</div>
+    <section class="pillars">
+      <article class="pillar">
+        <div>
+          <div class="pillar-num">LAYER 01 · SYSTEMS &amp; COMPILER</div>
+          <h3>Nucleo ZDOS &amp; ZLang</h3>
+          <p>Sistema operativo bare-metal in Rust <code>#![no_std]</code>, virtual machine ZLB2, web IDE, ZQuest e nodi RPC sovrani senza dipendenze esterne.</p>
+        </div>
+        <div class="pillar-actions">
+          <a href="https://x-zdos.it/ide/" class="btn-card">ZLang IDE →</a>
+          <a href="https://quest.x-zdos.it/" class="btn-card">ZQuest</a>
+        </div>
+      </article>
+
+      <article class="pillar">
+        <div>
+          <div class="pillar-num">LAYER 02 · NEURAL &amp; CREATOR HUB</div>
+          <h3>Velvet City 18+</h3>
+          <p>Ecosistema creativo e comunitario con Zara AGI, Rubina, Creator Studio, Meat Radar, Miner Merito e inferenza distribuita <code>velvet-grok2</code>.</p>
+        </div>
+        <div class="pillar-actions">
+          <a href="https://ourvelvet.online/" class="btn-card velvet">Apri Velvet City →</a>
+          <a href="https://ourvelvet.online/creator/" class="btn-card">Creator Studio</a>
+        </div>
+      </article>
+
+      <article class="pillar">
+        <div>
+          <div class="pillar-num">LAYER 03 · NON-CUSTODIAL DEFI</div>
+          <h3>Liquidità &amp; Bridge</h3>
+          <p>Scambio diretto e panieri on-chain su Solana e Polygon per <strong>$DSN</strong>, <strong>$OV</strong>, <strong>Dom-Coin (L$D)</strong> e <strong>$HOLD</strong>. Le chiavi restano sempre all’utente.</p>
+        </div>
+        <div class="pillar-actions">
+          <a href="https://swap.x-zdos.it/" class="btn-card">Apri ZSwap →</a>
+          <a href="https://basket.x-zdos.it/" class="btn-card">zBASKET</a>
+        </div>
+      </article>
+    </section>
+<section class="telemetry">
+      <div class="tel-head">
+        <div class="tel-title">⚡ ZCORE-VCPU · NODI ATTIVI</div>
+        <span id="vcpu-status-pill">SYNCING...</span>
+      </div>
+      <div id="nodes-grid" class="nodes-grid">
+        <span class="node-chip">Caricamento telemetria...</span>
+      </div>
+    </section>
+
+    <footer class="sig">
+      <strong>ASAPKALI · ARCHITECT &amp; FOUNDER</strong> — Sovereign Infrastructure · ZDOS × Velvet City
+    </footer>
+  </div>
+
+  <script>
+
+    // BOT SPLASH SEQUENCE
+    (function() {
+      const splash = document.getElementById("zdos-bot-splash");
+      const logEl = document.getElementById("splash-log");
+      const fillEl = document.getElementById("splash-fill");
+      if (!splash) return;
+      const closeSplash = () => splash.classList.add("hidden");
+      document.getElementById("splash-enter").addEventListener("click", closeSplash);
+      document.getElementById("splash-skip").addEventListener("click", closeSplash);
+
+      const steps = [
+        [28, "Booting Z-Sovereign OS & ZLang VM..."],
+        [64, "Sync Dual-Grok2 vCPU (:8900) + K.I.R.A..."],
+        [100, "Sovereign Hub Ready · Multi-Chain Online"]
+      ];
+      let i = 0;
+      const timer = setInterval(() => {
+        if (i < steps.length) {
+          fillEl.style.width = steps[i][0] + "%";
+          logEl.textContent = steps[i][1];
+          i++;
+        } else {
+          clearInterval(timer);
+          setTimeout(closeSplash, 550);
+        }
+      }, 480);
+    })();
+
+    const drawer = document.getElementById("mobile-drawer");
+    document.getElementById("menu-toggle").addEventListener("click", () => {
+      drawer.classList.toggle("open");
+    });
+
+    let currentDomain = "auto";
+    document.querySelectorAll(".core-tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".core-tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        currentDomain = tab.dataset.domain;
+      });
+    });
+
+    const stream = document.getElementById("chat-stream");
+    const inputEl = document.getElementById("agi-input");
+    const formEl = document.getElementById("agi-form");
+
+    function pushMessage(type, meta, content) {
+      const box = document.createElement("div");
+      box.className = "bubble " + type;
+      const m = document.createElement("span");
+      m.className = "bubble-meta";
+      m.textContent = meta;
+      const t = document.createElement("div");
+      t.textContent = content;
+      box.appendChild(m);
+      box.appendChild(t);
+      stream.appendChild(box);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
+    function formatKernelReply(raw, routedCore) {
+      let text = raw;
+      try {
+        const parsed = JSON.parse(raw);
+        text = parsed.response || parsed.reply || parsed.message || parsed.text || raw;
+      } catch {}
+      if (typeof text === "string" && text.includes("NOMINAL_SYNC")) {
+        return "ZDOS-Cortex sincronizzato (latenza 0ms, bus vCPU operativo). Tutti gli 8 nodi di sistema e DeFi risultano attivi — chiedimi pure dettagli su ZLang, ZSwap, Velvet City o stato VPS.";
+      }
+      return text;
+    }
+
+    async function sendPrompt(promptText) {
+      pushMessage("user", `USER · ${currentDomain.toUpperCase()}`, promptText);
+      try {
+        const res = await fetch("/api/vcpu/dispatch", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ domain: currentDomain, prompt: promptText })
+        });
+        const data = await res.json();
+        const raw = data?.reply?.body || data?.reply?.error || JSON.stringify(data);
+        const clean = formatKernelReply(raw, data.routedCore);
+        pushMessage("ai", `ZGROK2 · ${(data.routedCore || "CORE-0").toUpperCase()}`, clean);
+      } catch {
+        pushMessage("ai", "ZCORE-VCPU · OFFLINE", "Bus /api/vcpu/dispatch non raggiungibile.");
+      }
+    }
+
+    formEl.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const val = inputEl.value.trim();
+      if (!val) return;
+      inputEl.value = "";
+      sendPrompt(val);
+    });
+
+    document.querySelectorAll(".qp-btn").forEach(btn => {
+      btn.addEventListener("click", () => sendPrompt(btn.dataset.q));
+    });
+
+    async function syncTelemetry() {
+      try {
+        const r = await fetch("/api/vcpu/status", { cache: "no-store" });
+        const d = await r.json();
+        if (!d.ok) return;
+        document.getElementById("vcpu-status-pill").textContent =
+          `ONLINE · TICKS ${d.ticks} · TASK ${d.dispatched}`;
+        const grid = document.getElementById("nodes-grid");
+        grid.innerHTML = "";
+        Object.entries(d.health || {}).forEach(([name, info]) => {
+          const chip = document.createElement("span");
+          chip.className = "node-chip" + (info.online ? " up" : "");
+          chip.textContent = `${name}`;
+          grid.appendChild(chip);
+        });
+      } catch {
+        document.getElementById("vcpu-status-pill").textContent = "STANDBY";
+      }
+    }
+
+
+
+    async function refreshQuote() {
+      const amtEl = document.getElementById("vdefi-amt");
+      const toEl = document.getElementById("vdefi-to");
+      const qLine = document.getElementById("vdefi-quote-line");
+      if (!amtEl || !toEl || !qLine) return;
+      const amount = Number(amtEl.value || 6.25);
+      const to = toEl.value || "DSN";
+      try {
+        const r = await fetch("/api/vdefi/quote", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ from: "xzSOL", to, amount })
+        });
+        const q = await r.json();
+        if (q.ok) {
+          const st = q.validMin ? "OK" : `MIN ${q.minRequired}`;
+          qLine.textContent = `Quote [${st}]: ${q.grossAmount} xzSOL · Fee 0.25%: ${q.fee} · Netto: ${q.netAmount} ${q.to.symbol}`;
+        }
+      } catch {}
+    }
+
+    async function syncVChain() {
+      try {
+        const [sr, br] = await Promise.all([
+          fetch("/api/vchain/status", { cache: "no-store" }),
+          fetch("/api/vchain/blocks?limit=4", { cache: "no-store" })
+        ]);
+        const s = await sr.json();
+        const b = await br.json();
+        if (s.ok) {
+          document.getElementById("vchain-head-pill").textContent =
+            `HEIGHT #${s.height} · ${s.native.symbol} (${s.headHash.slice(0,10)}…)`;
+        }
+        const feed = document.getElementById("vchain-blocks-feed");
+        if (b.ok && Array.isArray(b.blocks) && feed) {
+          feed.innerHTML = "";
+          b.blocks.slice(0, 4).forEach(blk => {
+            const row = document.createElement("div");
+            row.className = "node-chip";
+            const tx = blk.tx || {};
+            row.textContent = `#${blk.height} · ${tx.from || "xzSOL"}→${tx.to || "SYS"} (${tx.amount ?? "-"}) · ${blk.hash.slice(0,14)}…`;
+            feed.appendChild(row);
+          });
+        }
+      } catch {}
+    }
+
+    document.getElementById("vdefi-amt")?.addEventListener("input", refreshQuote);
+    document.getElementById("vdefi-to")?.addEventListener("change", refreshQuote);
+    document.getElementById("mint-vblock-btn")?.addEventListener("click", async () => {
+      const out = document.getElementById("vchain-tx-out");
+      const amount = Number(document.getElementById("vdefi-amt")?.value || 6.25);
+      const to = document.getElementById("vdefi-to")?.value || "DSN";
+      out.textContent = "Esecuzione transazione ZLang + Solana SPL...";
+      try {
+        const r = await fetch("/api/vdefi/intent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ from: "xzSOL", to, amount, rail: "swap" })
+        });
+        const d = await r.json();
+        if (d.ok) {
+          out.textContent = `Blocco #${d.block.height} confermato · Netto ${d.block.tx.netAmount} ${to} · Hash ${d.block.hash.slice(0,14)}…`;
+          syncVChain();
+          refreshQuote();
+        } else {
+          out.textContent = d.error || "Importo sotto soglia minima";
+        }
+      } catch {
+        out.textContent = "Errore su /api/vdefi/intent";
+      }
+    });
+
+    syncVChain();
+    refreshQuote();
+    setInterval(syncVChain, 10000);
+
+    syncTelemetry();
+    setInterval(syncTelemetry, 10000);
+  </script>
+
+<!-- ZDOS VCHAIN ANCHOR RECEIPT WIDGET -->
+<section id="zdos-vchain-anchor-box" style="margin:18px 0;padding:14px 16px;border-radius:12px;background:rgba(12,18,28,0.72);backdrop-filter:blur(10px);border:1px solid rgba(120,220,255,0.22);font-family:monospace;color:#e6f4ff;">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+    <strong style="color:#6ce5ff;letter-spacing:0.04em;">ZLANG / SOLANA ANCHOR RECEIPT</strong>
+    <span id="vchain-anchor-badge" style="font-size:12px;padding:2px 8px;border-radius:999px;background:rgba(108,229,255,0.14);color:#8ef0ff;">SYNCING...</span>
+  </div>
+  <div id="vchain-anchor-meta" style="font-size:12px;line-height:1.55;word-break:break-all;color:#cde4f7;">
+    Caricamento ultima ricevuta da /api/vchain/anchors...
+  </div>
+</section>
+<script>
+(async function loadZdosAnchorReceipt() {
+  const metaEl = document.getElementById("vchain-anchor-meta");
+  const badgeEl = document.getElementById("vchain-anchor-badge");
+  if (!metaEl || !badgeEl) return;
+  try {
+    const r = await fetch("/api/vchain/anchors", { cache: "no-store" });
+    const data = await r.json();
+    const item = data && data.latest ? data.latest : null;
+    if (!data || !data.ok || !item) {
+      badgeEl.textContent = "NO RECEIPT";
+      metaEl.textContent = "Nessuna ricevuta disponibile su /api/vchain/anchors.";
+      return;
+    }
+    const h = item.height ?? 0;
+    const head = item.headHash || "";
+    const rec = item.receiptHash || "";
+    const ts = item.ts || "";
+    const sol = item.solanaSig || "LOCAL_ZLANG_ONLY";
+    badgeEl.textContent = "HEIGHT #" + h;
+    metaEl.innerHTML =
+      "<div><b>HEAD:</b> " + head + "</div>" +
+      "<div><b>RECEIPT:</b> " + rec + "</div>" +
+      "<div><b>SOLANA:</b> " + sol + " &nbsp;|&nbsp; <b>TS:</b> " + ts + "</div>";
+  } catch (e) {
+    badgeEl.textContent = "OFFLINE";
+    metaEl.textContent = "Errore lettura /api/vchain/anchors: " + e.message;
+  }
+})();
+</script>
+
+
+<!-- ZDOS VDEFI PHANTOM SIGNER -->
+
+<!-- ZDOS DEV SECTION: INTERNAL IDE SIGNER BRIDGE -->
+<section id="zdos-dev-ide-signer-box" data-section="dev" style="margin:18px 0;padding:14px 16px;border-radius:12px;background:rgba(10,16,26,0.82);backdrop-filter:blur(10px);border:1px solid rgba(108,229,255,0.32);font-family:monospace;color:#e8f6ff;">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+    <strong style="color:#6ce5ff;letter-spacing:0.04em;">DEV · FIRMA INTERNA ZLANG IDE</strong>
+    <span id="dev-ide-signer-status" style="font-size:12px;padding:2px 8px;border-radius:999px;background:rgba(108,229,255,0.14);color:#8ef0ff;">IDE KEY: READY</span>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
+    <button type="button" id="dev-ide-genkey-btn" style="padding:7px 12px;border-radius:8px;border:1px solid rgba(108,229,255,0.45);background:rgba(30,140,180,0.22);color:#aeeeff;font-family:monospace;font-size:12px;cursor:pointer;">Nuova Chiave IDE</button>
+    <select id="dev-ide-from" style="padding:7px 10px;border-radius:8px;border:1px solid rgba(120,220,255,0.25);background:#0b121e;color:#e6f4ff;font-family:monospace;font-size:12px;">
+      <option value="xzSOL">xzSOL (min 6.25)</option>
+      <option value="DSN">DSN (min 1)</option>
+      <option value="OV">OV (min 5)</option>
+      <option value="DOM">DOM / L$D (min 2.5)</option>
+      <option value="HOLD">HOLD (min 1)</option>
+    </select>
+    <select id="dev-ide-to" style="padding:7px 10px;border-radius:8px;border:1px solid rgba(120,220,255,0.25);background:#0b121e;color:#e6f4ff;font-family:monospace;font-size:12px;">
+      <option value="DSN">DSN</option>
+      <option value="xzSOL">xzSOL</option>
+      <option value="OV">OV</option>
+      <option value="DOM">DOM / L$D</option>
+      <option value="HOLD">HOLD</option>
+    </select>
+    <input type="number" id="dev-ide-amount" value="6.25" step="0.25" min="0.01" style="width:105px;padding:7px 10px;border-radius:8px;border:1px solid rgba(120,220,255,0.25);background:#0b121e;color:#e6f4ff;font-family:monospace;font-size:12px;" />
+    <button type="button" id="dev-ide-sign-btn" style="padding:7px 14px;border-radius:8px;border:1px solid rgba(155,120,255,0.5);background:rgba(120,82,255,0.28);color:#e4d8ff;font-family:monospace;font-size:12px;cursor:pointer;">Firma Interna IDE</button>
+    <button type="button" id="dev-ide-send-btn" style="padding:7px 14px;border-radius:8px;border:1px solid rgba(108,229,255,0.5);background:rgba(38,165,205,0.28);color:#aef4ff;font-family:monospace;font-size:12px;cursor:pointer;">Invia a /api/vdefi/intent</button>
+    <a id="dev-ide-open-link" href="/ide/" target="_blank" rel="noopener" style="padding:7px 12px;border-radius:8px;border:1px solid rgba(108,229,255,0.35);background:rgba(255,255,255,0.05);color:#6ce5ff;font-family:monospace;font-size:12px;text-decoration:none;">Apri in ZLang IDE &rarr;</a>
+  </div>
+
+  <div id="dev-ide-signer-output" style="font-size:12px;line-height:1.55;word-break:break-all;color:#cde4f7;">
+    Genera o usa la chiave interna IDE per firmare localmente l'intento vDeFi e collegarlo a /ide/.
+  </div>
+</section>
+<script>
+(function initZdosDevIdeSigner() {
+  const statusEl = document.getElementById("dev-ide-signer-status");
+  const genBtn = document.getElementById("dev-ide-genkey-btn");
+  const signBtn = document.getElementById("dev-ide-sign-btn");
+  const sendBtn = document.getElementById("dev-ide-send-btn");
+  const openLink = document.getElementById("dev-ide-open-link");
+  const fromEl = document.getElementById("dev-ide-from");
+  const toEl = document.getElementById("dev-ide-to");
+  const amtEl = document.getElementById("dev-ide-amount");
+  const outEl = document.getElementById("dev-ide-signer-output");
+  if (!statusEl || !genBtn || !signBtn || !sendBtn || !outEl) return;
+
+  const STORAGE_KEY = "zdos_ide_ed25519_jwk_v1";
+  const B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+  let currentKeyPair = null;
+  let currentSignerB58 = null;
+  let lastSignedEnvelope = null;
+
+  function toB58(bytes) {
+    let d = [0];
+    for (let i = 0; i < bytes.length; i++) {
+      let c = bytes[i];
+      for (let j = 0; j < d.length; j++) { c += d[j] << 8; d[j] = c % 58; c = (c / 58) | 0; }
+      while (c > 0) { d.push(c % 58); c = (c / 58) | 0; }
+    }
+    let s = "";
+    for (let i = 0; bytes[i] === 0 && i < bytes.length - 1; i++) s += "1";
+    for (let i = d.length - 1; i >= 0; i--) s += B58[d[i]];
+    return s;
+  }
+
+  function b64ToBytes(b64) {
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+
+  function bytesToB64(bytes) {
+    let bin = "";
+    const arr = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+    for (let i = 0; i < arr.length; i++) bin += String.fromCharCode(arr[i]);
+    return btoa(bin);
+  }
+
+  async function sha256Hex(str) {
+    const buf = new TextEncoder().encode(str);
+    const digest = await crypto.subtle.digest("SHA-256", buf);
+    return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  async function loadOrCreateKeyPair(forceNew = false) {
+    if (!forceNew) {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const jwk = JSON.parse(saved);
+          const priv = await crypto.subtle.importKey("jwk", jwk, { name: "Ed25519" }, true, ["sign"]);
+          const pubJwk = { kty: jwk.kty, crv: jwk.crv, x: jwk.x, ext: true };
+          const pub = await crypto.subtle.importKey("jwk", pubJwk, { name: "Ed25519" }, true, ["verify"]);
+          currentKeyPair = { privateKey: priv, publicKey: pub };
+          currentSignerB58 = toB58(b64ToBytes(jwk.x.replace(/-/g, "+").replace(/_/g, "/")));
+          statusEl.textContent = "IDE SIGNER: " + currentSignerB58.slice(0, 6) + "..." + currentSignerB58.slice(-4);
+          return currentKeyPair;
+        }
+      } catch {}
+    }
+
+    const kp = await crypto.subtle.generateKey({ name: "Ed25519" }, true, ["sign", "verify"]);
+    const privJwk = await crypto.subtle.exportKey("jwk", kp.privateKey);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(privJwk)); } catch {}
+    currentKeyPair = kp;
+    currentSignerB58 = toB58(b64ToBytes(privJwk.x.replace(/-/g, "+").replace(/_/g, "/")));
+    statusEl.textContent = "IDE SIGNER: " + currentSignerB58.slice(0, 6) + "..." + currentSignerB58.slice(-4);
+    return kp;
+  }
+
+  async function buildAndSignIntent() {
+    const kp = await loadOrCreateKeyPair(false);
+    const payload = {
+      chainId: "zdos-vblockchain-xzsol-mainnet",
+      source: "zdos-zlang-ide-internal",
+      from: fromEl ? fromEl.value : "xzSOL",
+      to: toEl ? toEl.value : "DSN",
+      amount: Number(amtEl ? amtEl.value : 6.25),
+      signer: currentSignerB58,
+      nonce: Date.now() + "-" + Math.random().toString(36).slice(2, 8),
+      ts: new Date().toISOString()
+    };
+    const message = "ZDOS_VDEFI_INTENT:" + JSON.stringify(payload);
+    const sigBuf = await crypto.subtle.sign({ name: "Ed25519" }, kp.privateKey, new TextEncoder().encode(message));
+    const signature = bytesToB64(new Uint8Array(sigBuf));
+    const msgHash = await sha256Hex(message);
+
+    lastSignedEnvelope = {
+      ...payload,
+      message,
+      signature,
+      encoding: "base64",
+      msgSha256: msgHash
+    };
+
+    try {
+      localStorage.setItem("zdos_ide_last_signed_intent", JSON.stringify(lastSignedEnvelope));
+    } catch {}
+
+    if (openLink) {
+      const q = encodeURIComponent(JSON.stringify({
+        signer: payload.signer,
+        from: payload.from,
+        to: payload.to,
+        amount: payload.amount,
+        msgSha256: msgHash
+      }));
+      openLink.href = "/ide/?vdefi_intent=" + q;
+    }
+
+    outEl.innerHTML =
+      "<div style='color:#8ef0ff;'><b>FIRMA INTERNA IDE GENERATA</b> (Ed25519)</div>" +
+      "<div><b>IDE SIGNER:</b> " + payload.signer + "</div>" +
+      "<div><b>SHA256:</b> " + msgHash + "</div>" +
+      "<div><b>SIG (b64):</b> " + signature.slice(0, 48) + "...</div>";
+
+    return lastSignedEnvelope;
+  }
+
+  genBtn.addEventListener("click", async () => {
+    await loadOrCreateKeyPair(true);
+    lastSignedEnvelope = null;
+    outEl.textContent = "Nuova chiave Ed25519 IDE generata: " + currentSignerB58;
+  });
+
+  signBtn.addEventListener("click", async () => {
+    try {
+      await buildAndSignIntent();
+    } catch (err) {
+      outEl.innerHTML = "<span style='color:#ff9aa2;'>Errore firma IDE:</span> " + (err.message || err);
+    }
+  });
+
+  sendBtn.addEventListener("click", async () => {
+    try {
+      const env = lastSignedEnvelope || await buildAndSignIntent();
+      const res = await fetch("/api/vdefi/intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(env)
+      });
+      const data = await res.json();
+      if (!res.ok || data.ok === false) {
+        outEl.innerHTML = "<span style='color:#ff9aa2;'>Intent rifiutato (" + res.status + "):</span> " + JSON.stringify(data);
+        return;
+      }
+      const blk = data.block || data;
+      outEl.innerHTML =
+        "<div style='color:#8ef0ff;'><b>INTENT IDE REGISTRATO SU vBLOCKCHAIN</b> (height: #" + (blk.height ?? "") + ")</div>" +
+        "<div><b>HASH:</b> " + (blk.hash || "") + "</div>" +
+        "<div><b>SIGNER:</b> " + env.signer + "</div>";
+      if (typeof loadZdosAnchorReceipt === "function") loadZdosAnchorReceipt();
+    } catch (err) {
+      outEl.innerHTML = "<span style='color:#ff9aa2;'>Errore invio intent IDE:</span> " + (err.message || err);
+    }
+  });
+
+  loadOrCreateKeyPair(false).catch(() => {
+    statusEl.textContent = "IDE KEY: SUBTLE_UNAVAILABLE";
+  });
+})();
+</script>
+
+<section id="zdos-vdefi-phantom-box" style="margin:18px 0;padding:14px 16px;border-radius:12px;background:rgba(12,18,28,0.78);backdrop-filter:blur(10px);border:1px solid rgba(155,120,255,0.28);font-family:monospace;color:#eef4ff;">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+    <strong style="color:#b89cff;letter-spacing:0.04em;">vDeFi INTENT · PHANTOM SIGNER</strong>
+    <span id="vdefi-phantom-wallet-badge" style="font-size:12px;padding:2px 8px;border-radius:999px;background:rgba(184,156,255,0.14);color:#d7c6ff;">WALLET: DISCONNECTED</span>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+    <button type="button" id="vdefi-connect-phantom-btn" style="padding:7px 12px;border-radius:8px;border:1px solid rgba(184,156,255,0.45);background:rgba(120,82,255,0.24);color:#fff;font-family:monospace;font-size:12px;cursor:pointer;">Connect Phantom</button>
+    <select id="vdefi-from-asset" style="padding:7px 10px;border-radius:8px;border:1px solid rgba(120,220,255,0.25);background:#0c1320;color:#e6f4ff;font-family:monospace;font-size:12px;">
+      <option value="xzSOL">xzSOL (min 6.25)</option>
+      <option value="DSN">DSN (min 1)</option>
+      <option value="OV">OV (min 5)</option>
+      <option value="DOM">DOM / L$D (min 2.5)</option>
+      <option value="HOLD">HOLD (min 1)</option>
+    </select>
+    <select id="vdefi-to-asset" style="padding:7px 10px;border-radius:8px;border:1px solid rgba(120,220,255,0.25);background:#0c1320;color:#e6f4ff;font-family:monospace;font-size:12px;">
+      <option value="DSN">DSN</option>
+      <option value="xzSOL">xzSOL</option>
+      <option value="OV">OV</option>
+      <option value="DOM">DOM / L$D</option>
+      <option value="HOLD">HOLD</option>
+    </select>
+    <input type="number" id="vdefi-intent-amount" value="6.25" step="0.25" min="0.01" style="width:110px;padding:7px 10px;border-radius:8px;border:1px solid rgba(120,220,255,0.25);background:#0c1320;color:#e6f4ff;font-family:monospace;font-size:12px;" />
+    <button type="button" id="vdefi-sign-send-btn" style="padding:7px 14px;border-radius:8px;border:1px solid rgba(108,229,255,0.5);background:rgba(38,165,205,0.28);color:#aef4ff;font-family:monospace;font-size:12px;cursor:pointer;">Sign &amp; Send Intent</button>
+  </div>
+  <div id="vdefi-intent-result" style="font-size:12px;line-height:1.55;word-break:break-all;color:#cde4f7;">
+    Collega Phantom per firmare l'intento transazionale prima dell'invio a /api/vdefi/intent.
+  </div>
+</section>
+<script>
+(function initZdosVdefiPhantomSigner() {
+  const badgeEl = document.getElementById("vdefi-phantom-wallet-badge");
+  const connectBtn = document.getElementById("vdefi-connect-phantom-btn");
+  const signSendBtn = document.getElementById("vdefi-sign-send-btn");
+  const fromEl = document.getElementById("vdefi-from-asset");
+  const toEl = document.getElementById("vdefi-to-asset");
+  const amtEl = document.getElementById("vdefi-intent-amount");
+  const outEl = document.getElementById("vdefi-intent-result");
+  if (!badgeEl || !connectBtn || !signSendBtn || !outEl) return;
+
+  let activePubkey = null;
+
+  function getPhantomProvider() {
+    if (window.phantom && window.phantom.solana && window.phantom.solana.isPhantom) {
+      return window.phantom.solana;
+    }
+    if (window.solana && window.solana.isPhantom) {
+      return window.solana;
+    }
+    return null;
+  }
+
+  function bytesToBase64(bytes) {
+    let bin = "";
+    const arr = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+    for (let i = 0; i < arr.length; i++) bin += String.fromCharCode(arr[i]);
+    return btoa(bin);
+  }
+
+  async function connectWallet(onlyIfTrusted = false) {
+    const provider = getPhantomProvider();
+    if (!provider) {
+      badgeEl.textContent = "PHANTOM NOT FOUND";
+      outEl.textContent = "Estensione Phantom non rilevata nel browser.";
+      return null;
+    }
+    const resp = await provider.connect(onlyIfTrusted ? { onlyIfTrusted: true } : undefined);
+    const pubkey = (resp && resp.publicKey ? resp.publicKey : provider.publicKey)?.toString();
+    if (pubkey) {
+      activePubkey = pubkey;
+      badgeEl.textContent = "WALLET: " + pubkey.slice(0, 6) + "..." + pubkey.slice(-4);
+    }
+    return pubkey;
+  }
+
+  connectBtn.addEventListener("click", async () => {
+    try {
+      await connectWallet(false);
+      outEl.textContent = "Wallet Phantom connesso: " + activePubkey;
+    } catch (err) {
+      outEl.textContent = "Connessione Phantom annullata: " + (err.message || err);
+    }
+  });
+
+  signSendBtn.addEventListener("click", async () => {
+    try {
+      const provider = getPhantomProvider();
+      if (!provider) {
+        outEl.textContent = "Installa o abilita Phantom wallet per firmare l'intento.";
+        return;
+      }
+      if (!activePubkey) {
+        await connectWallet(false);
+      }
+      const signer = activePubkey || (provider.publicKey && provider.publicKey.toString());
+      if (!signer) {
+        outEl.textContent = "Public key Phantom non disponibile.";
+        return;
+      }
+
+      const payload = {
+        chainId: "zdos-vblockchain-xzsol-mainnet",
+        from: fromEl ? fromEl.value : "xzSOL",
+        to: toEl ? toEl.value : "DSN",
+        amount: Number(amtEl ? amtEl.value : 6.25),
+        signer: signer,
+        ts: new Date().toISOString()
+      };
+      const messageStr = "ZDOS_VDEFI_INTENT:" + JSON.stringify(payload);
+      const encodedMessage = new TextEncoder().encode(messageStr);
+
+      outEl.textContent = "In attesa di firma su Phantom wallet...";
+      const signed = await provider.signMessage(encodedMessage, "utf8");
+      const sigBytes = signed && signed.signature ? signed.signature : signed;
+      const signatureBase64 = bytesToBase64(sigBytes);
+
+      const response = await fetch("/api/vdefi/intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...payload,
+          message: messageStr,
+          signature: signatureBase64,
+          encoding: "base64"
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok || data.ok === false) {
+        outEl.innerHTML = "<span style='color:#ff9aa2;'>Intent rifiutato (" + response.status + "):</span> " + JSON.stringify(data);
+        return;
+      }
+
+      const txHash = data.hash || data.txHash || (data.block && data.block.hash) || "";
+      const newHeight = data.height ?? (data.block && data.block.height) ?? "";
+      outEl.innerHTML =
+        "<div style='color:#8ef0ff;'><b>INTENT FIRMATO E REGISTRATO</b> (height: #" + newHeight + ")</div>" +
+        "<div><b>SIGNER:</b> " + signer + "</div>" +
+        "<div><b>SIG (b64):</b> " + signatureBase64.slice(0, 48) + "...</div>" +
+        (txHash ? "<div><b>BLOCK HASH:</b> " + txHash + "</div>" : "");
+
+      if (typeof loadZdosAnchorReceipt === "function") {
+        loadZdosAnchorReceipt();
+      }
+    } catch (err) {
+      outEl.innerHTML = "<span style='color:#ff9aa2;'>Errore firma o invio intent:</span> " + (err.message || err);
+    }
+  });
+
+  connectWallet(true).catch(() => {});
+})();
+</script>
+
+
+  <script src="/assets/hub/site-nav.js?v=20261128nav" defer></script>
+  <script src="/assets/hub/hub.js?v=20261121nav" defer></script>
+  <script>
+  (function(){var el=document.getElementById("merito-live");if(!el||!window.fetch)return;
+    fetch("/merito-api/summary",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){
+      var n=function(v){return v==null?"n/d":Number(v).toLocaleString("it-IT",{maximumFractionDigits:0})};
+      el.textContent="Fondo "+n(d.fund&&d.fund.velvet)+" VELVET on-chain · "+n(d.profiles&&d.profiles.total)+" profili Radar · "+n(d.profiles&&d.profiles.dominantActive)+" Mistress/Master attivi · premi "+((d.emissions&&d.emissions.live)?"attivi":"fermi");
+    }).catch(function(){el.textContent="Dati non disponibili ora."});
+  })();
+  </script>
+
+</body>
+</html>

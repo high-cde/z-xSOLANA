@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ZDOS × VELVET CITY — Sovereign Kernel, ZLang & Multi-Chain</title>
+<meta name="description" content="ZDOS: kernel bare-metal, compilatore ZLang, DeFi non-custodial su Solana e community. ZDOS1.3.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/hub/site-nav.css?v=20261128nav">
+<link rel="stylesheet" href="/assets/hub/home-clean.css?v=20261128c3">
+<!-- Il tag Google arriva da /zdos-tag.js (iniettato da nginx). Il vecchio GTM fisso e le sezioni tolte sono in /home-completa.html -->
+</head>
+<body>
+
+<header class="top zdos-top" id="zdosTop">
+  <button type="button" class="zdos-menu-btn" id="zdosMenuBtn" aria-label="Apri il menu" aria-haspopup="true" aria-expanded="false" aria-controls="zdosMenu">
+    <img src="/assets/hub/zdos-pixel.svg" width="36" height="36" alt="">
+  </button>
+  <a class="zdos-wordmark" href="https://x-zdos.it/" aria-label="ZDOS, home">ZDOS</a>
+  <div class="session" id="sessionbox">
+    <button type="button" class="btn primary sm zdos-wallet" id="connectBtn">Phantom</button>
+  </div>
+  <noscript><nav aria-label="Menu del sito" class="zdos-panel" style="position:static;display:block"><section class="zdos-group"><h2>Sito</h2><ul><li><a href="https://x-zdos.it/">Home</a></li><li><a href="https://x-zdos.it/defi/">DeFi</a></li><li><a href="https://x-zdos.it/verifica/">Verifica firma</a></li><li><a href="https://x-zdos.it/ide/">IDE</a></li><li><a href="https://x-zdos.it/dev/">Dev</a></li><li><a href="https://x-zdos.it/rete/">Rete zDOS</a></li><li><a href="https://x-zdos.it/home-completa.html">Home completa</a></li><li><a href="https://ourvelvet.online/merito/">Miner merito</a></li><li><a href="https://t.me/OurVelvetHub">Telegram</a></li><li><a href="https://discord.gg/4CGZrAAxaq">Discord</a></li><li><a href="https://x.com/ZDOS_Core">X @ZDOS_Core</a></li></ul></section></nav></noscript>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow"><span class="dot"></span> Z-Sovereign OS · ZLang · Multi-Chain</div>
+    <h1>Evoluzione informatica &amp; sovranità digitale</h1>
+    <p>Kernel aperto, compilatore ZLang, DeFi non-custodial e community. Le chiavi restano a te.</p>
+  </section>
+
+  <div class="stack">
+    <div class="zl" id="zl-receipt">
+      <span class="zl-k">ZLANG / SOLANA ANCHOR RECEIPT</span>
+      <span class="zl-badge">SYNCING…</span>
+      <div class="zl-meta">Caricamento ultima ricevuta…</div>
+    </div>
+
+    <a class="zl" href="/defi/"><span class="zl-k">DEFI</span><span class="zl-d"><b>Swap · Pool · Basket</b> — firma nel tuo wallet</span><span class="zl-go">→</span></a>
+    <a class="zl" href="/aesir/"><span class="zl-k">ÆSIR · FILIERA</span><span class="zl-d"><b>Pannello staff</b> — monete, pool, servizi, miner</span><span class="zl-go">→</span></a>
+    <a class="zl" href="/ide/"><span class="zl-k">ZLANG · LINUX</span><span class="zl-d"><b>Kernel &amp; IDE</b> — VM ZLB2, ZQuest, rete zDOS</span><span class="zl-go">→</span></a>
+    <a class="zl" href="https://zx.x-zdos.it/"><span class="zl-k">AGENZIA · Z-X</span><span class="zl-d"><b>Viaggi, eSIM, Scudo K.I.R.A.</b> — ricerche e dati aperti</span><span class="zl-go">→</span></a>
+    <a class="zl" href="https://ourvelvet.online/"><span class="zl-k">OURVELVET 18+</span><span class="zl-d"><b>Club, Creator, Radar</b> — solo adulti · safeword ROSSO</span><span class="zl-go">→</span></a>
+    <a class="zl" href="https://ourvelvet.online/merito/"><span class="zl-k">MERITO</span><span class="zl-d" id="merito-live"><b>Miner merito</b> — punti per contributi reali</span><span class="zl-go">→</span></a>
+
+    <details class="zl" id="agi-console">
+      <summary><span class="zl-k">ZGROK2 · TERMINALE</span><span class="zl-d">Chiedi su kernel, ZLang e token <span id="vcpu-status-pill"></span></span><span class="zl-go">+</span></summary>
+      <div class="chat">
+        <div class="tabs">
+          <button type="button" class="tab on" data-domain="auto">AUTO</button>
+          <button type="button" class="tab" data-domain="zdos">CORE-0</button>
+          <button type="button" class="tab" data-domain="velvet">CORE-1</button>
+        </div>
+        <div class="stream" id="chat-stream"><div class="msg"><small>ZCORE-VCPU</small>Sistema pronto. Puoi interrogare il kernel ZDOS, il compilatore ZLang/ZLB2, i token $DSN / VELVET / L$D o Velvet City.</div></div>
+        <div class="qp">
+          <button type="button" data-q="Stato sincronizzazione kernel ZDOS e Dual-Grok2">Stato kernel</button>
+          <button type="button" data-q="Architettura ZLang e bytecode VM ZLB2">ZLang &amp; VM</button>
+          <button type="button" data-q="Panoramica token $DSN, VELVET, L$D e $HOLD">Token</button>
+        </div>
+        <form class="form" id="agi-form"><input id="agi-input" type="text" placeholder="Scrivi a zGrok2…" autocomplete="off" required><button type="submit">Invia</button></form>
+      </div>
+    </details>
+  </div>
+
+  <footer class="foot">
+    <div><a href="/verifica/">Verifica firma</a><a href="https://github.com/high-cde" rel="noopener">GitHub</a><a href="https://x.com/ZDOS_Core" rel="noopener">X</a><a href="https://discord.gg/4CGZrAAxaq" rel="noopener">Discord</a><a href="https://t.me/OurVelvetHub" rel="noopener">Telegram</a><a href="/home-completa.html">Home completa</a></div>
+    <div class="co">© 2026 ZDOS1.3 · P.IVA 11040550961</div>
+  </footer>
+</main>
+
+<script src="/assets/hub/site-nav.js?v=20261128clean" defer></script>
+<script src="/assets/hub/hub.js?v=20261121nav" defer></script>
+<script src="/assets/hub/home-clean.js?v=20261128clean" defer></script>
+</body>
+</html>
