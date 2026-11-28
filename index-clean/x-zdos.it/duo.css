@@ -1,0 +1,51 @@
+/* ZDOS × OV♥ · due robottini che si incontrano · SVG + CSS (solo transform/opacity) · © 2026 ZDOS1.3 */
+.duo{display:block;width:100%;max-width:440px;margin:20px auto 4px;padding:0;border:1px solid rgba(245,195,108,.26);border-radius:20px;overflow:hidden;cursor:pointer;color:inherit;font:inherit;
+ background:radial-gradient(ellipse 70% 60% at 50% 105%,rgba(225,29,72,.32),transparent 70%),radial-gradient(ellipse 50% 40% at 20% 0%,rgba(245,195,108,.10),transparent 70%),linear-gradient(180deg,#1a0711,#0b0408);
+ box-shadow:0 10px 34px -16px rgba(225,29,72,.55),inset 0 0 0 1px rgba(255,255,255,.03);-webkit-tap-highlight-color:transparent;position:relative}
+.duo:focus-visible{outline:2px solid #f5c36c;outline-offset:3px}
+.duo svg{display:block;width:100%;height:auto}
+.duo .hint{position:absolute;right:12px;bottom:8px;font:600 9.5px ui-monospace,Menlo,monospace;letter-spacing:.1em;color:rgba(253,242,248,.38);text-transform:uppercase;pointer-events:none}
+.duo svg *{transform-box:view-box}
+.duo .fl,.duo .en,.duo .arm,.duo .hrt,.duo .sp,.duo .eye,.duo .orbd,.duo .tip,.duo .glw{will-change:auto}
+
+/* stato finale = stato di default (anche con movimento ridotto) */
+.duo .hrt,.duo .sp{opacity:0}
+.duo.go .en-l{animation:dzInL 1.5s cubic-bezier(.16,.84,.26,1) .15s both}
+.duo.go .en-r{animation:dzInR 1.5s cubic-bezier(.16,.84,.26,1) .15s both}
+.duo.go .fl-l{animation:dzFloat 4.6s ease-in-out 1.7s infinite}
+.duo.go .fl-r{animation:dzFloat 4.6s ease-in-out 3.9s infinite}
+.duo.go .arm-l{transform-origin:28px 4px;animation:dzHiL 2.7s ease-in-out 1.85s both}
+.duo.go .arm-r{transform-origin:-28px 4px;animation:dzHiR 2.7s ease-in-out 1.85s both}
+.duo.go .hrt{transform-origin:200px 98px;animation:dzHeart 2.3s cubic-bezier(.2,.9,.3,1) 2.3s both}
+.duo.go .sp{animation:dzSpark 1.3s ease-out 2.3s both}
+.duo.go .sp2{animation-delay:2.42s}.duo.go .sp3{animation-delay:2.5s}.duo.go .sp4{animation-delay:2.38s}
+.duo.go .eye{animation:dzBlink 5.2s ease-in-out 2s infinite}
+.duo.go .eye-r{animation-delay:4.4s}
+.duo .eye{transform-box:fill-box;transform-origin:center}
+.duo.go .tip{animation:dzTip 1.6s ease-in-out infinite alternate}
+.duo .tip{transform-box:fill-box;transform-origin:center}
+.duo.go .glw{animation:dzGlow 3.2s ease-in-out infinite}
+.duo .glw{transform-box:fill-box;transform-origin:center}
+.duo.go .orbd{animation-duration:9s;animation-timing-function:linear;animation-iteration-count:infinite}
+.duo.go .orb-f{animation-name:dzOrbF}
+.duo.go .orb-b{animation-name:dzOrbB}
+.duo .orbd{transform-box:view-box}
+
+@keyframes dzInL{from{transform:translateX(-190px) rotate(-7deg);opacity:0}60%{opacity:1}to{transform:none;opacity:1}}
+@keyframes dzInR{from{transform:translateX(190px) rotate(7deg);opacity:0}60%{opacity:1}to{transform:none;opacity:1}}
+@keyframes dzFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes dzHiL{0%{transform:rotate(0)}18%{transform:rotate(-79deg)}32%{transform:rotate(-71deg)}46%{transform:rotate(-83deg)}60%{transform:rotate(-73deg)}74%{transform:rotate(-79deg)}100%{transform:rotate(0)}}
+@keyframes dzHiR{0%{transform:rotate(0)}18%{transform:rotate(79deg)}32%{transform:rotate(71deg)}46%{transform:rotate(83deg)}60%{transform:rotate(73deg)}74%{transform:rotate(79deg)}100%{transform:rotate(0)}}
+@keyframes dzHeart{0%{transform:translateY(6px) scale(.2);opacity:0}22%{transform:translateY(-4px) scale(1.25);opacity:1}38%{transform:translateY(-8px) scale(1);opacity:1}72%{transform:translateY(-16px) scale(1.05);opacity:1}100%{transform:translateY(-30px) scale(.9);opacity:0}}
+@keyframes dzSpark{0%{transform:scale(.2);opacity:0}30%{transform:scale(1.2);opacity:1}100%{transform:scale(.4) translateY(-8px);opacity:0}}
+@keyframes dzBlink{0%,90%,100%{transform:scaleY(1)}94%{transform:scaleY(.1)}}
+@keyframes dzTip{from{transform:scale(.8);opacity:.7}to{transform:scale(1.35);opacity:1}}
+@keyframes dzGlow{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.15);opacity:.9}}
+@keyframes dzOrbF{0.000%{transform:translate(60.00px,0.00px) scale(0.93);opacity:0}4.167%{transform:translate(57.96px,4.14px) scale(0.96);opacity:1}8.333%{transform:translate(51.96px,8.00px) scale(0.99);opacity:1}12.500%{transform:translate(42.43px,11.31px) scale(1.01);opacity:1}16.667%{transform:translate(30.00px,13.86px) scale(1.03);opacity:1}20.833%{transform:translate(15.53px,15.45px) scale(1.05);opacity:1}25.000%{transform:translate(0.00px,16.00px) scale(1.05);opacity:1}29.167%{transform:translate(-15.53px,15.45px) scale(1.05);opacity:1}33.333%{transform:translate(-30.00px,13.86px) scale(1.03);opacity:1}37.500%{transform:translate(-42.43px,11.31px) scale(1.01);opacity:1}41.667%{transform:translate(-51.96px,8.00px) scale(0.99);opacity:1}45.833%{transform:translate(-57.96px,4.14px) scale(0.96);opacity:1}50.000%{transform:translate(-60.00px,0.00px) scale(0.93);opacity:0}54.167%{transform:translate(-57.96px,-4.14px) scale(0.89);opacity:0}58.333%{transform:translate(-51.96px,-8.00px) scale(0.86);opacity:0}62.500%{transform:translate(-42.43px,-11.31px) scale(0.84);opacity:0}66.667%{transform:translate(-30.00px,-13.86px) scale(0.82);opacity:0}70.833%{transform:translate(-15.53px,-15.45px) scale(0.80);opacity:0}75.000%{transform:translate(-0.00px,-16.00px) scale(0.80);opacity:0}79.167%{transform:translate(15.53px,-15.45px) scale(0.80);opacity:0}83.333%{transform:translate(30.00px,-13.86px) scale(0.82);opacity:0}87.500%{transform:translate(42.43px,-11.31px) scale(0.84);opacity:0}91.667%{transform:translate(51.96px,-8.00px) scale(0.86);opacity:0}95.833%{transform:translate(57.96px,-4.14px) scale(0.89);opacity:0}100.000%{transform:translate(60.00px,-0.00px) scale(0.93);opacity:0}}
+@keyframes dzOrbB{0.000%{transform:translate(60.00px,0.00px) scale(0.93);opacity:1}4.167%{transform:translate(57.96px,4.14px) scale(0.96);opacity:0}8.333%{transform:translate(51.96px,8.00px) scale(0.99);opacity:0}12.500%{transform:translate(42.43px,11.31px) scale(1.01);opacity:0}16.667%{transform:translate(30.00px,13.86px) scale(1.03);opacity:0}20.833%{transform:translate(15.53px,15.45px) scale(1.05);opacity:0}25.000%{transform:translate(0.00px,16.00px) scale(1.05);opacity:0}29.167%{transform:translate(-15.53px,15.45px) scale(1.05);opacity:0}33.333%{transform:translate(-30.00px,13.86px) scale(1.03);opacity:0}37.500%{transform:translate(-42.43px,11.31px) scale(1.01);opacity:0}41.667%{transform:translate(-51.96px,8.00px) scale(0.99);opacity:0}45.833%{transform:translate(-57.96px,4.14px) scale(0.96);opacity:0}50.000%{transform:translate(-60.00px,0.00px) scale(0.93);opacity:1}54.167%{transform:translate(-57.96px,-4.14px) scale(0.89);opacity:1}58.333%{transform:translate(-51.96px,-8.00px) scale(0.86);opacity:1}62.500%{transform:translate(-42.43px,-11.31px) scale(0.84);opacity:1}66.667%{transform:translate(-30.00px,-13.86px) scale(0.82);opacity:1}70.833%{transform:translate(-15.53px,-15.45px) scale(0.80);opacity:1}75.000%{transform:translate(-0.00px,-16.00px) scale(0.80);opacity:1}79.167%{transform:translate(15.53px,-15.45px) scale(0.80);opacity:1}83.333%{transform:translate(30.00px,-13.86px) scale(0.82);opacity:1}87.500%{transform:translate(42.43px,-11.31px) scale(0.84);opacity:1}91.667%{transform:translate(51.96px,-8.00px) scale(0.86);opacity:1}95.833%{transform:translate(57.96px,-4.14px) scale(0.89);opacity:1}100.000%{transform:translate(60.00px,-0.00px) scale(0.93);opacity:1}}
+
+@media (prefers-reduced-motion:reduce){
+ .duo *{animation:none!important}
+ .duo .hrt{opacity:1}
+ .duo .hint{display:none}
+}

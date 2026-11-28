@@ -8,3 +8,5 @@ Home di x-zdos.it, ourvelvet.online e zx.x-zdos.it ridotte a un hero, una fascia
 - Rollback sul VPS: `/var/backups/index-clean/20261128-1315/rollback.sh`
 
 - ourvelvet.online (ripristino 20261128-1427): home primaria ripristinata (orbita, ticker discreto, Lo-Fi, Dom-Coin, notizie, cover, sezione 18+) con stile unificato in `ov-home-restore.{css,js}`; rollback `/var/backups/index-clean/20261128-1427/rollback.sh`.
+
+- x-zdos.it (robottini 20261128-1930): nella hero i due robottini ZDOS (versione rifinita dell'originale della splash d'ingresso, vedi `x-zdos.it/robot-originale-splash.svg`) e OV♥ (dalla sfera del logo OurVelvet) si incontrano e si salutano. Solo SVG + CSS (transform/opacity), `duo.css` e `duo.js` in `/var/www/x-zdos-portal/current/assets/hub/`; tocca per rivedere; `prefers-reduced-motion` rispettato. Rollback sul VPS: `/var/backups/robots/20261128-1930/rollback.sh`.
