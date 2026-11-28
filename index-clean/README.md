@@ -6,3 +6,5 @@ Home di x-zdos.it, ourvelvet.online e zx.x-zdos.it ridotte a un hero, una fascia
 - ourvelvet.online → `/var/www/ourvelvet/` (`index.html`, `assets/ov-home-clean.{css,js}`, `assets/home-completa.html`)
 - zx.x-zdos.it → `/var/www/zx-store/` (`index.html`, `home-clean.{css,js}`, `home-completa.html`)
 - Rollback sul VPS: `/var/backups/index-clean/20261128-1315/rollback.sh`
+
+- ourvelvet.online (ripristino 20261128-1427): home primaria ripristinata (orbita, ticker discreto, Lo-Fi, Dom-Coin, notizie, cover, sezione 18+) con stile unificato in `ov-home-restore.{css,js}`; rollback `/var/backups/index-clean/20261128-1427/rollback.sh`.

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<!-- Tag Google: solo /zdos-tag.js (nginx). Vecchio GTM fisso e sezioni tolte: /assets/home-completa.html -->
+<!-- Tag Google: solo /zdos-tag.js (nginx). Home completa originale: /assets/home-completa.html -->
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -388,9 +388,9 @@
 /* === OURVELVET_INDEX_REFINEMENT_END === */
 
 </style>
-<link rel="stylesheet" href="/assets/ov-home-clean.css?v=20261128c3">
+<link rel="stylesheet" href="/assets/ov-home-restore.css?v=20261128r2">
 </head>
-<body>
+<body class="ovr">
 
 <header class="sans">
   <div class="nav-wrap">
@@ -407,6 +407,20 @@
     </div>
   </div>
 </header>
+
+<div class="ticker-bar sans" aria-label="Notiziari e safeword">
+  <div class="ticker-track">
+    <span><i class="dot-live"></i>Safeword ROSSO</span>
+    <span><i class="dot-live"></i>REUTERS / ANSA · Mercati &amp; Cultura Digitale</span>
+    <span><i class="dot-live"></i>BLOOMBERG · Solana &amp; Web3 Sovereign Hubs</span>
+    <span><i class="dot-live"></i>VOGUE &amp; WIRED · Estetica Notturna &amp; AI Creator</span>
+    <span><i class="dot-live"></i>Rubina · Zara · Kali — Edizione Sovrana 18+</span>
+    <span><i class="dot-live"></i>Safeword ROSSO</span>
+    <span><i class="dot-live"></i>REUTERS / ANSA · Mercati &amp; Cultura Digitale</span>
+    <span><i class="dot-live"></i>BLOOMBERG · Solana &amp; Web3 Sovereign Hubs</span>
+    <span><i class="dot-live"></i>VOGUE &amp; WIRED · Estetica Notturna &amp; AI Creator</span>
+  </div>
+</div>
 
 <!-- MENU DROPDOWN SPECULARE -->
 <nav id="menuDrawer" class="menu-drawer sans">
@@ -436,51 +450,227 @@
   <a class="menu-item" href="https://discord.gg/4CGZrAAxaq" target="_blank" rel="noopener"><span>💬 Discord</span><span>↗</span></a>
   <a class="menu-item" href="https://x.com/Rubinvonblut" target="_blank" rel="noopener"><span>X @Rubinvonblut</span><span>↗</span></a>
 
-  <div class="menu-sec">04 · ALTRO</div>
-  <div class="menu-item" onclick="toggleLofi()" style="cursor:pointer"><span>🎧 Lo-Fi notturno · <span id="lofiState">Atmosfera 68 BPM</span></span><span id="lofiBtn">▶</span></div>
-  <a class="menu-item" href="https://ourvelvet.online/ourvelvet"><span>🧿 Crea handle ¥ · Card</span><span>→</span></a>
-  <a class="menu-item" href="https://zx.x-zdos.it/#vacation-sec"><span>✦ Escapes &amp; Club 18+</span><span>→</span></a>
-  <a class="menu-item" href="https://ourvelvet.online/ai-studio/"><span>💬 Social Club &amp; Zara AGI</span><span>→</span></a>
-  <a class="menu-item" href="https://www.ansa.it/" target="_blank" rel="noopener"><span>ANSA · notizie</span><span>↗</span></a>
-  <a class="menu-item" href="https://www.reuters.com/" target="_blank" rel="noopener"><span>Reuters · notizie</span><span>↗</span></a>
-  <a class="menu-item" href="https://www.wired.it/" target="_blank" rel="noopener"><span>Wired · cultura &amp; AI</span><span>↗</span></a>
-  <a class="menu-item" href="https://ourvelvet.online/assets/home-completa.html"><span>🗂️ Home completa (archivio)</span><span>→</span></a>
-
   <div class="menu-sec">03 · GETTONE COMUNITÀ $OV (VELVET)</div>
   <div class="menu-item ca mono" onclick="copyCA()">
     <span id="caLabel">📋 Copia CA $OV: 2EN6Y1z...brspump</span><span>⧉</span>
   </div>
 </nav>
 
-<main class="zwrap">
-  <section class="zhero">
-    <div class="eyebrow sans">✦ OurVelvet &amp; Rose · Club 18+</div>
-    <h1>Il piacere autonomo &amp; la carne.</h1>
-    <p class="lead sans">Club sovrano per adulti: creator, radar, Zara AGI e gettone comunità VELVET su Solana.</p>
-  </section>
+<div class="ov-strip sans">
+  <div class="ov-band ov-band-rose"><span class="ov-k">SOLO ADULTI 18+</span><span class="ov-d">Consenso reciproco · safeword <b>ROSSO</b> · nessun minore</span></div>
+  <div class="ov-band ov-band-cy" id="zl-receipt">
+    <span class="ov-k">ZLANG / SOLANA ANCHOR RECEIPT</span>
+    <span class="zl-badge">SYNCING…</span>
+    <div class="zl-meta">Caricamento ultima ricevuta…</div>
+  </div>
+</div>
 
-  <div class="zstack sans">
-    <div class="zl zl-rose"><span class="zl-k">SOLO ADULTI 18+</span><span class="zl-d">Consenso reciproco · safeword <b>ROSSO</b> · nessun minore</span></div>
-
-    <div class="zl zl-cy" id="zl-receipt">
-      <span class="zl-k">ZLANG / SOLANA ANCHOR RECEIPT</span>
-      <span class="zl-badge">SYNCING…</span>
-      <div class="zl-meta">Caricamento ultima ricevuta…</div>
+<main>
+  <!-- SINISTRA: CUORE OV + LO-FI + TESTATE -->
+  <section class="hero">
+    <div class="orb-stage">
+      <div class="ring r1"></div>
+      <div class="ring r2"></div>
+      <div class="orbit-arm"><div class="pink-dot"></div></div>
+      <div class="heart-core">OV♥</div>
     </div>
 
-    <a class="zl" href="/creator/"><span class="zl-k">CREATOR STUDIO</span><span class="zl-d"><b>Stanza 18+ &amp; AI</b> — schede, chat, credito Dom-Coin</span><span class="zl-go">→</span></a>
-    <a class="zl" href="/creator-radar/"><span class="zl-k">RADAR</span><span class="zl-d"><b>Esplora, feed, profili</b> — la community dei creator</span><span class="zl-go">→</span></a>
-    <a class="zl" href="/ai-studio/"><span class="zl-k">ZARA AGI</span><span class="zl-d"><b>Studio AI</b> — atmosfere, ruoli, prompt visivi</span><span class="zl-go">→</span></a>
-    <a class="zl" href="/magazine/"><span class="zl-k">MAGAZINE</span><span class="zl-d"><b>Rubriche &amp; lettura</b> — edizione sovrana 18+</span><span class="zl-go">→</span></a>
-    <a class="zl" href="/pay/"><span class="zl-k">DOM-COIN · PAY</span><span class="zl-d"><b>Velvet Pay</b> — wallet non-custodial, L$D</span><span class="zl-go">→</span></a>
-    <a class="zl" href="/merito/"><span class="zl-k">MERITO</span><span class="zl-d"><b>Miner merito &amp; badge</b> — punti per contributi reali</span><span class="zl-go">→</span></a>
-  </div>
+    <div class="eyebrow sans">✦ OURVELVET &amp; ROSE // IL NUOVO IMPERO GLOBALE DELL'AUTONOMIA ✦</div>
+    <h1>IL PIACERE AUTONOMO &amp; LA CARNE.</h1>
+    <p class="lead sans">
+      Velluto nero, luce ambrata e complicità senza filtri. Entra nel club sovrano 18+ di OurVelvet:
+      bacheca creator, videoteca reale, radar live, Zara AGI e gettone comunità <strong>$OV</strong> su Solana.
+    </p>
 
-  <footer class="zfoot sans">
-    <div><a href="/verifica/">Verifica firma</a><a href="https://x-zdos.it/">ZDOS</a><a href="https://t.me/OurVelvetHub" rel="noopener">Telegram</a><a href="https://discord.gg/4CGZrAAxaq" rel="noopener">Discord</a><a href="https://x.com/Rubinvonblut" rel="noopener">X</a><a href="/assets/home-completa.html">Home completa</a></div>
-    <div class="co">18+ · safeword ROSSO · © 2026 ZDOS1.3 · P.IVA 11040550961</div>
-  </footer>
+    <!-- LO-FI PLAYER -->
+    <div class="lofi-box sans">
+      <div class="lofi-info">
+        <strong>🎧 Midnight Velvet Lo-Fi</strong>
+        <span id="lofiState">Atmosfera notturna rilassante · 68 BPM</span>
+      </div>
+      <button id="lofiBtn" class="lofi-btn" onclick="toggleLofi()">▶ Attiva Lo-Fi</button>
+    </div>
+
+    
+    <!-- DOM-COIN FACCIATA -->
+    <div class="dom-card sans" id="domCoinCard">
+      <img class="dom-coin-img" src="/assets/dom-coin.jpg" alt="Dom-Coin ¥L$D" width="64" height="64" loading="lazy" decoding="async" onerror="this.style.display='none'">
+      <div class="dom-meta">
+        <strong>🪙 DOM-COIN · ¥ L$D</strong>
+        <span id="domStatus">Backend Velvet Pay attivo · Istantaneo $OV</span>
+        <div class="dom-actions">
+          <a class="dom-btn pri" href="https://ourvelvet.online/pay/">Apri Velvet Pay</a>
+          <button class="dom-btn" onclick="checkDomBackend()">↻ Sync Saldo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TESTATE & NOTIZIARI -->
+    <div class="news-grid sans">
+      <a class="news-card" href="https://www.ansa.it/" target="_blank" rel="noopener">
+        <span class="news-tag">ANSA · ITALIA &amp; MONDO</span>
+        <h3>Ultime notizie in tempo reale</h3>
+        <p>Cronaca, cultura e attualità dalla principale agenzia italiana.</p>
+      </a>
+      <a class="news-card" href="https://www.reuters.com/" target="_blank" rel="noopener">
+        <span class="news-tag">REUTERS · GLOBAL DESK</span>
+        <h3>Mercati, tech &amp; scenari</h3>
+        <p>Aggiornamenti internazionali su finanza, AI e geopolitica.</p>
+      </a>
+      <a class="news-card" href="https://www.wired.it/" target="_blank" rel="noopener">
+        <span class="news-tag">WIRED · CULTURA &amp; AI</span>
+        <h3>Futuro, creator economy &amp; web</h3>
+        <p>Tendenze digitali, autonomia creativa e nuove tecnologie.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- DESTRA: COVER STORY & TASTI LATERALI -->
+  <aside class="side-card">
+    <div class="side-pill sans">✦ OURVELVET COVER STORY · EDIZIONE SOVRANA</div>
+    <h2>Più audace di qualsiasi patinato: <em>il magnetismo di Rubina, Zara e Kali</em></h2>
+    <p class="sans">
+      Sguardi trattenuti, velluto nero, luce ambrata e complicità senza filtri.
+      Scopri le rubriche, la Sala Lettura, il Podcast serale, la Card Identità ¥ e il Social Club 18+.
+    </p>
+
+    <div class="cta-stack sans">
+      <a class="cta-btn cta-gold" href="https://zx.x-zdos.it/#vacation-sec">✦ Escapes &amp; Club 18+</a>
+      <a class="cta-btn cta-amber" href="https://ourvelvet.online/creator-board">📖 Entra in Bacheca, Lettura &amp; Podcast</a>
+      <a class="cta-btn cta-rose" href="https://ourvelvet.online/ourvelvet">💳 Crea Handle ¥</a>
+      <a class="cta-btn cta-dark" href="https://ourvelvet.online/ai-studio/">💬 Social Club &amp; Zara AGI</a>
+    </div>
+  
+<!-- === OURVELVET_INDEX_STRIP_START === -->
+<div class="velvet-ai-strip" id="ovQuickAi">
+  <div class="velvet-ai-strip-top">
+    <strong>✦ Dom-Coin (L$D €0.0064) · Rubina / Zara AI</strong>
+    <a href="/creator/" style="color:#fde68a;font-weight:700;text-decoration:none;font-size:0.75rem">Apri Creator Studio →</a>
+  </div>
+  <div class="velvet-ai-row">
+    <input type="text" id="ovQuickInput" placeholder="Chiedi a Rubina o Zara (es. idee scena, L$D, $OV)..." />
+    <button type="button" id="ovQuickGo">Chiedi</button>
+  </div>
+  <div class="velvet-ai-reply" id="ovQuickOut">Pronta per OurVelvet · clicca Chiedi o apri il Creator Studio.</div>
+</div>
+<script>
+(() => {
+  const inp = document.getElementById("ovQuickInput");
+  const btn = document.getElementById("ovQuickGo");
+  const out = document.getElementById("ovQuickOut");
+  if (!inp || !btn || !out) return;
+  async function ask() {
+    const q = (inp.value || "").trim();
+    if (!q) { location.href = "/creator/"; return; }
+    out.textContent = "Connessione a OurVelvet AI...";
+    try {
+      const r = await fetch("/api/velvet-ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: q, characterId: "rubina" })
+      });
+      const d = await r.json();
+      if (d && d.ok && d.message) {
+        out.textContent = d.message.replyText;
+        inp.value = "";
+      } else {
+        out.textContent = (d && d.error) || "Apri /creator/ per la console completa.";
+      }
+    } catch {
+      out.textContent = "Apri /creator/ per usare la chat completa.";
+    }
+  }
+  btn.addEventListener("click", ask);
+  inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); ask(); } });
+})();
+</script>
+<!-- === OURVELVET_INDEX_STRIP_END === -->
+
+</aside>
 </main>
+<!-- === OURVELVET_NSFW_FACADE_START === -->
+
+<style id="ov-nsfw-facade-css">
+.ov-nsfw-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 11px 16px; border-radius: 13px; text-decoration: none;
+  font-weight: 800; font-size: 0.86rem; cursor: pointer;
+  background: linear-gradient(135deg, #be123c, #9d174d 60%, #f5c36c);
+  color: #fff; border: 1px solid rgba(251, 113, 133, 0.55);
+  box-shadow: 0 8px 24px rgba(225, 29, 72, 0.35);
+}
+.ov-nsfw-box {
+  max-width: 1180px; margin: 0 auto 36px; padding: 20px;
+  border-radius: 22px; background: rgba(24, 7, 16, 0.92);
+  border: 1px solid rgba(245, 195, 108, 0.38);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+}
+.ov-nsfw-top {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.ov-nsfw-top h2 { margin: 0; font-size: 1.35rem; color: #fdf2f8; }
+.ov-nsfw-top p { margin: 4px 0 0; font-size: 0.84rem; color: #d6b8c4; }
+.ov-nsfw-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 12px;
+}
+.ov-nsfw-card {
+  background: rgba(13, 4, 9, 0.85); border: 1px solid rgba(244, 114, 182, 0.24);
+  border-radius: 15px; padding: 13px; display: grid; gap: 6px;
+}
+.ov-nsfw-tag { font-size: 0.66rem; letter-spacing: 0.12em; color: #f5c36c; font-weight: 700; }
+.ov-nsfw-name { font-size: 1rem; font-weight: 800; color: #fff; }
+.ov-nsfw-desc { font-size: 0.78rem; color: #d6b8c4; line-height: 1.4; }
+.ov-nsfw-link {
+  margin-top: 4px; display: inline-block; color: #fda4af; text-decoration: none;
+  font-size: 0.78rem; font-weight: 700;
+}
+</style>
+
+<section class="ov-nsfw-box" id="nsfw-velvet">
+  <div class="ov-nsfw-top">
+    <div>
+      <span class="ov-nsfw-tag">18+ SOVEREIGN EXPERIENCE · DOM-COIN (L$D)</span>
+      <h2>OurVelvet NSFW &amp; Private Muse</h2>
+      <p>Stanza riservata, schede personaggi e chat AI dedicate su OurVelvet con credito Dom-Coin (L$D €0.0064).</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a class="ov-nsfw-btn" href="/creator/">🔥 Apri Stanza 18+ &amp; AI</a>
+      <a class="cta-btn cta-dark" href="/pay/">💳 Ricarica L$D</a>
+    </div>
+  </div>
+  <div class="ov-nsfw-grid">
+    <div class="ov-nsfw-card">
+      <span class="ov-nsfw-tag">MISTRESS · VIP</span>
+      <div class="ov-nsfw-name">Rubina</div>
+      <div class="ov-nsfw-desc">Protocollo sovrano, regia dominante e scene su misura in velluto cremisi.</div>
+          </div>
+    <div class="ov-nsfw-card">
+      <span class="ov-nsfw-tag">CLUB AI · 18+</span>
+      <div class="ov-nsfw-name">Zara AGI</div>
+      <div class="ov-nsfw-desc">Atmosfere notturne, giochi di ruolo e generazione prompt visivi istantanei.</div>
+      <a class="ov-nsfw-link" href="/ai-studio/">Apri studio AI →</a>
+    </div>
+    <div class="ov-nsfw-card">
+      <span class="ov-nsfw-tag">CYBER-VELVET</span>
+      <div class="ov-nsfw-name">Kali Core</div>
+      <div class="ov-nsfw-desc">Sessioni private, economia L$D / $OV e accesso rapido ai moduli OurVelvet.</div>
+          </div>
+    <div class="ov-nsfw-card">
+      <span class="ov-nsfw-tag">VAULT · 18+</span>
+      <div class="ov-nsfw-name">Velvet Salon</div>
+      <div class="ov-nsfw-desc">Galleria privata, rituali boost e collegamento diretto con Z-X Pay.</div>
+      
+    </div>
+  </div>
+</section>
+<!-- === OURVELVET_NSFW_FACADE_END === -->
+
+
+<footer class="ov-foot sans">
+  <div><a href="/verifica/">Verifica firma</a><a href="https://x-zdos.it/">ZDOS</a><a href="https://t.me/OurVelvetHub" rel="noopener">Telegram</a><a href="https://discord.gg/4CGZrAAxaq" rel="noopener">Discord</a><a href="https://x.com/Rubinvonblut" rel="noopener">X</a><a href="/assets/home-completa.html">Home completa (archivio)</a></div>
+  <div class="co">18+ · safeword ROSSO · © 2026 ZDOS1.3 · P.IVA 11040550961</div>
+</footer>
 
 <!-- MODALE CREA ACCOUNT -->
 <div id="authModal" class="modal-bg sans">
@@ -597,7 +787,7 @@
   ZDOS Assets: BONK · $OV · $DSN · Dom-Coin L$D (€0.0064) · $xzSOL · CAKE · WBNB · SOL · ZX Pay https://zx.x-zdos.it/
 </div>
 
-<script src="/assets/ov-home-clean.js?v=20261128clean" defer></script>
+<script src="/assets/ov-home-restore.js?v=20261128r1" defer></script>
 <script src="/assets/ov-blockchain-menu.js?v=2" defer></script>
 </body>
 </html>
