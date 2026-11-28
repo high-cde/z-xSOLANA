@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /zdesk/
+Disallow: /xcloud/
+Disallow: /discord/
+Disallow: /aesir/
+Disallow: /zcomm/
+Disallow: /lsd-revoca/
+
+Sitemap: https://x-zdos.it/sitemap.xml

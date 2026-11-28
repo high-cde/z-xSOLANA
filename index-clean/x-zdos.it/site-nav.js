@@ -4,6 +4,7 @@
   var groups = [
     { title: "Sito", items: [
       { href: HOME + "/", label: "Home", match: "^/$|^/index\\.html$|^/hub\\.html$" },
+      { href: HOME + "/ecosistema/", label: "Ecosistema", match: "^/ecosistema/" },
       { href: HOME + "/#agi-console", label: "zGrok2 Chat" },
       { href: HOME + "/rete/", label: "Rete zDOS", match: "^/rete/" },
       { href: HOME + "/verifica/", label: "Verifica firma", match: "^/verifica/" },
@@ -20,6 +21,7 @@
     { title: "Ecosistema", items: [
       { href: "https://ourvelvet.online/", label: "OurVelvet", ext: true },
       { href: "https://ourvelvet.online/merito/", label: "Miner merito", ext: true },
+      { href: "https://ourvelvet.online/pool-party/", label: "Pool Party (proposta)", ext: true },
       { href: "https://ourvelvet.online/badge/", label: "Badge", ext: true },
       { href: "https://swap.x-zdos.it/", label: "ZSwap", ext: true },
       { href: "https://basket.x-zdos.it/", label: "zBASKET", ext: true },

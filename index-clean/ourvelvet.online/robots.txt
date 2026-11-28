@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /gateway/staff/
+Disallow: /creator-radar/admin/
+Disallow: /zcomm/
+Disallow: /api/
+
+Sitemap: https://ourvelvet.online/sitemap.xml
