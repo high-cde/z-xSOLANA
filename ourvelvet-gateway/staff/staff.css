@@ -1,0 +1,6 @@
+.grid2{display:grid;grid-template-columns:360px 1fr;gap:16px;margin-top:16px}
+#list .it{display:block;width:100%;text-align:left;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px;margin:0 0 8px;color:var(--tx);cursor:pointer;font:inherit}
+#list .it.on{border-color:var(--ac)}#list .it small{display:block;color:var(--mu)}
+.badge{background:var(--ac);color:#14040d;border-radius:999px;padding:0 7px;font-size:11px;font-weight:700;margin-left:6px}
+table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--line);padding:6px;text-align:left;font-size:12.5px}
+@media(max-width:820px){.grid2{grid-template-columns:1fr}}

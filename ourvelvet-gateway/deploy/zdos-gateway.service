@@ -1,0 +1,37 @@
+[Unit]
+Description=OurVelvet Gateway v1 · viaggi, Velvet Route, richieste e messaggi, token e merito solo proposta (127.0.0.1:8912, nessun pagamento)
+After=network-online.target zdos-firma.service zdos-defi.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=zdosgateway
+Group=zdosgateway
+WorkingDirectory=/opt/zdos-gateway
+Environment=PORT=8912
+Environment=NODE_ENV=production
+Environment=GATEWAY_DATA=/var/lib/zdos-gateway
+Environment=GATEWAY_ADMIN_KEY_FILE=/etc/zdos-gateway/admin.key
+ExecStart=/usr/bin/node /opt/zdos-gateway/server.mjs
+Restart=on-failure
+RestartSec=5
+StateDirectory=zdos-gateway
+StateDirectoryMode=0700
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+LockPersonality=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+InaccessiblePaths=/etc/zdos-agi-wallets /root /etc/zdos-fondo-merito
+MemoryMax=200M
+CPUQuota=25%
+
+[Install]
+WantedBy=multi-user.target

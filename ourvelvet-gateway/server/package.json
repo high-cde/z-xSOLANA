@@ -1,0 +1,1 @@
+{"name":"zdos-gateway","version":"1.0.0","private":true,"type":"module","description":"OurVelvet Gateway: viaggi, Velvet Route, richieste e messaggi, token e merito (solo proposta). © 2026 ZDOS1.3","dependencies":{"better-sqlite3":"^11.7.0"}}
