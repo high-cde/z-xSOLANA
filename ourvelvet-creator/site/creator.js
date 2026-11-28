@@ -1,5 +1,6 @@
-/* OurVelvet Creator — © 2026 ZDOS1.3. Vanilla JS, nessuna dipendenza esterna, nessun dato inventato:
-   i profili sono esempi dichiarati; i dati live arrivano da /api/firma/*, /api/velvet-ai/status, /api/domcoin/lsd-live. */
+/* OurVelvet Creator — © 2026 ZDOS1.3. Vanilla JS, nessuna dipendenza esterna, nessun dato inventato.
+   Profili, post, like, follow e segnalazioni arrivano dall'API reale /api/social/* (identità = firma OurVelvet).
+   Altri dati live: /api/firma/*, /api/velvet-ai/status e /chat, /api/domcoin/lsd-live. */
 (function () {
   "use strict";
   var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -57,19 +58,8 @@
       dots + '<g fill="url(#' + id + 'c)" stroke="rgba(255,255,255,.55)" stroke-width=".6" style="filter:drop-shadow(0 0 4px rgba(245,195,108,.6))">' + (GLYPH[glyph] || GLYPH.star) + '</g></svg>';
   }
 
-  /* ---------- dati di esempio (personaggi fittizi, tutti adulti) ---------- */
+  /* ---------- dati statici (categorie, personaggi AI di OurVelvet, stili) ---------- */
   var CATS = ["Tutti", "Cartoon", "Anime-style", "Cyber", "Gotico", "Fantasy", "Burlesque", "Roleplay", "Narrativa", "Musica", "Arte", "AI"];
-  var CREATORS = [
-    { id: "selene", n: "Selene Vox", r: "Narratrice gotica", b: "Storie a lume di candela, voce calda e ironica. Racconti per adulti, con consenso e cura.", t: ["Gotico", "Narrativa", "Roleplay"], g: "moon", a: 268, c: 320 },
-    { id: "kiro", n: "Kiro Neon", r: "Artista cyber", b: "Illustrazioni cartoon al neon: città piovose, insegne rosa, atmosfera notturna.", t: ["Cyber", "Cartoon", "Arte"], g: "bolt", a: 190, c: 285 },
-    { id: "satin", n: "Lord Satin", r: "Maestro di cerimonie", b: "Giochi di ruolo di velluto con regole chiare, limiti dichiarati e safeword ROSSO.", t: ["Roleplay", "Burlesque"], g: "crown", a: 345, c: 28 },
-    { id: "eclat", n: "Madame Éclat", r: "Burlesque illustrata", b: "Teatro, piume e glitter in stile vignetta. Eleganza prima di tutto.", t: ["Burlesque", "Cartoon", "Arte"], g: "feather", a: 330, c: 270 },
-    { id: "orfeo", n: "Orfeo Beat", r: "Musica e playlist", b: "Set lenti e playlist per serate a due. Niente chiasso, solo atmosfera.", t: ["Musica"], g: "note", a: 205, c: 300 },
-    { id: "ambra", n: "Ámbra Noir", r: "Illustratrice noir", b: "Tavole in bianco, nero e rosso: gialli sensuali e sguardi di sfida.", t: ["Arte", "Narrativa", "Cartoon"], g: "keyhole", a: 350, c: 250 },
-    { id: "vesper", n: "Vesper Atelier", r: "Mondi fantasy", b: "Creature, foreste e amanti immortali, tutti adulti. Mappe e racconti a puntate.", t: ["Fantasy", "Anime-style", "Narrativa"], g: "star", a: 160, c: 275 },
-    { id: "cinabro", n: "Dr. Cinabro", r: "Fumetto anime-style", b: "Storie lunghe per adulti, trame mature e personaggi adulti con una vita vera.", t: ["Anime-style", "Narrativa", "Arte"], g: "mask", a: 15, c: 300 },
-    { id: "zephyr", n: "Zéphyr Duo", r: "Podcast a due voci", b: "Due voci, un microfono, conversazioni su desiderio, limiti e fiducia.", t: ["Musica", "Narrativa"], g: "rose", a: 300, c: 20 }
-  ];
   var AI_FALLBACK = [
     { id: "rubina", n: "Rubina Mistress", r: "Sovereign Protocol", g: "crown", a: 335, c: 275 },
     { id: "zara", n: "Zara AGI", r: "Scene & Club AI", g: "star", a: 275, c: 190 },
@@ -84,19 +74,23 @@
     { id: "pittorico", n: "Pittorico", d: "Velluto e olio", a: 30, c: 330 },
     { id: "fumetto", n: "Fumetto", d: "Tavole e retini", a: 160, c: 280 }
   ];
-  var POSTS = [
-    { by: "selene", t: "Stasera apro il primo capitolo: «La stanza delle candele». Le regole del gioco sono nella prima pagina: limiti, parola di sicurezza ROSSO, e si può fermare tutto quando si vuole.", tags: ["Gotico", "Narrativa"], when: "esempio" },
-    { by: "kiro", t: "Nuova tavola neon: una città sotto la pioggia e un'insegna che dice «consenso». Colori: rosa, ciano, un po' di oro.", tags: ["Cyber", "Cartoon"], when: "esempio", art: true },
-    { by: "eclat", t: "Prove generali del nuovo spettacolo illustrato. Piume sì, volgarità no.", tags: ["Burlesque", "Arte"], when: "esempio", art: true },
-    { by: "orfeo", t: "Playlist «Dopo mezzanotte»: 12 brani lenti, zero pubblicità.", tags: ["Musica"], when: "esempio" },
-    { by: "zephyr", t: "Puntata nuova: come si parla di limiti senza imbarazzo. Due minuti per iniziare, il resto è ascolto.", tags: ["Musica", "Narrativa"], when: "esempio" }
-  ];
-  function byId(id) { for (var i = 0; i < CREATORS.length; i++) if (CREATORS[i].id === id) return CREATORS[i]; }
+  var GLYPHS = ["crown", "moon", "bolt", "rose", "note", "keyhole", "star", "flame", "mask", "feather"];
+  function look(seed) { var h = hash(seed); return { g: GLYPHS[h % GLYPHS.length], a: h % 360, c: (h >>> 9) % 360 }; }
+
+  /* ---------- API social ---------- */
+  function api(method, path, body, raw) {
+    var o = { method: method, credentials: "same-origin", cache: "no-store", headers: { "X-OV-Social": "1" } };
+    if (raw) { o.body = raw; o.headers["Content-Type"] = raw.type; }
+    else if (body !== undefined) { o.body = JSON.stringify(body); o.headers["Content-Type"] = "application/json"; }
+    return fetch("/api/social" + path, o).then(function (r) { return r.json().catch(function () { return { ok: false, errore: "Risposta non valida (" + r.status + ")" }; }).then(function (j) { j.__s = r.status; return j; }); });
+  }
+  var ME = { addr: null, prof: null };
 
   /* ---------- navigazione a viste (hash, nessun redirect) ---------- */
   var TITLES = { esplora: "Esplora", crea: "Crea", feed: "Feed", ai: "AI", monete: "Dom-Coin & VELVET", profilo: "Il mio profilo" };
   function show(v) {
     if (!TITLES[v]) v = "esplora";
+    var dd = document.getElementById("dlg"); if (dd && dd.open) dd.close();
     $$("[data-view]").forEach(function (s) { s.hidden = s.getAttribute("data-view") !== v; });
     $$("[data-nav]").forEach(function (a) { a.classList.toggle("on", a.getAttribute("data-nav") === v); });
     $("#topTitle").textContent = TITLES[v];
@@ -107,30 +101,35 @@
   }
   window.addEventListener("hashchange", function () { show(location.hash.slice(1)); });
 
-  /* ---------- Esplora ---------- */
-  var state = { cat: "Tutti", q: "", ai: AI_FALLBACK.map(function (x) { return x; }) };
+  /* ---------- Esplora: creator reali + personaggi AI ---------- */
+  var state = { cat: "Tutti", q: "", ai: AI_FALLBACK.map(function (x) { return x; }), creators: [], loaded: false };
   function cardEl(c, kind) {
     var b = el("button", "card"); b.type = "button"; b.setAttribute("aria-label", c.n + ", " + c.r);
-    var art = el("div", "art"); art.innerHTML = emblem(c.id, c.a, c.c, c.g); b.appendChild(art);
-    var bd = el("div", "badges"); bd.appendChild(el("span", "b18", "18+")); bd.appendChild(el("span", "bex", kind === "ai" ? "AI" : "Esempio")); b.appendChild(bd);
+    var art = el("div", "art");
+    if (c.img) { var im = el("img"); im.src = c.img; im.alt = ""; im.loading = "lazy"; art.appendChild(im); } else art.innerHTML = emblem(c.id, c.a, c.c, c.g);
+    b.appendChild(art);
+    var bd = el("div", "badges"); bd.appendChild(el("span", "b18", "18+")); bd.appendChild(el("span", "bex", kind === "ai" ? "AI" : kind === "draft" ? "Bozza" : c.v ? "✓ Wallet verificato" : "Creator")); b.appendChild(bd);
     b.appendChild(el("span", "glint"));
     var info = el("div", "info"); info.appendChild(el("h4", "", c.n)); info.appendChild(el("p", "", c.r + (c.b ? " · " + c.b : "")));
     var tg = el("div", "tags"); (c.t || []).forEach(function (t) { tg.appendChild(el("span", "tag", t)); }); info.appendChild(tg); b.appendChild(info);
     return b;
   }
-  function allCards() {
-    var ai = state.ai.map(function (a) { return { id: a.id, n: a.n, r: a.r + " (AI)", b: AIDESC[a.id] || "", t: ["AI"].concat(a.id === "kali" ? ["Cyber"] : a.id === "zara" ? ["Musica"] : ["Roleplay"]), g: a.g, a: a.a, c: a.c, ai: true }; });
-    return CREATORS.map(function (c) { return c; }).concat(ai);
-  }
+  function crCard(p) { var l = look(p.handle); return { id: p.handle, n: "@" + p.handle, r: p.follower + " follower · " + p.post + " post", b: p.bio, t: p.cats, g: l.g, a: l.a, c: l.c, img: p.avatar, v: p.verificato, p: p }; }
+  function aiCards() { return state.ai.map(function (a) { return { id: a.id, n: a.n, r: a.r + " (AI)", b: AIDESC[a.id] || "", t: ["AI"].concat(a.id === "kali" ? ["Cyber"] : a.id === "zara" ? ["Musica"] : ["Roleplay"]), g: a.g, a: a.a, c: a.c, ai: true }; }); }
+  function match(c) { var q = state.q.toLowerCase(); return (state.cat === "Tutti" || c.t.indexOf(state.cat) >= 0) && (!q || (c.n + " " + c.r + " " + c.b + " " + c.t.join(" ")).toLowerCase().indexOf(q) >= 0); }
   function renderGrid() {
-    var g = $("#grid"); g.textContent = "";
-    var q = state.q.toLowerCase(), n = 0;
-    allCards().forEach(function (c) {
-      if (state.cat !== "Tutti" && c.t.indexOf(state.cat) < 0) return;
-      if (q && (c.n + " " + c.r + " " + c.b + " " + c.t.join(" ")).toLowerCase().indexOf(q) < 0) return;
-      var d = cardEl(c, c.ai ? "ai" : "ex"); d.addEventListener("click", function () { openProfile(c); }); g.appendChild(d); n++;
-    });
-    $("#empty").hidden = n > 0; bindTilt();
+    var g = $("#grid"), ga = $("#gridAi"); g.textContent = ""; ga.textContent = "";
+    var n = 0;
+    if (!state.loaded) { for (var i = 0; i < 3; i++) g.appendChild(el("div", "skel")); }
+    state.creators.map(crCard).forEach(function (c) { if (!match(c)) return; var d = cardEl(c, "cr"); d.addEventListener("click", function () { openCreator(c.p.handle); }); g.appendChild(d); n++; });
+    aiCards().forEach(function (c) { if (!match(c)) return; var d = cardEl(c, "ai"); d.addEventListener("click", function () { openAI(c); }); ga.appendChild(d); });
+    var none = state.loaded && state.creators.length === 0;
+    $("#firstBox").hidden = !none; $("#crT").hidden = none || !state.loaded;
+    $("#empty").hidden = !state.loaded || none || n > 0; bindTilt();
+  }
+  function loadCreators() {
+    api("GET", "/creators").then(function (j) { state.creators = (j && j.ok && j.creator) || []; state.loaded = true; renderGrid(); })
+      .catch(function () { state.loaded = true; renderGrid(); });
   }
   function renderCats() {
     var box = $("#cats"); CATS.forEach(function (c) {
@@ -140,24 +139,57 @@
     });
     $("#q").addEventListener("input", function (e) { state.q = e.target.value.trim(); renderGrid(); });
   }
-  function openProfile(c) {
-    var d = $("#dlg"); if (!d) { d = document.createElement("dialog"); d.id = "dlg"; d.className = "glass"; d.style.cssText = "max-width:420px;width:92vw;color:#f6eefc;padding:0;border:1px solid rgba(255,255,255,.14);overflow:hidden"; document.body.appendChild(d); d.addEventListener("click", function (e) { if (e.target === d) d.close(); }); }
-    d.textContent = "";
-    var a = el("div", ""); a.style.cssText = "height:190px"; a.innerHTML = emblem(c.id, c.a, c.c, c.g); d.appendChild(a);
-    var b = el("div", "pad");
-    b.appendChild(el("h3", "", c.n)); b.appendChild(el("p", "muted", c.r));
-    b.appendChild(el("p", "", c.b || ""));
-    var tg = el("div", "tags chips"); tg.style.marginTop = "10px"; c.t.forEach(function (t) { tg.appendChild(el("span", "tag", t)); }); b.appendChild(tg);
-    var f = el("p", "fine", c.ai ? "Personaggio AI di OurVelvet. Adulto (18+), solo consenso." : "Profilo di esempio: personaggio fittizio, adulto (18+). Nessun wallet collegato, quindi nessun badge «wallet verificato».");
-    b.appendChild(f);
-    var r = el("div", "row"); var fol = LS.get("ov-cr-follow", {});
-    var bt = el("button", "btn primary sm", fol[c.id] ? "Segui già" : "Segui"); bt.type = "button";
-    bt.addEventListener("click", function () { var o = LS.get("ov-cr-follow", {}); o[c.id] = !o[c.id]; LS.set("ov-cr-follow", o); bt.textContent = o[c.id] ? "Segui già" : "Segui"; toast(o[c.id] ? "Salvato sul tuo dispositivo" : "Rimosso"); });
-    r.appendChild(bt);
-    if (c.ai) { var st = el("a", "btn ghost sm", "Apri lo Studio"); st.href = "/creator/"; r.appendChild(st); }
+  function dlg() {
+    var d = $("#dlg"); if (!d) { d = document.createElement("dialog"); d.id = "dlg"; d.className = "glass"; d.style.cssText = "max-width:460px;width:92vw;color:#f6eefc;padding:0;border:1px solid rgba(255,255,255,.14);overflow:hidden;max-height:90vh;overflow-y:auto"; document.body.appendChild(d); d.addEventListener("click", function (e) { if (e.target === d) d.close(); }); }
+    d.textContent = ""; return d;
+  }
+  function openDlg(d) { if (d.showModal) { if (!d.open) d.showModal(); } else d.setAttribute("open", ""); }
+  function openAI(c) {
+    var d = dlg(); var a = el("div", ""); a.style.cssText = "height:190px"; a.innerHTML = emblem(c.id, c.a, c.c, c.g); d.appendChild(a);
+    var b = el("div", "pad"); b.appendChild(el("h3", "", c.n)); b.appendChild(el("p", "muted", c.r)); b.appendChild(el("p", "", c.b || ""));
+    b.appendChild(el("p", "fine", "Personaggio AI di OurVelvet. Adulto (18+), solo consenso. Safeword ROSSO."));
+    var r = el("div", "dlg-acts"); var ch = el("button", "btn primary sm", "Parla in chat"); ch.type = "button";
+    ch.addEventListener("click", function () { d.close(); chat.pick(c.id); location.hash = "#ai"; setTimeout(function () { $("#chatBox").scrollIntoView({ behavior: "smooth" }); }, 60); }); r.appendChild(ch);
     var cl = el("button", "btn ghost sm", "Chiudi"); cl.type = "button"; cl.addEventListener("click", function () { d.close(); }); r.appendChild(cl);
-    b.appendChild(r); d.appendChild(b);
-    if (d.showModal) d.showModal(); else d.setAttribute("open", "");
+    b.appendChild(r); d.appendChild(b); openDlg(d);
+  }
+  function openCreator(handle) {
+    var d = dlg(); d.appendChild(el("div", "pad", "Carico il profilo…")); openDlg(d);
+    api("GET", "/creators/" + encodeURIComponent(handle)).then(function (j) {
+      d.textContent = "";
+      if (!j.ok) { d.appendChild(el("div", "pad", j.errore || "Profilo non disponibile.")); return; }
+      var p = j.profilo, l = look(p.handle), a = el("div", ""); a.style.cssText = "height:190px;position:relative";
+      if (p.avatar) { var im = el("img"); im.src = p.avatar; im.alt = "Avatar di @" + p.handle; im.style.cssText = "width:100%;height:100%;object-fit:cover"; a.appendChild(im); } else a.innerHTML = emblem(p.handle, l.a, l.c, l.g);
+      d.appendChild(a);
+      var b = el("div", "pad"); var h = el("h3", "", "@" + p.handle); if (p.verificato) h.appendChild(el("span", "vbadge", "✓ wallet verificato")); b.appendChild(h);
+      b.appendChild(el("p", "muted", p.follower + " follower · " + p.seguiti + " seguiti · " + p.post + " post · su OurVelvet dal " + p.dal.split("-").reverse().join("/")));
+      if (p.bio) b.appendChild(el("p", "", p.bio));
+      var tg = el("div", "tags chips"); tg.style.marginTop = "10px"; p.cats.forEach(function (t) { tg.appendChild(el("span", "tag", t)); }); b.appendChild(tg);
+      if (p.verificato && p.wallet) b.appendChild(el("p", "fine", "Wallet: " + short(p.wallet) + " (badge pubblico scelto dal creator)"));
+      var r = el("div", "dlg-acts");
+      if (!p.mio) {
+        var fb = el("button", "btn primary sm", p.segui ? "Segui già" : "Segui"); fb.type = "button";
+        fb.addEventListener("click", function () { need(function () { api("POST", "/creators/" + p.handle + "/follow", {}).then(function (x) { if (!x.ok) return toast(x.errore); p.segui = x.segui; fb.textContent = x.segui ? "Segui già" : "Segui"; toast(x.segui ? "Ora segui @" + p.handle : "Non segui più @" + p.handle); loadFeed(true); }); }); });
+        r.appendChild(fb);
+        var bl = el("button", "btn ghost sm", p.bloccato ? "Sblocca" : "Blocca"); bl.type = "button";
+        bl.addEventListener("click", function () { need(function () { if (!p.bloccato && !confirm("Bloccare @" + p.handle + "? Non vedrete più i rispettivi contenuti.")) return; api("POST", "/creators/" + p.handle + "/block", {}).then(function (x) { if (!x.ok) return toast(x.errore); toast(x.bloccato ? "Bloccato" : "Sbloccato"); d.close(); loadCreators(); loadFeed(true); refreshMe(); }); }); });
+        r.appendChild(bl);
+        var rp = el("button", "btn ghost sm danger", "Segnala"); rp.type = "button"; rp.addEventListener("click", function () { report("profile", p.handle); }); r.appendChild(rp);
+      } else r.appendChild(el("span", "fine", "Questo è il tuo profilo."));
+      var cl = el("button", "btn ghost sm", "Chiudi"); cl.type = "button"; cl.addEventListener("click", function () { d.close(); }); r.appendChild(cl);
+      b.appendChild(r);
+      if (j.post && j.post.length) { b.appendChild(el("h3", "mt", "Post")); j.post.forEach(function (x) { b.appendChild(postEl(x)); }); }
+      else b.appendChild(el("p", "fine mt", "Nessun post pubblico per ora."));
+      d.appendChild(b);
+    });
+  }
+  function need(fn) { if (ME.addr && ME.prof) return fn(); if (window.ZDOSGA) {} toast(ME.addr ? "Crea prima il tuo profilo creator" : "Accedi con OurVelvet per continuare"); var d = $("#dlg"); if (d && d.open) d.close(); location.hash = "#profilo"; }
+  function report(kind, target) {
+    need(function () {
+      var why = prompt("Perché segnali questo " + (kind === "post" ? "post" : "profilo") + "? (es. minori, non consenso, spam, contenuto esplicito)");
+      if (!why || why.trim().length < 3) return;
+      api("POST", "/report", { kind: kind, target: target, reason: why.trim() }).then(function (x) { toast(x.ok ? "Segnalazione inviata allo staff" : x.errore); if (x.ok && x.nascosto) loadFeed(true); });
+    });
   }
 
   /* ---------- tilt delle card (solo puntatori fini) ---------- */
@@ -216,41 +248,73 @@
   }
   function copy(t) { if (navigator.clipboard) navigator.clipboard.writeText(t).then(function () { toast("Copiato"); }, function () { toast("Copia non riuscita"); }); else toast("Copia non disponibile"); }
 
-  /* ---------- Feed ---------- */
-  function renderFeed() {
-    var box = $("#posts"); box.textContent = "";
-    var likes = LS.get("ov-cr-likes", {});
-    var mine = LS.get("ov-cr-posts", []);
-    mine.forEach(function (p, i) { box.appendChild(postEl({ me: true, n: "Tu", r: "bozza sul dispositivo", t: p.t, tags: [], id: "me" + i, g: "star", a: 280, c: 330 }, "bozza", likes)); });
-    POSTS.forEach(function (p, i) { var c = byId(p.by); box.appendChild(postEl({ n: c.n, r: c.r, t: p.t, tags: p.tags, id: c.id, g: c.g, a: c.a, c: c.c, art: p.art, key: "p" + i }, p.when, likes)); });
-    var tg = {}; POSTS.forEach(function (p) { p.tags.forEach(function (t) { tg[t] = (tg[t] || 0) + 1; }); });
-    var tr = $("#trend"); tr.textContent = ""; Object.keys(tg).sort(function (a, b) { return tg[b] - tg[a]; }).forEach(function (t) {
-      var b = el("button", "chip", "#" + t); b.type = "button"; b.addEventListener("click", function () { state.cat = CATS.indexOf(t) >= 0 ? t : "Tutti"; $$("#cats .chip").forEach(function (x) { x.classList.toggle("on", x.textContent === state.cat); }); renderGrid(); location.hash = "#esplora"; }); tr.appendChild(b);
-    });
-  }
-  function postEl(p, when, likes) {
+  /* ---------- Feed reale ---------- */
+  var feed = { scope: "tutti", oldest: 0, img: null };
+  function when(t) { var s = Math.floor(Date.now() / 1000) - t; if (s < 60) return "adesso"; if (s < 3600) return Math.floor(s / 60) + " min fa"; if (s < 86400) return Math.floor(s / 3600) + " h fa"; return new Date(t * 1000).toLocaleDateString("it-IT"); }
+  var STATI = { pubblico: "pubblico", in_revisione: "in revisione", rifiutato: "rifiutato", nascosto: "nascosto dallo staff" };
+  function postEl(p) {
     var a = el("article", "glass post");
-    var h = el("div", "post-h"), av = el("div", "av"); av.innerHTML = emblem(p.id, p.a, p.c, p.g); h.appendChild(av);
-    var w = el("div", ""); w.appendChild(el("b", "", p.n)); w.appendChild(el("small", "", p.r + " · " + when)); h.appendChild(w); a.appendChild(h);
-    a.appendChild(el("p", "", p.t));
-    if (p.art) { var ar = el("div", "art"); ar.innerHTML = emblem(p.id + "x", p.c, p.a, p.g, true); a.appendChild(ar); }
-    var ac = el("div", "acts"); (p.tags || []).forEach(function (t) { ac.appendChild(el("span", "tag", "#" + t)); });
-    if (!p.me) {
-      var lk = el("button", likes[p.key] ? "on" : "", likes[p.key] ? "♥ Mi piace" : "♡ Mi piace"); lk.type = "button";
-      lk.addEventListener("click", function () { var o = LS.get("ov-cr-likes", {}); o[p.key] = !o[p.key]; LS.set("ov-cr-likes", o); lk.classList.toggle("on", o[p.key]); lk.textContent = o[p.key] ? "♥ Mi piace" : "♡ Mi piace"; });
-      ac.appendChild(lk);
-    } else {
-      var rm = el("button", "", "Elimina"); rm.type = "button"; rm.addEventListener("click", function () { var m = LS.get("ov-cr-posts", []); m.splice(parseInt(p.id.slice(2), 10), 1); LS.set("ov-cr-posts", m); renderFeed(); }); ac.appendChild(rm);
-    }
+    var h = el("div", "post-h"), av = el("div", "av"), l = look(p.autore.handle);
+    if (p.autore.avatar) { var im = el("img"); im.src = p.autore.avatar; im.alt = ""; im.loading = "lazy"; av.appendChild(im); } else av.innerHTML = emblem(p.autore.handle, l.a, l.c, l.g);
+    h.appendChild(av);
+    var w = el("button", "who"); w.type = "button"; var nm = el("b", "", "@" + p.autore.handle); if (p.autore.verificato) nm.appendChild(el("span", "vbadge", "✓")); w.appendChild(nm);
+    var sm = el("small", "", when(p.creato)); if (p.stato) sm.appendChild(el("span", "st " + p.stato, STATI[p.stato] || p.stato)); w.appendChild(sm);
+    w.addEventListener("click", function () { openCreator(p.autore.handle); }); h.appendChild(w); a.appendChild(h);
+    if (p.text) a.appendChild(el("p", "", p.text));
+    if (p.media) { var m = el("div", "media"), mi = el("img"); mi.src = p.media; mi.alt = "Immagine del post"; mi.loading = "lazy"; m.appendChild(mi); a.appendChild(m); }
+    var ac = el("div", "acts");
+    var lk = el("button", p.piace ? "on" : "", (p.piace ? "♥ " : "♡ ") + p.like); lk.type = "button"; lk.setAttribute("aria-label", "Mi piace");
+    if (p.stato && p.stato !== "pubblico") lk.disabled = true;
+    lk.addEventListener("click", function () { need(function () { api("POST", "/posts/" + p.id + "/like", {}).then(function (x) { if (!x.ok) return toast(x.errore); p.piace = x.piace; p.like = x.like; lk.classList.toggle("on", x.piace); lk.textContent = (x.piace ? "♥ " : "♡ ") + x.like; }); }); });
+    ac.appendChild(lk); ac.appendChild(el("span", "sp"));
+    if (p.mio) { var rm = el("button", "", "Elimina"); rm.type = "button"; rm.addEventListener("click", function () { if (!confirm("Eliminare il post?")) return; api("DELETE", "/posts/" + p.id).then(function (x) { toast(x.ok ? "Post eliminato" : x.errore); loadFeed(true); refreshMe(); }); }); ac.appendChild(rm); }
+    else { var rp = el("button", "", "Segnala"); rp.type = "button"; rp.addEventListener("click", function () { report("post", p.id); }); ac.appendChild(rp); }
     a.appendChild(ac); return a;
   }
+  function loadFeed(reset) {
+    if (reset) { feed.oldest = 0; $("#posts").textContent = ""; }
+    if (feed.scope === "seguiti" && !ME.addr) { $("#feedEmpty").hidden = false; $("#feedEmptyT").textContent = "Accedi per vedere chi segui"; $("#feedEmptyP").textContent = "Il feed «Chi segui» mostra i post dei creator che segui."; $("#more").hidden = true; return; }
+    api("GET", "/feed?scope=" + feed.scope + (feed.oldest ? "&prima=" + feed.oldest : "")).then(function (j) {
+      var box = $("#posts"), list = (j && j.post) || [];
+      list.forEach(function (p) { box.appendChild(postEl(p)); feed.oldest = p.creato; });
+      var empty = !box.children.length; $("#feedEmpty").hidden = !empty;
+      if (empty) { $("#feedEmptyT").textContent = feed.scope === "seguiti" ? "Nessun post da chi segui" : "Il feed è ancora vuoto"; $("#feedEmptyP").textContent = feed.scope === "seguiti" ? "Segui qualche creator da Esplora: i loro post compariranno qui." : "Scrivi il primo post: sarà il primo di tutta la community."; }
+      $("#more").hidden = list.length < 30;
+      var tg = {}; state.creators.forEach(function (c) { c.cats.forEach(function (t) { tg[t] = (tg[t] || 0) + 1; }); });
+      var tr = $("#trend"); tr.textContent = ""; var keys = Object.keys(tg).sort(function (a, b) { return tg[b] - tg[a]; });
+      if (!keys.length) tr.appendChild(el("span", "muted", "Compaiono quando i creator scelgono le categorie."));
+      keys.forEach(function (t) { var b = el("button", "chip", "#" + t); b.type = "button"; b.addEventListener("click", function () { state.cat = t; $$("#cats .chip").forEach(function (x) { x.classList.toggle("on", x.textContent === t); }); renderGrid(); location.hash = "#esplora"; }); tr.appendChild(b); });
+    }).catch(function () { $("#feedEmpty").hidden = false; $("#feedEmptyT").textContent = "Feed non raggiungibile ora"; $("#feedEmptyP").textContent = "Riprova tra poco."; });
+  }
+  function setImg(f) {
+    var g = $("#postGuard");
+    if (!f) { feed.img = null; $("#imgPrev").hidden = true; $("#postImg").value = ""; return; }
+    if (["image/jpeg", "image/png", "image/webp"].indexOf(f.type) < 0) { g.textContent = "Formato non ammesso: solo JPG, PNG o WebP."; g.className = "guard bad"; return; }
+    if (f.size > 5 * 1024 * 1024) { g.textContent = "Immagine troppo grande: massimo 5 MB."; g.className = "guard bad"; return; }
+    feed.img = f; $("#imgPrevI").src = URL.createObjectURL(f); $("#imgPrev").hidden = false; g.textContent = ""; g.className = "guard";
+  }
   function bindFeed() {
-    var t = $("#postTxt"); t.addEventListener("input", function () { $("#pc2").textContent = t.value.length + "/280"; });
+    var t = $("#postTxt"); t.addEventListener("input", function () { $("#pc2").textContent = t.value.length + "/500"; });
+    $("#postImg").addEventListener("change", function (e) { setImg(e.target.files[0]); });
+    $("#imgRm").addEventListener("click", function () { setImg(null); });
+    $$(".seg .chip").forEach(function (b) { b.addEventListener("click", function () { feed.scope = b.getAttribute("data-scope"); $$(".seg .chip").forEach(function (x) { x.classList.toggle("on", x === b); }); loadFeed(true); }); });
+    $("#more").addEventListener("click", function () { loadFeed(false); });
     $("#postBtn").addEventListener("click", function () {
-      var v = t.value.trim(), g = $("#postGuard"); if (v.length < 3) { g.textContent = "Scrivi qualcosa."; g.className = "guard bad"; return; }
-      if (!guard(v, g)) return;
-      var m = LS.get("ov-cr-posts", []); m.unshift({ t: v, at: Date.now() }); LS.set("ov-cr-posts", m.slice(0, 20)); t.value = ""; $("#pc2").textContent = "0/280";
-      g.textContent = "Bozza salvata sul tuo dispositivo: non è pubblica."; g.className = "guard ok"; renderFeed();
+      var v = t.value.trim(), g = $("#postGuard"), btn = $("#postBtn");
+      if (!v && !feed.img) { g.textContent = "Scrivi qualcosa o allega un'immagine."; g.className = "guard bad"; return; }
+      if (v && !guard(v, g)) return;
+      btn.disabled = true; g.textContent = feed.img ? "Carico l'immagine…" : "Pubblico…"; g.className = "guard";
+      var step = feed.img ? api("POST", "/media", undefined, feed.img) : Promise.resolve({ ok: true });
+      step.then(function (m) {
+        if (!m.ok) throw new Error(m.errore || "Caricamento non riuscito");
+        return api("POST", "/posts", { text: v, media: m.media || null });
+      }).then(function (x) {
+        btn.disabled = false;
+        if (!x.ok) { g.textContent = x.errore; g.className = "guard bad"; return; }
+        t.value = ""; $("#pc2").textContent = "0/500"; setImg(null);
+        g.textContent = x.stato === "in_revisione" ? "Post inviato: con l'immagine passa prima dalla revisione dello staff, poi diventa pubblico." : "Pubblicato."; g.className = "guard ok";
+        loadFeed(true); refreshMe();
+      }).catch(function (e) { btn.disabled = false; g.textContent = e.message; g.className = "guard bad"; });
     });
   }
 
@@ -281,9 +345,37 @@
     var box = $("#aiCards"); box.textContent = "";
     state.ai.forEach(function (a) {
       var c = { id: a.id, n: a.n, r: a.r, b: AIDESC[a.id] || "Personaggio AI di OurVelvet.", t: ["AI"], g: a.g, a: a.a, c: a.c, ai: true };
-      var d = cardEl(c, "ai"); d.classList.add("ai-card"); d.addEventListener("click", function () { openProfile(c); }); box.appendChild(d);
+      var d = cardEl(c, "ai"); d.classList.add("ai-card"); d.addEventListener("click", function () { openAI(c); }); box.appendChild(d);
     });
-    bindTilt();
+    bindTilt(); renderChatChars();
+  }
+
+  /* ---------- Chat AI (velvet-ai /chat, con la sessione OurVelvet dell'utente) ---------- */
+  var chat = { id: "rubina", pick: function (id) { chat.id = id; $$("#chatChars .chip").forEach(function (x) { x.classList.toggle("on", x.getAttribute("data-id") === id); }); } };
+  function renderChatChars() {
+    var box = $("#chatChars"); box.textContent = "";
+    state.ai.forEach(function (a) { var b = el("button", "chip" + (a.id === chat.id ? " on" : ""), a.n); b.type = "button"; b.setAttribute("data-id", a.id); b.addEventListener("click", function () { chat.pick(a.id); }); box.appendChild(b); });
+  }
+  function bubble(cls, txt, meta) { var m = el("div", "msg " + cls, txt); if (meta) m.appendChild(el("small", "", meta)); var log = $("#chatLog"); log.appendChild(m); log.scrollTop = log.scrollHeight; return m; }
+  function bindChat() {
+    var inp = $("#chatTxt"), g = $("#chatGuard");
+    function sendMsg() {
+      var v = inp.value.trim(); if (!v) return;
+      if (!ME.addr) { g.textContent = "Accedi con OurVelvet per usare la chat: la sessione resta tua, i messaggi non sono pubblici."; g.className = "guard bad"; return; }
+      if (/^\s*rosso\s*$/i.test(v)) { inp.value = ""; $("#chatLog").textContent = ""; bubble("ai", "Scena interrotta. Safeword ROSSO ricevuta: ci fermiamo qui. Riprendi solo se e quando vuoi.", "OurVelvet"); return; }
+      if (!guard(v, g)) return;
+      var h = $("#chatHint"); if (h) h.remove();
+      bubble("me", v); inp.value = ""; $("#chatSend").disabled = true;
+      var wait = bubble("ai", "…");
+      fetch("/api/velvet-ai/chat", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: v, characterId: chat.id }) })
+        .then(function (r) { return r.json(); }).then(function (j) {
+          $("#chatSend").disabled = false; wait.remove();
+          if (!j.ok) { bubble("ai", j.error || "Il servizio AI non ha risposto.", "errore"); return; }
+          bubble("ai", j.message.replyText, j.message.characterName + " · " + j.costLsd + " L$D (saldo demo del servizio: " + j.lsdBalance + ")");
+        }).catch(function () { $("#chatSend").disabled = false; wait.remove(); bubble("ai", "Servizio AI non raggiungibile ora.", "errore"); });
+    }
+    $("#chatSend").addEventListener("click", sendMsg);
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") sendMsg(); });
   }
 
   /* ---------- Dom-Coin live (solo fatti on-chain; il valore resta «dichiarato») ---------- */
@@ -295,35 +387,92 @@
     }).catch(function () {});
   }
 
-  /* ---------- Profilo e firma OurVelvet ---------- */
+  /* ---------- Profilo: firma OurVelvet + profilo creator reale ---------- */
   function short(a) { return a ? a.slice(0, 4) + "…" + a.slice(-4) : ""; }
-  function setSession(s) {
+  var pf = { cats: [] };
+  function renderPfCats() {
+    var box = $("#pfCats"); box.textContent = "";
+    CATS.slice(1).forEach(function (c) {
+      var b = el("button", "chip" + (pf.cats.indexOf(c) >= 0 ? " on" : ""), c); b.type = "button";
+      b.addEventListener("click", function () { var k = pf.cats.indexOf(c); if (k >= 0) pf.cats.splice(k, 1); else if (pf.cats.length < 4) pf.cats.push(c); else return toast("Massimo 4 categorie"); renderPfCats(); });
+      box.appendChild(b);
+    });
+  }
+  function setAv(url, pending) {
+    var a = $("#pfAv"); a.textContent = "";
+    if (url) { var im = el("img"); im.src = url; im.alt = ""; a.appendChild(im); a.style.opacity = pending ? ".55" : "1"; }
+    else { var l = look(ME.prof ? ME.prof.handle : "nuovo"); a.innerHTML = emblem("me", l.a, l.c, l.g); }
+  }
+  function setSession(j) {
     var chip = $("#meChip"), out = $("#meOut"), lo = $("#logout"), tl = $("#topLogin");
     out.textContent = "";
-    if (!s || !s.autenticato) {
+    ME.addr = j && j.autenticato ? j.address : null; ME.prof = j && j.profilo ? j.profilo : null;
+    $("#composer").classList.toggle("locked", !(ME.addr && ME.prof));
+    $("#loginBox").hidden = !!ME.addr;
+    if (!ME.addr) {
       chip.hidden = true; lo.hidden = true; tl.textContent = "Accedi con OurVelvet";
-      out.appendChild(el("p", "muted", "Non sei connesso. Accedi per vedere il tuo indirizzo e il badge."));
-      return;
+      out.appendChild(el("p", "muted", "Non sei connesso. Accedi per creare il profilo, pubblicare e usare la chat AI."));
+      $("#pfLock").hidden = false; $("#pfForm").hidden = true; $("#myBox").hidden = true; return;
     }
-    chip.hidden = false; chip.textContent = short(s.address); lo.hidden = false; tl.textContent = short(s.address);
-    out.appendChild(el("p", "muted", "Connesso con firma OurVelvet. Sessione valida fino a " + new Date(s.expiresAt).toLocaleString("it-IT") + "."));
-    out.appendChild(el("div", "addr-big", s.address));
-    var bd = el("span", "", ""); bd.setAttribute("data-firma-badge", s.address); out.appendChild(bd);
+    chip.hidden = false; chip.textContent = ME.prof ? "@" + ME.prof.handle : short(ME.addr); lo.hidden = false; tl.textContent = ME.prof ? "@" + ME.prof.handle : short(ME.addr);
+    out.appendChild(el("p", "muted", "Connesso con firma OurVelvet. Sessione valida fino a " + new Date(j.scade).toLocaleString("it-IT", { timeZone: "Europe/Rome" }) + " (ora di Roma)."));
+    out.appendChild(el("div", "addr-big", ME.addr));
     var note = el("p", "fine", "Verifico il badge…"); out.appendChild(note);
-    getJson("/api/firma/badge?address=" + encodeURIComponent(s.address), 6000).then(function (j) {
-      if (j && j.verificato) { note.textContent = "Il badge «wallet verificato» è pubblico per questo indirizzo."; if (window.ZDOSFirmaBadge) window.ZDOSFirmaBadge.scan(); }
-      else note.textContent = "Il badge pubblico non è attivo: lo scegli quando firmi (spunta «Mostra il badge»).";
+    getJson("/api/firma/badge?address=" + encodeURIComponent(ME.addr), 6000).then(function (b) {
+      note.textContent = b && b.verificato ? "Il badge «wallet verificato» è pubblico: compare sul tuo profilo creator." : "Il badge pubblico non è attivo: lo scegli quando firmi (spunta «Mostra il badge»).";
     }).catch(function () { note.textContent = ""; });
+    $("#pfLock").hidden = true; $("#pfForm").hidden = false;
+    if (ME.prof) {
+      out.appendChild(el("p", "fine", "Profilo merito: " + (ME.prof.merito ? "collegato (le tue attività entrano nel registro zcomm)" : "nessun profilo OV collegato a questo wallet") + "."));
+      $("#pfTitle").textContent = "Il tuo profilo creator · @" + ME.prof.handle + (ME.prof.stato === "sospeso" ? " (sospeso dallo staff)" : "");
+      $("#pfHandle").value = ME.prof.handle; $("#pfBio").value = ME.prof.bio; pf.cats = ME.prof.cats.slice(); renderPfCats();
+      $("#pfConsents").hidden = true; $("#pfSave").textContent = "Salva modifiche";
+      setAv(ME.prof.avatarInRevisione || ME.prof.avatar, !!ME.prof.avatarInRevisione);
+      $("#pfAvMsg").textContent = ME.prof.avatarInRevisione ? "Avatar nuovo in revisione: lo vedi solo tu finché lo staff non lo approva." : "JPG, PNG o WebP fino a 5 MB. Ridimensionato a 512×512, metadati rimossi, visibile dopo la revisione dello staff.";
+      $("#myBox").hidden = false;
+      var mp = $("#myPosts"); mp.textContent = ""; (j.post || []).forEach(function (p) { mp.appendChild(postEl(p)); }); if (!mp.children.length) mp.appendChild(el("p", "muted", "Nessun post. Scrivi il primo dal Feed."));
+      api("GET", "/me/blocks").then(function (b) {
+        var box = $("#myBlocks"); box.textContent = ""; var l = (b && b.bloccati) || [];
+        if (!l.length) box.appendChild(el("p", "muted", "Nessuno."));
+        l.forEach(function (h) { var c = el("button", "chip", "@" + h + " · sblocca"); c.type = "button"; c.addEventListener("click", function () { api("POST", "/creators/" + h + "/block", {}).then(function () { toast("Sbloccato"); refreshMe(); loadCreators(); }); }); box.appendChild(c); });
+      });
+    } else {
+      $("#pfTitle").textContent = "Crea il tuo profilo creator"; $("#pfConsents").hidden = false; $("#pfSave").textContent = "Pubblica profilo"; renderPfCats(); setAv(null);
+      $("#pfAvMsg").textContent = "Potrai caricare l'avatar dopo aver creato il profilo."; $("#myBox").hidden = true;
+    }
+    $("#pfAvIn").disabled = !ME.prof;
   }
-  function refreshSession() { getJson("/api/firma/session", 6000).then(setSession).catch(function () { setSession(null); }); }
+  function refreshMe() { return api("GET", "/me").then(setSession).catch(function () { setSession(null); }); }
   function bindProfile() {
-    document.addEventListener("zdos-firma-login", function (e) { if (e.detail && e.detail.ok) { refreshSession(); toast("Accesso eseguito"); } });
-    $("#logout").addEventListener("click", function () { fetch("/api/firma/logout", { method: "POST" }).then(function () { refreshSession(); toast("Disconnesso"); }); });
-    var p = LS.get("ov-cr-profile", {}); $("#pfName").value = p.n || ""; $("#pfBio").value = p.b || ""; $("#pfTags").value = p.t || "";
+    document.addEventListener("zdos-firma-login", function (e) { if (e.detail && e.detail.ok) { refreshMe().then(function () { loadFeed(true); loadCreators(); }); toast("Accesso eseguito"); } });
+    $("#logout").addEventListener("click", function () { fetch("/api/firma/logout", { method: "POST" }).then(function () { refreshMe(); loadFeed(true); toast("Disconnesso"); }); });
+    $("#openTerms").addEventListener("click", function (e) { e.preventDefault(); var t = $("#regole"); t.open = true; t.scrollIntoView({ behavior: "smooth" }); });
     $("#pfSave").addEventListener("click", function () {
-      var n = $("#pfName").value.trim(), b = $("#pfBio").value.trim(), t = $("#pfTags").value.trim(), m = $("#pfMsg");
-      if (!guard(n + " " + b + " " + t, null)) { m.textContent = "Testo non ammesso: solo adulti e consenso."; m.style.color = "var(--bad)"; return; }
-      LS.set("ov-cr-profile", { n: n, b: b, t: t }); m.textContent = "Bozza salvata sul dispositivo."; m.style.color = "var(--ok)";
+      var m = $("#pfMsg"), h = $("#pfHandle").value.trim().replace(/^@/, ""), b = $("#pfBio").value.trim();
+      if (!/^[a-zA-Z0-9_]{3,24}$/.test(h)) { m.textContent = "Handle: 3–24 caratteri tra lettere, numeri e _."; m.style.color = "var(--bad)"; return; }
+      if (!guard(h + " " + b, null)) { m.textContent = "Testo non ammesso: solo adulti e consenso."; m.style.color = "var(--bad)"; return; }
+      var body = { handle: h, bio: b, cats: pf.cats };
+      if (!ME.prof) {
+        body.maggiorenne = $("#pf18").checked; body.termini = $("#pfTerms").checked; body.consenso = $("#pfConsent").checked;
+        if (!body.maggiorenne || !body.termini || !body.consenso) { m.textContent = "Per pubblicare servono le tre conferme: 18+, regolamento e consenso."; m.style.color = "var(--bad)"; return; }
+      }
+      api("PUT", "/me/profile", body).then(function (x) {
+        if (!x.ok) { m.textContent = x.errore; m.style.color = "var(--bad)"; return; }
+        m.textContent = x.creato ? "Profilo pubblicato. Benvenuto tra i creator!" : "Modifiche salvate."; m.style.color = "var(--ok)";
+        refreshMe(); loadCreators();
+      });
+    });
+    $("#pfAvIn").addEventListener("change", function (e) {
+      var f = e.target.files[0], m = $("#pfAvMsg"); if (!f) return;
+      if (["image/jpeg", "image/png", "image/webp"].indexOf(f.type) < 0) { m.textContent = "Formato non ammesso: solo JPG, PNG o WebP."; return; }
+      if (f.size > 5 * 1024 * 1024) { m.textContent = "Immagine troppo grande: massimo 5 MB."; return; }
+      m.textContent = "Carico…";
+      api("POST", "/me/avatar", undefined, f).then(function (x) { m.textContent = x.ok ? "Avatar inviato: è in revisione dallo staff." : x.errore; e.target.value = ""; refreshMe(); });
+    });
+    $("#gdprDel").addEventListener("click", function () {
+      var c = prompt("Questa azione cancella profilo, post, immagini, like, follow e segnalazioni. Non si può annullare.\nScrivi ELIMINA per confermare.");
+      if (c !== "ELIMINA") return toast("Cancellazione annullata");
+      api("DELETE", "/me", { conferma: "ELIMINA" }).then(function (x) { toast(x.ok ? "Profilo cancellato" : x.errore); refreshMe(); loadCreators(); loadFeed(true); });
     });
   }
 
@@ -368,8 +517,8 @@
     var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { threshold: .08 });
     $$(".reveal").forEach(function (n) { io.observe(n); });
   }
-  renderCats(); renderModels(); bindFeed(); bindTagAssist(); bindProfile();
-  renderGrid(); renderFeed(); renderAI();
+  renderCats(); renderModels(); bindFeed(); bindTagAssist(); bindProfile(); bindChat();
+  renderGrid(); renderAI();
   show(location.hash.slice(1)); revealObs(); gate(); magic();
-  loadAI(); loadCoin(); refreshSession();
+  loadAI(); loadCoin(); loadCreators(); refreshMe().then(function () { loadFeed(true); });
 })();

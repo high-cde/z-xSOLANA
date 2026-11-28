@@ -85,8 +85,10 @@ export function verifySig(key, ts, body, sig) {
 export const EVENT_TYPES = new Set(["profile_created", "role_set", "invite_accepted", "profile_verified", "invitee_verified", "profile_revoked",
   "stage_rsvp", "work_certified", "quest_done", "discord_linked", "discord_unlinked", "payout_planned", "payout_sent", "payout_held", "badge_verified",
   // Filiera ZDOS (senza attore: non generano punti merito né VELVET)
-  "work_proof", "vchain_root", "service_health", "pool_snapshot"]);
-export const SOURCES = new Set(["radar", "badge", "znft", "zquest", "zdiscord", "zara-bot", "telegram", "merito", "zminer", "filiera", "vchain", "zpool", "zbasket", "dex", "vcpu", "kira"]);
+  "work_proof", "vchain_root", "service_health", "pool_snapshot",
+  // OurVelvet Social (sorgente "creator"): attività reali dei creator. Nessun punto nelle regole del fondo: non cambiano merito né VELVET.
+  "creator_profile_published", "creator_post_published"]);
+export const SOURCES = new Set(["radar", "badge", "znft", "zquest", "zdiscord", "zara-bot", "telegram", "merito", "zminer", "filiera", "vchain", "zpool", "zbasket", "dex", "vcpu", "kira", "creator"]);
 
 export function openDb() {
   fs.mkdirSync(PATHS.data, { recursive: true });

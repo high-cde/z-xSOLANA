@@ -1,0 +1,1 @@
+{"name":"zdos-social","version":"1.0.0","private":true,"type":"module","description":"OurVelvet Social: backend reale della sezione Creator (profili, post, moderazione). © 2026 ZDOS1.3","dependencies":{"better-sqlite3":"^11.7.0","sharp":"^0.33.5","tweetnacl":"1.0.3","bs58":"6.0.0"}}

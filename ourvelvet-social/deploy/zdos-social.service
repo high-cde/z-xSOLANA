@@ -1,0 +1,38 @@
+[Unit]
+Description=OurVelvet Social v1 · profili, post e moderazione della sezione Creator (127.0.0.1:8910)
+After=network-online.target zdos-firma.service zcomm.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=zdossocial
+Group=zdossocial
+SupplementaryGroups=zcomm
+WorkingDirectory=/opt/zdos-social
+Environment=PORT=8910
+Environment=NODE_ENV=production
+Environment=SOCIAL_DATA=/var/lib/zdos-social
+Environment=SOCIAL_ADMIN_KEY_FILE=/etc/zdos-social/admin.key
+ExecStart=/usr/bin/node /opt/zdos-social/server.mjs
+Restart=on-failure
+RestartSec=5
+StateDirectory=zdos-social
+StateDirectoryMode=0700
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+LockPersonality=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+InaccessiblePaths=/etc/zdos-agi-wallets /root
+MemoryMax=320M
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target

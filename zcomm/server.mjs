@@ -111,6 +111,13 @@ const srv = http.createServer(async (req, res) => {
       const rows = db.prepare("SELECT seq, type, source, actor, subject, ts FROM events ORDER BY seq DESC LIMIT ?").all(lim);
       return json(res, 200, { ok: true, events: rows.map((r) => ({ ...r, tsRome: L.fmtRomeTs(r.ts) })), note: "Registro firmato HMAC lato server. Solo ID tecnici: nessun handle, email o wallet completo." }, "public, max-age=15");
     }
+    if (req.method === "GET" && p === "/zcomm/ovid-by-wallet") {
+      // Solo locale (OurVelvet Social): dice se un wallet ha già un profilo merito. Restituisce solo l'ID tecnico OV-XXXX.
+      if (!(ip === "127.0.0.1" || ip === "::1" || ip === "::ffff:127.0.0.1") || req.headers["x-forwarded-for"] || req.headers["x-real-ip"]) return json(res, 403, { ok: false, error: "solo locale" });
+      const w = String(u.searchParams.get("wallet") || ""); if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(w)) return json(res, 400, { ok: false, error: "wallet non valido" });
+      const r = L.readRadar(); const x = r && r.users.find((z) => z.wallet === w);
+      return json(res, 200, { ok: true, ovid: x ? x.ovid : null });
+    }
     if (req.method === "POST" && p === "/zcomm/events") {
       // Solo dal server stesso (bot e servizi locali); nginx non inoltra POST pubblici.
       if (!(ip === "127.0.0.1" || ip === "::1" || ip === "::ffff:127.0.0.1") || req.headers["x-forwarded-for"] || req.headers["x-real-ip"]) return json(res, 403, { ok: false, error: "solo locale" });

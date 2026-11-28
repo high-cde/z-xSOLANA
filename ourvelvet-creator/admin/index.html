@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Moderazione · OurVelvet Creator (staff)</title>
+<link rel="stylesheet" href="admin.css?v=1">
+</head>
+<body>
+<header class="top">
+  <div><b>OurVelvet Creator</b> · moderazione staff</div>
+  <div class="stats" id="stats">…</div>
+</header>
+<main>
+  <p class="rule">Regole: solo adulti, solo consenso, nessun personaggio dall'aspetto minorenne, nessuna nudità esplicita nella sezione pubblica. Safeword <b>ROSSO</b>. In caso di dubbio, rifiuta.</p>
+  <nav class="tabs"><button data-t="coda" class="on">Coda immagini</button><button data-t="segn">Segnalazioni</button><button data-t="log">Registro</button></nav>
+  <section id="t-coda"><div class="grid" id="coda"></div><p class="empty" id="codaEmpty" hidden>Nessuna immagine in revisione.</p></section>
+  <section id="t-segn" hidden><div id="segn"></div><p class="empty" id="segnEmpty" hidden>Nessuna segnalazione aperta.</p></section>
+  <section id="t-log" hidden><table><thead><tr><th>Quando</th><th>Staff</th><th>Azione</th><th>Oggetto</th></tr></thead><tbody id="log"></tbody></table></section>
+</main>
+<div class="toast" id="toast"></div>
+<script src="admin.js?v=1"></script>
+</body>
+</html>

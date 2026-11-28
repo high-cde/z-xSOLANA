@@ -10,8 +10,8 @@
 <meta property="og:description" content="Profili, feed e AI per creator 18+. Consenso prima di tutto.">
 <link rel="canonical" href="https://ourvelvet.online/creator-radar/">
 <link rel="icon" href="assets/logo-lsd.png" type="image/png">
-<link rel="stylesheet" href="creator.css?v=1">
-<script src="zdos-ga.js?v=1" defer></script>
+<link rel="stylesheet" href="creator.css?v=4">
+<script src="/zdos-tag.js" defer></script>
 <script src="/firma/theme.js"></script>
 </head>
 <body>
@@ -73,8 +73,8 @@
           <h1><span class="shimmer">Dove i creator</span><br>prendono vita</h1>
           <p class="lead">Profili, feed e assistenti AI per creator adulti e creator AI. Illustrazioni cartoon e stilizzate, niente di esplicito, consenso sempre. Dom-Coin e VELVET collegati, il badge «wallet verificato» con la tua firma OurVelvet.</p>
           <div class="hero-cta">
-            <a class="btn primary" href="#profilo" data-nav="profilo">Accedi con OurVelvet</a>
-            <a class="btn ghost" href="#crea" data-nav="crea">Crea un personaggio</a>
+            <a class="btn primary" href="#profilo" data-nav="profilo">Diventa creator</a>
+            <a class="btn ghost" href="#feed" data-nav="feed">Apri il feed</a>
           </div>
           <ul class="hero-facts">
             <li><b>18+</b> solo maggiorenni</li>
@@ -92,9 +92,19 @@
         <div class="chips" id="cats" role="tablist" aria-label="Categorie"></div>
       </div>
 
-      <div class="demo-note reveal">Anteprima: i profili qui sotto sono <b>personaggi di esempio</b>, non persone reali e non iscritti. Compariranno i creator veri quando si registrano e firmano con OurVelvet.</div>
+      <div class="first glass reveal" id="firstBox" hidden>
+        <div class="first-orb" aria-hidden="true"><span>✦</span></div>
+        <div>
+          <h3>Sii il primo creator</h3>
+          <p>La community sta aprendo adesso: qui compaiono solo creator veri, iscritti con la firma OurVelvet. Nessun profilo finto.</p>
+          <div class="row"><a class="btn primary" href="#profilo" data-nav="profilo">Crea il tuo profilo</a><a class="btn ghost" href="#feed" data-nav="feed">Vai al feed</a></div>
+        </div>
+      </div>
+      <h3 class="sec-t reveal" id="crT" hidden>Creator iscritti</h3>
       <div class="grid" id="grid" aria-live="polite"></div>
       <p class="empty" id="empty" hidden>Nessun risultato. Prova un altro tag.</p>
+      <h3 class="sec-t reveal">Personaggi AI di OurVelvet</h3>
+      <div class="grid" id="gridAi"></div>
     </section>
 
     <!-- CREA -->
@@ -131,15 +141,20 @@
     <!-- FEED -->
     <section class="view" id="v-feed" data-view="feed" hidden>
       <h2 class="vt">Feed</h2>
-      <div class="demo-note">Feed di <b>esempio</b>: post scritti da noi per mostrare il formato. La pubblicazione per tutti si apre con la moderazione.</div>
       <div class="feed-cols">
         <div>
-          <div class="glass pad composer">
-            <textarea id="postTxt" rows="3" maxlength="280" placeholder="Scrivi una nota per il tuo profilo (bozza sul dispositivo)…"></textarea>
-            <div class="prompt-bar"><span id="pc2">0/280</span><button class="btn primary sm" id="postBtn" type="button">Salva bozza</button></div>
+          <div class="glass pad composer" id="composer">
+            <div class="composer-lock" id="composerLock"><p>Per pubblicare <a href="#profilo" data-nav="profilo">accedi con OurVelvet e crea il tuo profilo</a>.</p></div>
+            <textarea id="postTxt" rows="3" maxlength="500" placeholder="Scrivi un post per la community (solo adulti, solo consenso)…"></textarea>
+            <div class="img-prev" id="imgPrev" hidden><img id="imgPrevI" alt="Anteprima immagine"><button type="button" id="imgRm" class="x" aria-label="Rimuovi immagine">×</button></div>
+            <div class="prompt-bar"><label class="btn ghost sm file"><input type="file" id="postImg" accept="image/jpeg,image/png,image/webp" hidden>Allega immagine</label><span id="pc2">0/500</span><button class="btn primary sm" id="postBtn" type="button">Pubblica</button></div>
             <p class="guard" id="postGuard" role="status"></p>
+            <p class="fine">Le immagini vengono ricodificate senza metadati (EXIF) e diventano pubbliche solo dopo la revisione dello staff. Massimo 5 MB, JPG, PNG o WebP.</p>
           </div>
+          <div class="seg" role="tablist" aria-label="Feed"><button type="button" class="chip on" data-scope="tutti">Tutti</button><button type="button" class="chip" data-scope="seguiti">Chi segui</button></div>
           <div id="posts"></div>
+          <div class="first glass" id="feedEmpty" hidden><div class="first-orb" aria-hidden="true"><span>❖</span></div><div><h3 id="feedEmptyT">Il feed è ancora vuoto</h3><p id="feedEmptyP">Scrivi il primo post: sarà il primo di tutta la community.</p></div></div>
+          <div class="row"><button class="btn ghost sm" id="more" type="button" hidden>Carica altri</button></div>
         </div>
         <aside class="glass pad trend">
           <h3>Tag del momento</h3>
@@ -150,6 +165,7 @@
             <li>Nessun contenuto esplicito e nessuna nudità in questa pagina.</li>
             <li>Nessun personaggio dall'aspetto minorenne.</li>
             <li>Niente promesse di guadagno.</li>
+            <li>Segnala ciò che non va: lo staff controlla.</li>
             <li>Safeword <b>ROSSO</b>: stop, sempre.</li>
           </ul>
         </aside>
@@ -162,6 +178,14 @@
       <p class="lead sm">Personaggi AI di OurVelvet e strumenti per i creator. Lo stato qui sotto arriva dal servizio in tempo reale.</p>
       <div class="status-line glass"><span class="dot" id="aiDot"></span><span id="aiTxt">Controllo il servizio…</span></div>
       <div class="grid g2" id="aiCards"></div>
+      <div class="glass pad mt2 chat" id="chatBox">
+        <h3>Parla con un personaggio AI</h3>
+        <p class="muted">La chat usa la tua sessione OurVelvet. I messaggi non sono pubblici. Puoi fermarti quando vuoi: scrivi <b>ROSSO</b> e la scena si interrompe.</p>
+        <div class="chips" id="chatChars" role="tablist" aria-label="Personaggio"></div>
+        <div class="chat-log" id="chatLog" aria-live="polite"><p class="muted" id="chatHint">Scegli un personaggio e scrivi il primo messaggio.</p></div>
+        <div class="chat-in"><input id="chatTxt" maxlength="400" type="text" placeholder="Scrivi un messaggio…" autocomplete="off"><button class="btn primary sm" id="chatSend" type="button">Invia</button></div>
+        <p class="guard" id="chatGuard" role="status"></p>
+      </div>
       <div class="glass pad mt2">
         <h3>Assistente tag</h3>
         <p class="muted">Incolla la bio o il testo di un post: ti suggerisco i tag giusti (calcolati nel tuo browser).</p>
@@ -227,15 +251,50 @@
           <div class="row mt"><button class="btn ghost sm" id="logout" type="button" hidden>Esci</button></div>
         </div>
       </div>
-      <div class="glass pad mt2">
-        <h3>Scheda creator (bozza sul dispositivo)</h3>
-        <div class="form">
-          <label>Nome d'arte<input id="pfName" maxlength="40" type="text" placeholder="Es. Selene Vox"></label>
-          <label>Bio<textarea id="pfBio" maxlength="240" rows="3" placeholder="Chi sei, cosa crei. Solo adulti, solo consenso."></textarea></label>
-          <label>Tag<input id="pfTags" maxlength="80" type="text" placeholder="Es. Cartoon, Gotico, Narrativa"></label>
+      <div class="glass pad mt2" id="pfBox">
+        <h3 id="pfTitle">Il tuo profilo creator</h3>
+        <p class="muted" id="pfLock">Accedi con OurVelvet qui sopra per creare il tuo profilo.</p>
+        <div id="pfForm" hidden>
+          <div class="pf-av">
+            <div class="av big" id="pfAv" aria-hidden="true"></div>
+            <div><label class="btn ghost sm file"><input type="file" id="pfAvIn" accept="image/jpeg,image/png,image/webp" hidden>Carica avatar</label>
+            <p class="fine" id="pfAvMsg">JPG, PNG o WebP fino a 5 MB. Ridimensionato a 512×512, metadati rimossi, visibile dopo la revisione dello staff.</p></div>
+          </div>
+          <div class="form">
+            <label>Handle<input id="pfHandle" maxlength="24" type="text" placeholder="es. selene_vox" autocomplete="off" spellcheck="false"></label>
+            <label>Bio<textarea id="pfBio" maxlength="280" rows="3" placeholder="Chi sei, cosa crei. Solo adulti, solo consenso."></textarea></label>
+          </div>
+          <p class="lbl">Categorie (fino a 4)</p>
+          <div class="chips" id="pfCats"></div>
+          <div id="pfConsents">
+            <label class="check"><input type="checkbox" id="pf18"> <span>Dichiaro di avere 18 anni o più.</span></label>
+            <label class="check"><input type="checkbox" id="pfTerms"> <span>Accetto il <a href="#regole" id="openTerms">regolamento creator</a>: niente minori o personaggi dall'aspetto minorenne, niente contenuti non consensuali, niente nudità esplicita nelle aree pubbliche, niente promesse di guadagno.</span></label>
+            <label class="check"><input type="checkbox" id="pfConsent"> <span>Acconsento a pubblicare handle, bio, categorie, avatar e post che inserisco. Posso esportarli o cancellarli quando voglio.</span></label>
+          </div>
+          <div class="row"><button class="btn primary" id="pfSave" type="button">Pubblica profilo</button><span class="fine" id="pfMsg" role="status"></span></div>
         </div>
-        <div class="row"><button class="btn primary" id="pfSave" type="button">Salva bozza</button><span class="fine" id="pfMsg"></span></div>
-        <p class="fine">La pubblicazione del profilo per tutti arriva con la moderazione: per ora la scheda resta sul tuo dispositivo.</p>
+      </div>
+      <details class="glass pad mt2 terms" id="regole">
+        <summary>Regolamento creator (versione 2026-11-28)</summary>
+        <ol>
+          <li>Solo persone maggiorenni, sia chi pubblica sia chi è rappresentato. Nessun personaggio dall'aspetto minorenne, nemmeno disegnato.</li>
+          <li>Solo contenuti consensuali. Vietati riferimenti a minori, «teen», legami «step», non consenso e violenza non consensuale: il filtro li blocca.</li>
+          <li>Nelle aree pubbliche niente nudità esplicita. Ogni immagine passa dalla revisione dello staff prima di diventare visibile.</li>
+          <li>Pubblica solo contenuti tuoi o che hai il diritto di usare. Niente marchi o volti di terzi senza permesso.</li>
+          <li>Niente spam, niente promesse di guadagno, niente consigli finanziari.</li>
+          <li>Safeword <b>ROSSO</b>: chiunque può fermare una scena o una conversazione in qualsiasi momento.</li>
+          <li>Puoi segnalare post e profili e bloccare chi vuoi. Lo staff può nascondere contenuti e sospendere profili.</li>
+          <li>Dati: salviamo solo quello che inserisci e il tuo indirizzo wallet pubblico. Nessun indirizzo IP salvato. Puoi esportare e cancellare tutto dal tuo profilo. Titolare: ZDOS1.3, P.IVA 11040550961.</li>
+        </ol>
+      </details>
+      <div class="glass pad mt2" id="myBox" hidden>
+        <h3>I miei post</h3>
+        <div id="myPosts"><p class="muted">Nessun post.</p></div>
+        <h3 class="mt">Persone bloccate</h3>
+        <div id="myBlocks" class="chips"><p class="muted">Nessuno.</p></div>
+        <h3 class="mt">I tuoi dati</h3>
+        <p class="muted">Scarica tutto ciò che hai inserito, oppure cancella profilo, post, immagini, like, follow e segnalazioni. La cancellazione non si può annullare.</p>
+        <div class="row"><a class="btn ghost sm" id="gdprExport" href="/api/social/me/export" download>Esporta i miei dati</a><button class="btn ghost sm danger" id="gdprDel" type="button">Cancella il mio profilo</button></div>
       </div>
     </section>
 
@@ -258,6 +317,6 @@
 
 <script src="/firma/firma.js?v=1"></script>
 <script src="/firma/badge.js?v=1"></script>
-<script src="creator.js?v=2"></script>
+<script src="creator.js?v=4"></script>
 </body>
 </html>
