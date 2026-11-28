@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pool Party · OurVelvet — distribuzione meritocratica (proposta)</title>
+<meta name="description" content="Pool Party inverso: il merito conta più del capitale. Classifica e distribuzione proposta in sola lettura, senza pagamenti.">
+<meta name="theme-color" content="#0b0408">
+<link rel="canonical" href="https://ourvelvet.online/pool-party/">
+<style>
+:root{--bg:#0b0408;--ink:#fdf2f8;--mut:#c9aab8;--line:rgba(244,114,182,.22);--rose:#e11d48;--pink:#fb7185;--gold:#f5c36c;--cy:#67e8f9;--ok:#86efac;--warn:#fbbf24}
+*{box-sizing:border-box}
+html,body{margin:0;background:radial-gradient(ellipse 90% 45% at 50% 0,rgba(190,18,60,.28),transparent 65%),radial-gradient(ellipse 50% 40% at 90% 100%,rgba(245,195,108,.08),transparent 60%),var(--bg);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100dvh;overflow-x:clip}
+a{color:var(--pink)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+header{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line)}
+header a.b{color:var(--ink);text-decoration:none;font-family:Georgia,serif;letter-spacing:.06em}
+header nav{margin-left:auto;display:flex;gap:16px;font-size:.85rem}
+header nav a{color:var(--mut);text-decoration:none}header nav a:hover{color:var(--ink)}
+/* fascia sottile stile "ZLANG // ANCHOR RECEIPT" */
+.band{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:8px 18px;border-bottom:1px solid var(--line);font:.72rem/1.4 ui-monospace,Menlo,monospace;letter-spacing:.06em;color:var(--mut)}
+.band .k{color:var(--cy);font-weight:700}.band.rose .k{color:var(--pink)}.band.gold .k{color:var(--gold)}
+.band .v{color:var(--ink);word-break:break-all}.band .r{margin-left:auto}
+.pill{display:inline-block;padding:1px 8px;border:1px solid var(--warn);color:var(--warn);border-radius:999px;font-size:.68rem;letter-spacing:.08em}
+.pill.ok{border-color:var(--ok);color:var(--ok)}.pill.no{border-color:var(--pink);color:var(--pink)}.pill.t{border-color:var(--cy);color:var(--cy)}
+main{max-width:980px;margin:0 auto;padding:34px 18px 70px}
+h1{font:400 clamp(1.9rem,5vw,2.8rem)/1.1 Georgia,serif;margin:0 0 10px}
+.lead{color:var(--mut);max-width:62ch;margin:0 0 26px}
+h2{font:700 .78rem/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin:38px 0 12px}
+.row{display:flex;flex-wrap:wrap;gap:26px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kv .l{font:.68rem ui-monospace,Menlo,monospace;letter-spacing:.1em;color:var(--mut);text-transform:uppercase}.kv .n{font-size:1.35rem;font-family:Georgia,serif}
+.kv .n small{font-size:.75rem;color:var(--mut);font-family:ui-sans-serif,system-ui}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th{font:.68rem ui-monospace,Menlo,monospace;letter-spacing:.1em;color:var(--mut);text-align:left;padding:6px 8px;text-transform:uppercase;font-weight:400}
+td{padding:9px 8px;border-top:1px solid var(--line);vertical-align:middle}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:4px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:5px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--rose),var(--gold))}
+tr.me td{background:rgba(251,113,133,.08)}
+.empty{color:var(--mut);padding:18px 0}
+details{border-top:1px solid var(--line);padding:10px 0}details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;color:var(--ink)}summary::marker{color:var(--pink)}
+details p,details li{color:var(--mut);font-size:.93rem}details ul{padding-left:18px;margin:8px 0}
+.blk{list-style:none;padding:0;margin:0}.blk li{padding:9px 0;border-top:1px solid var(--line);display:flex;gap:12px;font-size:.93rem}.blk li:first-child{border-top:0}.blk b{min-width:130px;font:.78rem ui-monospace,Menlo,monospace;color:var(--warn);font-weight:400}
+.note{color:var(--mut);font-size:.85rem}
+button{background:transparent;color:var(--ink);border:1px solid var(--pink);border-radius:999px;padding:7px 16px;font:inherit;cursor:pointer}button:hover{background:rgba(251,113,133,.14)}
+footer{border-top:1px solid var(--line);padding:18px;text-align:center;color:var(--mut);font-size:.8rem}
+@media(max-width:640px){td.hide,th.hide{display:none}.band .r{margin-left:0}header nav{display:none}}
+</style>
+</head>
+<body>
+<header><a class="b" href="/">OurVelvet</a><nav><a href="/creator-radar/">Creator</a><a href="/merito/">Merito</a><a href="/verifica/">Verifica firma</a></nav></header>
+<div class="band" id="rec"><span class="k">ZLANG // POOL RECEIPT</span><span class="pill" id="pMode">CARICAMENTO</span><span class="v" id="rEpoch">—</span><span class="r">hash <span class="v" id="rHash">—</span></span></div>
+<div class="band rose"><span class="k">SOLO ADULTI 18+</span><span>consenso reciproco · safeword ROSSO · nessun minore</span></div>
+<main>
+  <h1>Pool Party inverso</h1>
+  <p class="lead">Nel pool party classico paga chi deposita di più. Qui è il contrario: i punti vengono dall'attività verificata, e il capitale pesa al massimo come un moltiplicatore con tetto. Detenere L$D da solo vale zero. Questa pagina <b>calcola e mostra</b>: non esegue pagamenti.</p>
+  <p class="note" id="banner"></p>
+
+  <h2>Budget settimanale <span class="pill">proposta, da confermare con doc</span></h2>
+  <div class="row" id="budget"></div>
+
+  <h2>Classifica dell'epoca</h2>
+  <div id="board"><p class="empty">Carico i dati…</p></div>
+  <p class="note" id="mineNote"></p>
+
+  <h2>Come si calcola il merito</h2>
+  <details open><summary>Fonti di punti (valori proposti)</summary><ul id="rules"></ul></details>
+  <details><summary>Perché è «inverso»</summary><p>Il moltiplicatore per chi detiene L$D è a scaglioni e ha un tetto (+10% da 10.000, +20% da 100.000 L$D) e si applica solo su punti già guadagnati. Nessun profilo può prendere più del 5% del budget della settimana: la parte non assegnata torna al fondo. Like e follower contano solo se arrivano da profili attivi e distinti, mai dal profilo stesso.</p></details>
+  <details><summary>Identità e esclusi</summary><p id="ident"></p></details>
+  <details><summary>Dato di mercato L$D (sola lettura)</summary><div id="market"></div></details>
+
+  <h2>Ricevuta dello ZDOS Miner</h2>
+  <div class="row" id="miner"></div>
+  <p class="note">Le prove di lavoro del Miner sono lavoro dell'infrastruttura ZDOS e non hanno un attore: per questo oggi non assegnano punti a nessun contributore.</p>
+
+  <h2>Approvazione e kill switch</h2>
+  <div id="appr"></div>
+
+  <h2>Bloccanti in attesa di doc</h2>
+  <ul class="blk" id="blk"></ul>
+  <p class="note" id="foot"></p>
+</main>
+<footer>© 2026 ZDOS1.3 · P.IVA 11040550961 · nessun rendimento promesso · <a href="/api/social/pool/state">dati grezzi (JSON)</a></footer>
+<script>
+(function(){
+const $=id=>document.getElementById(id), N=(v,d=0)=>v==null?"—":Number(v).toLocaleString("it-IT",{maximumFractionDigits:d,minimumFractionDigits:d});
+const E=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const kv=(l,n,s)=>`<div class="kv"><div class="l">${l}</div><div class="n">${n}${s?` <small>${s}</small>`:""}</div></div>`;
+let S=null;
+async function load(){
+  const r=await fetch("/api/social/pool/state",{credentials:"same-origin",cache:"no-store"}); S=await r.json(); if(!S.ok) throw new Error("stato");
+  const m=S.epoca.modalita==="demo";
+  $("pMode").textContent=m?"DEMO · DATI DI TEST":"DATI REALI"; $("pMode").className="pill "+(m?"t":"ok");
+  $("rEpoch").textContent=S.epoca.id+" · "+S.epoca.inizioRoma+" → "+S.epoca.fineRoma+" (ora di Roma)";
+  $("rHash").textContent=S.snapshot.hash.slice(0,16)+"…";
+  $("banner").textContent=S.etichetta+" Snapshot "+S.snapshot.ancoraggio+".";
+  const b=S.budget;
+  $("budget").innerHTML=kv("Quota settimana",N(b.quotaSettimanaL$D),"L$D = 20M / 26 sett.")+kv("+ fee DLMM (stima)",N(b.quotaFeeL$D,2),"L$D · metà delle fee")+kv("Tetto per profilo",N(b.tettoProfiloL$D),"L$D · "+b.tettoProfiloPct+"%")+kv("Assegnato",N(b.assegnatoL$D),"L$D proposti")+kv("Torna al fondo",N(b.ritornaAlFondoL$D),"L$D");
+  // classifica
+  const c=S.classifica;
+  if(!c.length) $("board").innerHTML='<p class="empty">Nessun profilo attivo in questa epoca.</p>';
+  else $("board").innerHTML='<table><thead><tr><th>#</th><th>Profilo</th><th class="num">Punti</th><th class="num hide">Quota</th><th class="num">'+(m?"Simulato":"Proposto")+' L$D</th></tr></thead><tbody>'+c.map(i=>`<tr class="${i.tu?"me":""}"><td>${i.rango}</td><td>@${E(i.handle)} ${i.test?'<span class="pill t">TEST</span>':""} ${i.motivo?'<span class="note">'+E(i.motivo)+"</span>":""}<div class="bar"><i style="width:${Math.min(100,i.quota*2)}%"></i></div>${i.tu&&i.dettaglio?'<div class="note">Tuo dettaglio: post '+i.dettaglio.post+', like da profili distinti '+i.dettaglio.likeDaProfiliDistinti+', nuovi follower '+i.dettaglio.nuoviFollower+', ore LP '+i.dettaglio.oreLP+(i.dettaglio.bonusHolder?', bonus holder +'+Math.round(i.dettaglio.bonusHolder*100)+"%":"")+"</div>":""}</td><td class="num">${N(i.punti,2)}</td><td class="num hide">${N(i.quota,1)}%</td><td class="num">${N(i.importoProposto,2)}</td></tr>`).join("")+"</tbody></table>";
+  $("mineNote").textContent=m?"Tutti i profili attuali sono account di test DSN-X: i numeri mostrano il funzionamento, non una distribuzione reale. Gli account di test non sono mai pagabili.":"";
+  // regole
+  const p=S.parametri.punti;
+  $("rules").innerHTML=[`Post pubblico: ${p.post.pt} pt, max ${p.post.maxSettimana} a settimana`,`Mi piace ricevuto da un profilo attivo e distinto: ${p.likeRicevuto.pt} pt, max ${p.likeRicevuto.maxSettimana}`,`Nuovo follower attivo e distinto: ${p.nuovoFollower.pt} pt, max ${p.nuovoFollower.maxSettimana}`,`Badge «wallet verificato» pubblico: ${p.badgeVerificato.pt} pt`,`Liquidità nel pool L$D-SOL: fino a ${p.lpL$D.ptMax} pt, ${E(p.lpL$D.nota)}`,`Punti del fondo merito (profilo OV collegato): ${E(p.zcomm.nota)}`,`Prove di lavoro ZDOS Miner: ${p.work_proof.pt} pt. ${E(p.work_proof.nota)}`].map(x=>"<li>"+x+"</li>").join("");
+  $("ident").textContent=S.identita.metodo+". "+S.identita.antifakeZdesk+". Esclusi: "+S.identita.esclusi+".";
+  const k=S.mercato, a=S.antifakeToken;
+  $("market").innerHTML=k?`<p>Prezzo ${k.prezzoUsd?"$"+N(k.prezzoUsd,6):"—"} · liquidità ${k.liquiditaUsd!=null?"$"+N(k.liquiditaUsd,2):"—"} · volume 24h ${k.volume24hUsd!=null?"$"+N(k.volume24hUsd,2):"—"} · fee 24h ${k.fee24hUsd!=null?"$"+N(k.fee24hUsd,4):"—"} · supply ${N(k.supply)} · holder ${N(k.holder)}</p><p>Controllo antifake (K.I.R.A./ZDESK): <span class="pill ${a&&a.livello==="rosso"?"no":""}">${E(a?a.livello:"n.d.")}</span> ${a?E((a.segnali||[]).join(" · ")):""}</p><p class="note">Fonte: ${E(k.fonte)} · letto ${E(k.letto)}. Il prezzo è quello del pool Meteora, con liquidità minima: non è una valutazione.</p>`:'<p class="note">Fonte non raggiungibile in questo momento.</p>';
+  const mi=S.miner; $("miner").innerHTML=mi?kv("Prove di lavoro",N(mi.prove),"totale")+kv("Lavori utili",N(mi.lavori))+kv("Radice",'<span class="mono" style="font-size:.8rem">'+E((mi.head||"").slice(0,18))+"…</span>"):'<span class="note">n.d.</span>';
+  const ap=S.approvazione, ks=S.killSwitch;
+  $("appr").innerHTML=`<p>Ogni distribuzione richiede la firma manuale di doc sull'hash dell'epoca. Approvatori configurati: <b>${ap.approvatoriConfigurati}</b> · approvazioni registrate per questo hash: <b>${ap.registrate}</b> · pagamenti eseguiti da questo sistema: <b>${ap.pagamentiEseguitiDaQuestoSistema}</b>.</p><p>Kill switch: pagamenti <span class="pill no">DISABILITATI</span> — ${E(ks.motivo)}. File STOP del Pool Party: ${E(ks.fileSTOP)}.${ks.fondoMeritoVELVET?" Fondo merito VELVET (programma separato): emissioni "+(ks.fondoMeritoVELVET.live?"attive":"ferme")+".":""}</p>`+(ap.tuSeiApprovatore?'<p><button id="sign" type="button">Firma approvazione con Phantom</button> <span class="note" id="signMsg"></span></p>':"");
+  $("blk").innerHTML=S.bloccanti.map(x=>`<li><b>${E(x.stato)}</b><span>${E(x.testo)}</span></li>`).join("");
+  $("foot").textContent=S.note;
+  const sg=$("sign"); if(sg) sg.onclick=sign;
+}
+async function sign(){
+  const msg=$("signMsg"); try{
+    const ph=(window.phantom&&window.phantom.solana)||window.solana; if(!ph) throw new Error("Phantom non trovato");
+    await ph.connect(); const bytes=new TextEncoder().encode(S.approvazione.messaggio); const r=await ph.signMessage(bytes,"utf8");
+    const b58=a=>{const A="123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";let n=0n;for(const x of a)n=n*256n+BigInt(x);let s="";while(n>0n){s=A[Number(n%58n)]+s;n/=58n}for(const x of a){if(x===0)s="1"+s;else break}return s};
+    const res=await fetch("/api/social/pool/approve",{method:"POST",credentials:"same-origin",headers:{"content-type":"application/json","x-ov-social":"1"},body:JSON.stringify({epoca:S.epoca.id,hash:S.snapshot.hash,firma:b58(r.signature)})});
+    const j=await res.json(); msg.textContent=j.ok?j.nota:(j.errore||"errore"); if(j.ok) load();
+  }catch(e){msg.textContent=e.message}
+}
+load().catch(()=>{$("board").innerHTML='<p class="empty">Dati non disponibili ora. Riprova tra poco.</p>'});
+setInterval(()=>load().catch(()=>{}),60000);
+})();
+</script>
+</body>
+</html>
