@@ -1,0 +1,30 @@
+[Unit]
+Description=ZDOS Miner · lavoro utile per i servizi ZDOS (nessun mining crypto), prove su zcomm e vBLOCKCHAIN
+After=network-online.target zcomm.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/zdos-miner
+Environment=NODE_ENV=production
+Environment=ZMINER_PORT=4197
+ExecStart=/usr/bin/node /opt/zdos-miner/miner.mjs
+Restart=always
+RestartSec=5
+Nice=19
+CPUSchedulingPolicy=idle
+IOSchedulingClass=idle
+CPUQuota=25%
+MemoryMax=256M
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/zdos-miner
+InaccessiblePaths=-/etc/zdos-agi-wallets -/etc/zdos-fondo-merito -/opt/zdesk
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,25 @@
+[Unit]
+Description=ÆSIR Filiera · aggregatore admin in sola lettura (127.0.0.1:4196)
+After=network-online.target zdos-miner.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/zdos-filiera
+Environment=NODE_ENV=production
+Environment=FILIERA_PORT=4196
+ExecStart=/usr/bin/node /opt/zdos-filiera/server.mjs
+Restart=always
+RestartSec=5
+Nice=10
+CPUQuota=15%
+MemoryMax=192M
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+InaccessiblePaths=-/etc/zdos-agi-wallets -/etc/zdos-fondo-merito -/etc/zcomm -/opt/zdesk
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+
+[Install]
+WantedBy=multi-user.target

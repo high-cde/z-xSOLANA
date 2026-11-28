@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ÆSIR · Filiera ZDOS</title><meta name="robots" content="noindex,nofollow">
+<style>
+:root{--bg:#07080d;--pn:#0f1220;--ln:#1f2540;--tx:#e8ecff;--mu:#8a93b8;--ac:#7cf3ff;--ok:#3ef0a0;--ko:#ff5d7a;--wa:#ffcc4d;--vi:#b28cff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,#1a1440 0,transparent 60%),var(--bg);color:var(--tx);font:14px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:10px 16px;background:#07080dcc;backdrop-filter:blur(8px);border-bottom:1px solid var(--ln)}
+header b{font-size:18px;letter-spacing:.08em;color:var(--ac)}header small{color:var(--mu)}header .sp{flex:1}
+nav a{color:var(--mu);text-decoration:none;margin-left:10px;font-size:12px}nav a:hover{color:var(--ac)}
+main{max-width:1280px;margin:0 auto;padding:16px}
+.vis{border:1px solid var(--ln);border-left:3px solid var(--vi);background:var(--pn);padding:12px 14px;border-radius:10px;color:#cfd5ff}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.k{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:10px}.k i{display:block;color:var(--mu);font-style:normal;font-size:11px;text-transform:uppercase;letter-spacing:.06em}.k b{font-size:20px}
+h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ac);margin:26px 0 8px;border-bottom:1px solid var(--ln);padding-bottom:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px}
+.pn{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:12px;overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:5px 6px;border-bottom:1px solid #171c33;vertical-align:top}th{color:var(--mu);font-weight:normal}
+.ok{color:var(--ok)}.ko{color:var(--ko)}.wa{color:var(--wa)}.mu{color:var(--mu)}a{color:var(--ac)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--ko)}.dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.svc{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px}.svc div{background:#0b0e1a;border:1px solid var(--ln);border-radius:8px;padding:6px 8px;font-size:12px}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}.flow span{border:1px solid var(--ln);background:#0b0e1a;border-radius:20px;padding:4px 10px;font-size:12px;transition:.3s}.flow span.on{border-color:var(--ok);color:var(--ok)}.flow em{color:var(--mu);font-style:normal}
+.tag{font-size:10px;border:1px solid var(--ln);border-radius:4px;padding:0 4px;color:var(--mu);margin-left:4px}
+code{color:#ffd9a8;word-break:break-all}.pulse{animation:p 1.6s infinite}@keyframes p{50%{opacity:.35}}
+@media(max-width:700px){header nav,header small:first-of-type{display:none}header #upd{font-size:11px}main{padding:10px}}
+footer{color:var(--mu);font-size:11px;text-align:center;padding:24px}
+</style></head><body>
+<header><b>ÆSIR</b><small>Filiera ZDOS · pannello admin</small><span class="sp"></span><small id="upd" class="pulse">caricamento…</small>
+<nav><a href="#monete">Monete</a><a href="#pool">Pool</a><a href="#servizi">Servizi</a><a href="#vchain">vBLOCKCHAIN</a><a href="#miner">Miner</a><a href="#merito">Merito</a><a href="#bus">Bus</a></nav></header>
+<main>
+<div class="vis" id="vision"></div>
+<div class="flow" id="flow"></div>
+<div class="kp" id="kpi"></div>
+
+<h2 id="monete">Monete (on-chain, sola lettura)</h2><div class="pn"><table id="coins"></table></div>
+<h2>Wallet ufficiali</h2><div class="pn"><table id="wallets"></table></div>
+<h2 id="pool">Pool reali · Meteora · Jupiter · DexScreener</h2><div class="pn"><table id="pools"></table><p class="mu" id="poolnote"></p></div>
+<h2 id="servizi">Servizi</h2><div class="pn"><div class="svc" id="svc"></div><table id="pub" style="margin-top:10px"></table></div>
+<h2 id="vchain">vBLOCKCHAIN · ledger ZDOS programmabile in Zlang, ancorato su Solana</h2>
+<div class="grid"><div class="pn"><div id="vhead"></div><table id="blocks"></table></div><div class="pn"><div id="anhead"></div><table id="anchors"></table></div></div>
+<h2 id="miner">ZDOS Miner · lavoro utile, sempre attivo</h2>
+<div class="grid"><div class="pn"><div id="mhead"></div><table id="mjobs"></table></div><div class="pn"><b>Ultime prove di lavoro</b><table id="proofs"></table></div></div>
+<div class="pn" style="margin-top:12px"><b>Radici registrate su vBLOCKCHAIN</b><table id="roots"></table><p class="mu" id="zai"></p></div>
+<h2 id="merito">Merito · zcomm</h2><div class="grid"><div class="pn" id="mer"></div><div class="pn" id="zai2"></div></div>
+<h2 id="bus">Bus eventi zcomm (firmati HMAC)</h2><div class="pn"><table id="events"></table></div>
+<h2>zAI · vCPU · K.I.R.A. · Z-Pool · DEX</h2><div class="grid"><div class="pn" id="vcpu"></div><div class="pn" id="zpool"></div></div>
+</main>
+<footer>ÆSIR Filiera · sola lettura · nessuna chiave, nessun movimento di fondi · © 2026 ZDOS1.3</footer>
+<script>
+const $=(i)=>document.getElementById(i),E=(s)=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const sh=(a,n=4)=>a?E(a.slice(0,n)+"…"+a.slice(-n)):"—",num=(x,d=2)=>x==null||isNaN(x)?"—":Number(x).toLocaleString("it-IT",{maximumFractionDigits:d});
+const usd=(x)=>x==null?"—":"$ "+num(x,x<1?8:2),ago=(t)=>{if(!t)return"—";const s=Math.floor(Date.now()/1000-t);return s<90?s+" s fa":s<5400?Math.round(s/60)+" min fa":Math.round(s/3600)+" h fa"};
+const sol=(a)=>`<a href="https://solscan.io/account/${a}" target="_blank" rel="noopener">${sh(a)}</a>`;
+const FLOW=["Monete","DEX · Meteora","Z-Pool · zBASKET","zAI · vCPU","ZDOS Miner","bus zcomm","Merito","vBLOCKCHAIN","Ancora Solana"];
+async function load(){
+ let d;try{const r=await fetch("api/filiera",{cache:"no-store"});d=await r.json()}catch(e){$("upd").textContent="errore di rete";return}
+ $("upd").classList.remove("pulse");$("upd").textContent="aggiornato "+d.tsRome;$("vision").textContent=d.vision;
+ const S=(d.services&&d.services.services)||[],up=S.filter(s=>s.up).length,m=d.miner||{};
+ const lay=(l)=>S.filter(s=>s.layer===l).every(s=>s.up);
+ const st=[true,lay("dex"),lay("pool"),lay("zAI"),!!m.ok&&!m.paused,lay("bus"),!!(d.merito&&d.merito.emissions),lay("ledger"),!!(d.vchain.anchorCheck&&d.vchain.anchorCheck.ok)];
+ $("flow").innerHTML=FLOW.map((f,i)=>`<span class="${st[i]?"on":""}">${f}</span>`).join("<em>→</em>");
+ const b=d.balances||d.wallets||{},W=b.wallets||[],fund=W.find(w=>w.label.startsWith("Fondo"));
+ $("kpi").innerHTML=[["Servizi attivi",`${up}/${S.length}`],["Altezza vBLOCKCHAIN","#"+(d.vchain.status?d.vchain.status.height:"—")],["Prove di lavoro",num(m.n,0)],["Punti lavoro",num(m.points,0)],["Eventi bus",(d.bus&&d.bus[0]?"#"+d.bus[0].seq:"—")],["VELVET nel fondo",fund?num(fund.tokens["2EN6Y1zM4yyt41gE2muzdJSAgRCAZiXqnmkgpbrspump"],0):"—"]].map(([a,v])=>`<div class="k"><i>${a}</i><b>${v}</b></div>`).join("");
+ const P=(d.pools&&d.pools.prices)||{},sup=b.supply||{};
+ $("coins").innerHTML="<tr><th>Moneta</th><th>Rete</th><th>Mint</th><th>Supply</th><th>Prezzo (Jupiter)</th><th>Liquidità</th><th>Nota</th></tr>"+d.coins.map(c=>{const p=P[c.mint]||{};return`<tr><td><b>${E(c.sym)}</b> <span class="mu">${E(c.alias)}</span></td><td>${E(c.chain)}</td><td>${c.mint?(c.chain==="polygon"?`<a href="https://polygonscan.com/token/${c.mint}" target="_blank">${sh(c.mint,6)}</a>`:`<a href="https://solscan.io/token/${c.mint}" target="_blank">${sh(c.mint,6)}</a>`):"—"}</td><td>${num(sup[c.mint],0)}</td><td>${usd(p.usd)}</td><td>${p.liquidity!=null?usd(p.liquidity):"—"}</td><td class="mu">${E(c.note)}${p.launchpad?` <span class="tag">${E(p.launchpad)}</span>`:""}</td></tr>`}).join("");
+ const mints=d.coins.filter(c=>c.chain==="solana");
+ $("wallets").innerHTML="<tr><th>Wallet</th><th>Indirizzo</th><th>SOL</th>"+mints.map(c=>`<th>${E(c.sym)}</th>`).join("")+"</tr>"+W.map(w=>`<tr><td>${E(w.label)}</td><td>${sol(w.addr)}</td><td>${num(w.sol,4)}</td>${mints.map(c=>`<td>${num(w.tokens[c.mint],0)}</td>`).join("")}</tr>`).join("")+`<tr><td colspan="9" class="mu">letto ${ago(b.ts)} dal ZDOS Miner (RPC mainnet). Il keypair ancore firma su devnet: il saldo mainnet 0 è normale.</td></tr>`;
+ const pl=d.pools||{},rows=[...(pl.meteora||[]).map(p=>[`Meteora DLMM <span class="tag">${E(p.label)}</span>`,p.pair,p.tvl,p.vol24,p.price,p.binStep?`bin ${p.binStep} · fee ${p.baseFee}%`:"",p.url]),...(pl.pools||[]).filter(p=>!(pl.meteora||[]).find(m=>m.pair===p.pair)).map(p=>[E(p.dex)+" "+(p.labels||[]).map(l=>`<span class="tag">${E(l)}</span>`).join(""),p.pair,p.liqUsd,p.vol24,p.priceUsd,E(p.sym+"/"+p.quote),p.url])];
+ $("pools").innerHTML="<tr><th>DEX</th><th>Pool</th><th>Liquidità (USD)</th><th>Volume 24h</th><th>Prezzo</th><th>Info</th></tr>"+(rows.length?rows.map(r=>`<tr><td>${r[0]}</td><td><a href="${E(r[6])}" target="_blank">${sh(r[1])}</a></td><td>${usd(r[2])}</td><td>${usd(r[3])}</td><td>${r[4]==null?"—":num(r[4],10)}</td><td class="mu">${r[5]}</td></tr>`).join(""):`<tr><td colspan="6" class="mu">nessun pool trovato</td></tr>`);
+ $("poolnote").textContent=`Aggiornato ${ago(pl.ts)}. VELVET è ancora sulla curva pump.fun (nessun pool DEX); xZDOS non ha pool né prezzo di mercato. Liquidità nuova solo con firma utente/ok di doc.`;
+ $("svc").innerHTML=S.map(s=>`<div><span class="dot ${s.up?"on":""}"></span>${E(s.name)} <span class="tag">${E(s.layer)}</span><br><span class="mu">:${s.port} · ${s.code||"giù"} · ${s.ms} ms</span></div>`).join("");
+ $("pub").innerHTML="<tr><th>URL pubblico</th><th>HTTP</th><th>ms</th></tr>"+((d.services&&d.services.public)||[]).map(p=>`<tr><td><a href="${E(p.url)}" target="_blank">${E(p.url)}</a></td><td class="${p.up?"ok":"ko"}">${p.code}</td><td>${p.ms}</td></tr>`).join("");
+ const v=d.vchain,ck=v.check||{};
+ $("vhead").innerHTML=`<b>${E(v.status&&v.status.chainId)}</b><br><span class="mu">testa <code>${E(v.status&&v.status.headHash)}</code></span><br>Verifica miner: <span class="${ck.broken&&ck.broken.length?"ko":"ok"}">${ck.checked||0} blocchi, catena ${ck.broken&&ck.broken.length?"rotta":"integra"}</span> · hash ricalcolati ok ${ck.hashOk??"—"} · ${ago(ck.ts)}`;
+ $("blocks").innerHTML="<tr><th>#</th><th>Tipo</th><th>Dettaglio</th><th>Hash</th><th>Quando</th></tr>"+(v.blocks||[]).map(x=>`<tr><td>${x.height}</td><td>${E(x.tx&&x.tx.type)}</td><td class="mu">${x.tx&&x.tx.type==="ZMINER_WORK_ROOT"?`${x.tx.count} prove · ${x.tx.workPoints} punti · radice ${E((x.tx.merkleRoot||"").slice(0,12))}…`:E([x.tx&&x.tx.from,x.tx&&x.tx.to,x.tx&&x.tx.amount].filter(Boolean).join(" "))}</td><td><code>${E(x.hash.slice(0,10))}…</code></td><td>${new Date(x.timestamp).toLocaleString("it-IT",{timeZone:"Europe/Rome"})}</td></tr>`).join("");
+ const ac=v.anchorCheck||{};$("anhead").innerHTML=`<b>Ancore Solana (Memo, ${E(v.anchorNetwork)})</b><br><span class="mu">${ac.ok??"—"} riuscite su ${ac.total??"—"} nel registro · cron ogni 15 min, solo se cambia la testa</span>`;
+ $("anchors").innerHTML="<tr><th>Altezza</th><th>Firma Solana</th><th>Quando</th></tr>"+((v.anchors&&v.anchors.recent)||[]).map(a=>{const okk=a.solanaSig&&!String(a.solanaSig).startsWith("ERR");return`<tr><td>#${a.height}</td><td>${okk?`<a href="https://solscan.io/tx/${a.solanaSig}?cluster=devnet" target="_blank">${sh(a.solanaSig,6)}</a>`:`<span class="ko">errore</span>`}</td><td>${a.ts?new Date(a.ts).toLocaleString("it-IT",{timeZone:"Europe/Rome"}):"—"}</td></tr>`}).join("");
+ const cpu=m.cpu?((m.cpu.userS+m.cpu.sysS)/Math.max(1,m.cpu.uptimeS)*100).toFixed(2):"—";
+ $("mhead").innerHTML=`<span class="dot ${m.ok&&!m.paused?"on":""}"></span><b>${E(m.name||"ZDOS Miner")}</b> ${m.paused?'<span class="wa">in pausa (file STOP)</span>':'<span class="ok">attivo</span>'} · v${E(m.version)}<br><span class="mu">${E(m.kind)} · CPU media ${cpu}% (limite 25%) · RAM ${num((m.rss||0)/1048576,0)} MB · avviato ${ago(m.bootedAt)}</span><br>Prove: <b>${num(m.n,0)}</b> · punti lavoro: <b>${num(m.points,0)}</b> · errori ${num(m.errors,0)}<br><span class="mu">${E(m.points_note)}</span>`;
+ $("mjobs").innerHTML="<tr><th>Lavoro</th><th>Eseguiti</th><th>Ok</th><th>Punti</th><th>ms medi</th><th>Ultimo esito</th></tr>"+Object.entries(m.byJob||{}).map(([k,x])=>`<tr><td>${E(k)}</td><td>${x.runs}</td><td class="${x.ok===x.runs?"ok":"wa"}">${x.ok}</td><td>${x.points}</td><td>${Math.round(x.msTotal/Math.max(1,x.runs))}</td><td class="mu">${E(x.lastSummary)} · ${ago(x.lastAt)}</td></tr>`).join("");
+ $("roots").innerHTML="<tr><th>Blocco</th><th>Prove</th><th>Radice Merkle</th><th>Quando</th></tr>"+((m.roots||[]).length?(m.roots||[]).map(r=>`<tr><td>#${r.height}</td><td>${r.count}</td><td><code>${E(r.merkleRoot.slice(0,24))}…</code></td><td>${ago(r.ts)}</td></tr>`).join(""):`<tr><td colspan="4" class="mu">la prima radice si registra dopo 10 prove, poi ogni 6 ore</td></tr>`);
+ const z=d.zai||{};$("zai2").innerHTML=`<b>Ultima inferenza zAI (via vCPU)</b><br><span class="mu">${E(z.taskId||"—")} · ${E(z.core||"")} · ${ago(z.ts)}</span><p>${E(z.reply||"ancora nessuna")}</p>`;
+ const me=d.merito||{},wk=me.week||{},pr=me.profiles||{};
+ $("mer").innerHTML=`<b>Premi merito ${me.emissions&&me.emissions.live?'<span class="ok">attivi</span>':'<span class="wa">spenti</span>'}</b><br><span class="mu">${E(me.emissions&&me.emissions.schedule)}</span><br>Settimana ${E(wk.id)} · pool ${num(wk.pool,0)} VELVET · tetto ${num(wk.perProfileMax,0)} a profilo<br>Profili ${pr.total??"—"} · verificati ${pr.verified??"—"} · inviati finora ${num((me.register&&me.register.totalSent)||0,0)}<br>Fondo ${me.fund?sol(me.fund.address):"—"} <a href="https://ourvelvet.online/merito/" target="_blank">pagina pubblica</a>`;
+ $("events").innerHTML="<tr><th>seq</th><th>Tipo</th><th>Sorgente</th><th>Attore</th><th>Quando</th></tr>"+(d.bus||[]).slice(0,40).map(e=>`<tr><td>${e.seq}</td><td>${E(e.type)}</td><td>${E(e.source)}</td><td class="mu">${E(e.actor||"—")}</td><td>${E(e.tsRome)}</td></tr>`).join("");
+ const vc=d.vcpu||{},k=d.kira||{};
+ $("vcpu").innerHTML=`<b>Brain-vCPU (zcore-vcpu)</b><br><span class="mu">tick ${num(vc.ticks,0)} · task ${num(vc.dispatched,0)} · core: ${E(Object.values(vc.cores||{}).join(" · "))}</span><br>${Object.entries(vc.health||{}).map(([n,h])=>`<span class="dot ${h.online?"on":""}"></span>${E(n)} `).join("")}<br><br><b>K.I.R.A.</b> <span class="${k.ok?"ok":"ko"}">${k.ok?"online":"giù"}</span><br><span class="mu">load ${E(k.load)} · RAM libera ${E(k.freeRam)} · peer: ${(k.peers||[]).map(p=>E(p.peer)+" ("+ago(Date.parse(p.lastSeen)/1000)+")").join(", ")||"nessuno"}</span>`;
+ const zp=d.zpool||{},dx=d.dex||{};
+ $("zpool").innerHTML=`<b>Z-Pool</b> <span class="mu">${E(zp.engine)}</span><br>worker ${zp.stats?zp.stats.workers:"—"} · task ${num(zp.stats&&zp.stats.tasks,0)}<br><span class="wa">${E(zp.note)}</span><table>${(zp.fleet||[]).map(f=>`<tr><td>${E(f.rig)}</td><td>${num(f.hs,0)} H/s</td><td class="mu">${E(f.last)}</td></tr>`).join("")}</table><br><b>Sovereign DEX</b><br><span class="mu">vault ${dx.vault?sol(dx.vault):"—"} · peg L$D ${E(dx.pegEur)} € · SOL ${E(dx.solPriceEur)} €</span>`;
+}
+async function proofs(){try{const r=await fetch("api/miner/proofs?limit=15",{cache:"no-store"});const d=await r.json();$("proofs").innerHTML="<tr><th>#</th><th>Lavoro</th><th>Esito</th><th>Punti</th><th>Hash</th><th>Quando</th></tr>"+((d&&d.proofs)||[]).map(p=>`<tr><td>${p.n}</td><td>${E(p.job)}</td><td class="${p.ok?"ok":"ko"}">${E(p.summary)}</td><td>${p.pts}</td><td><code>${E(p.hash.slice(0,10))}…</code></td><td>${ago(p.t0)}</td></tr>`).join("")}catch{}}
+load();proofs();setInterval(()=>{load();proofs()},30000);
+</script></body></html>

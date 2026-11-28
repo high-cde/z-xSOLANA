@@ -83,8 +83,10 @@ export function verifySig(key, ts, body, sig) {
 
 // ---------- registro zcomm ----------
 export const EVENT_TYPES = new Set(["profile_created", "role_set", "invite_accepted", "profile_verified", "invitee_verified", "profile_revoked",
-  "stage_rsvp", "work_certified", "quest_done", "discord_linked", "discord_unlinked", "payout_planned", "payout_sent", "payout_held", "badge_verified"]);
-export const SOURCES = new Set(["radar", "badge", "znft", "zquest", "zdiscord", "zara-bot", "telegram", "merito"]);
+  "stage_rsvp", "work_certified", "quest_done", "discord_linked", "discord_unlinked", "payout_planned", "payout_sent", "payout_held", "badge_verified",
+  // Filiera ZDOS (senza attore: non generano punti merito né VELVET)
+  "work_proof", "vchain_root", "service_health", "pool_snapshot"]);
+export const SOURCES = new Set(["radar", "badge", "znft", "zquest", "zdiscord", "zara-bot", "telegram", "merito", "zminer", "filiera", "vchain", "zpool", "zbasket", "dex", "vcpu", "kira"]);
 
 export function openDb() {
   fs.mkdirSync(PATHS.data, { recursive: true });
